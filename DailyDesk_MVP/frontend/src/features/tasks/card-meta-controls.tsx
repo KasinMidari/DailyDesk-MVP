@@ -1,5 +1,5 @@
 /** Trạng thái + độ ưu tiên trong hộp thoại chi tiết thẻ trên board, cùng kiểu với form task. */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -39,13 +39,11 @@ export default function CardMetaControls({
   });
   const savedPriority = detail.data?.priority ?? priority;
   const currentList = lists.data?.find((l) => l.id === (detail.data?.listId ?? listId));
-  const [status, setStatus] = useState<Status>("todo");
-  const [prio, setPrio] = useState<Priority>(priority ?? "medium");
-
-  useEffect(() => {
-    if (currentList) setStatus(statusFromList(currentList.name));
-  }, [currentList]);
-  useEffect(() => setPrio(savedPriority ?? "medium"), [savedPriority]);
+  // Giá trị hiển thị lấy thẳng từ dữ liệu đã tải; lựa chọn của người dùng chỉ đè lên tạm thời.
+  const [statusPick, setStatus] = useState<Status | null>(null);
+  const [prioPick, setPrio] = useState<Priority | null>(null);
+  const status: Status = statusPick ?? (currentList ? statusFromList(currentList.name) : "todo");
+  const prio: Priority = prioPick ?? savedPriority ?? "medium";
 
   async function save(body: Record<string, unknown>, message: string) {
     try {
@@ -74,6 +72,19 @@ export default function CardMetaControls({
     await save(
       { listId: target.id, completed: next === "done", dueComplete: next === "done" },
       `Đã chuyển sang ${STATUS_LABEL[next]}`,
+    );
+  }
+
+  if (detail.isPending || lists.isPending) {
+    return (
+      <div className="grid gap-3 sm:grid-cols-2" aria-busy="true">
+        {["Trạng thái", "Độ ưu tiên"].map((label) => (
+          <div key={label} className="grid gap-1.5">
+            <span className="text-sm font-medium text-muted-foreground">{label}</span>
+            <div className="h-10 animate-pulse rounded-lg bg-muted" />
+          </div>
+        ))}
+      </div>
     );
   }
 
