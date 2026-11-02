@@ -1,7 +1,7 @@
 "use client";
 
 import { addHours, areIntervalsOverlapping, differenceInMinutes, eachDayOfInterval, eachHourOfInterval, endOfWeek, getHours, getMinutes, isBefore, isSameDay, isToday, startOfDay, startOfWeek } from "date-fns";
-import { format } from "@/lib/date";
+import { format, weekdayShort } from "@/lib/date";
 import type React from "react";
 import { useMemo } from "react";
 
@@ -218,9 +218,9 @@ export function WeekView({
             key={day.toString()}
           >
             <span aria-hidden="true" className="sm:hidden">
-              {format(day, "E")[0]} {format(day, "d")}
+              {weekdayShort(day)} {format(day, "d")}
             </span>
-            <span className="max-sm:hidden">{format(day, "EEE dd")}</span>
+            <span className="max-sm:hidden">{weekdayShort(day)} {format(day, "dd")}</span>
           </div>
         ))}
       </div>

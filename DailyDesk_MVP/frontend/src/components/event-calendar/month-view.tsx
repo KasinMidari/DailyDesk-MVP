@@ -1,7 +1,7 @@
 "use client";
 
 import { addDays, eachDayOfInterval, endOfMonth, endOfWeek, isSameDay, isSameMonth, isToday, startOfMonth, startOfWeek } from "date-fns";
-import { format } from "@/lib/date";
+import { format, weekdayShort } from "@/lib/date";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -50,7 +50,7 @@ export function MonthView({
   const weekdays = useMemo(() => {
     return Array.from({ length: 7 }).map((_, i) => {
       const date = addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), i);
-      return format(date, "EEE");
+      return weekdayShort(date);
     });
   }, []);
 
@@ -229,7 +229,7 @@ export function MonthView({
                           >
                             <div className="space-y-2">
                               <div className="text-sm font-medium">
-                                {format(day, "EEE d")}
+                                {weekdayShort(day)} {format(day, "d")}
                               </div>
                               <div className="space-y-1">
                                 {sortEvents(allEvents).map((event) => {

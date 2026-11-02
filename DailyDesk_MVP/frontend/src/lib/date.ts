@@ -30,3 +30,13 @@ export function formatDue(input: Date | string) {
   const d = typeof input === "string" ? new Date(input) : input;
   return `${formatShort(d)}, ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
+
+/** Thứ viết tắt dùng chung: T2…T7, CN. */
+export function weekdayShort(input: Date) {
+  return WEEKDAY[input.getDay()];
+}
+
+/** Tiêu đề tháng dùng chung: "Tháng 11, 2026". */
+export function monthCaption(input: Date) {
+  return `Tháng ${input.getMonth() + 1}, ${input.getFullYear()}`;
+}

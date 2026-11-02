@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-03T00:00:00Z",
+  "title": "Design System: DailyDesk",
+  "extensions": {
+    "colorMeta": {
+      "paper": { "role": "neutral", "displayName": "Office Paper", "canonical": "oklch(0.982 0.004 240)", "dark": "oklch(0.2 0.018 258)", "tonalRamp": ["oklch(0.2 0.01 240)", "oklch(0.32 0.01 240)", "oklch(0.45 0.01 240)", "oklch(0.58 0.008 240)", "oklch(0.7 0.007 240)", "oklch(0.82 0.006 240)", "oklch(0.92 0.005 240)", "oklch(0.982 0.004 240)"] },
+      "sheet": { "role": "neutral", "displayName": "White Sheet", "canonical": "oklch(1 0 0)", "dark": "oklch(0.24 0.02 258)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.3 0 0)", "oklch(0.45 0 0)", "oklch(0.6 0 0)", "oklch(0.75 0 0)", "oklch(0.87 0 0)", "oklch(0.95 0 0)", "oklch(1 0 0)"] },
+      "ink": { "role": "neutral", "displayName": "Navy Ink", "canonical": "oklch(0.25 0.03 258)", "dark": "oklch(0.94 0.01 245)", "tonalRamp": ["oklch(0.15 0.02 258)", "oklch(0.25 0.03 258)", "oklch(0.37 0.03 258)", "oklch(0.5 0.025 258)", "oklch(0.63 0.02 258)", "oklch(0.75 0.015 258)", "oklch(0.86 0.01 258)", "oklch(0.95 0.005 258)"] },
+      "ink-soft": { "role": "neutral", "displayName": "Faded Ink", "canonical": "oklch(0.49 0.025 258)", "dark": "oklch(0.74 0.02 250)", "tonalRamp": ["oklch(0.18 0.015 258)", "oklch(0.3 0.02 258)", "oklch(0.4 0.025 258)", "oklch(0.49 0.025 258)", "oklch(0.6 0.02 258)", "oklch(0.72 0.015 258)", "oklch(0.84 0.01 258)", "oklch(0.95 0.005 258)"] },
+      "navy": { "role": "primary", "displayName": "Folder Navy", "canonical": "oklch(0.38 0.1 258)", "dark": "oklch(0.8 0.09 250)", "tonalRamp": ["oklch(0.18 0.06 258)", "oklch(0.28 0.09 258)", "oklch(0.38 0.1 258)", "oklch(0.5 0.1 258)", "oklch(0.62 0.08 258)", "oklch(0.74 0.06 258)", "oklch(0.86 0.035 258)", "oklch(0.95 0.015 258)"] },
+      "navy-foreground": { "role": "neutral", "displayName": "On Navy", "canonical": "oklch(0.99 0 0)", "dark": "oklch(0.2 0.03 258)" },
+      "drawer-tint": { "role": "neutral", "displayName": "Drawer Tint", "canonical": "oklch(0.955 0.008 245)", "dark": "oklch(0.28 0.02 258)" },
+      "hover-wash": { "role": "neutral", "displayName": "Hover Wash", "canonical": "oklch(0.945 0.016 245)", "dark": "oklch(0.3 0.025 258)" },
+      "hairline": { "role": "neutral", "displayName": "Hairline", "canonical": "oklch(0.9 0.012 245)", "dark": "oklch(1 0 0 / 0.09)" },
+      "field-edge": { "role": "neutral", "displayName": "Field Edge", "canonical": "oklch(0.87 0.014 245)", "dark": "oklch(1 0 0 / 0.14)" },
+      "focus-blue": { "role": "neutral", "displayName": "Focus Blue", "canonical": "oklch(0.58 0.13 255)", "dark": "oklch(0.7 0.11 250)" },
+      "sidebar-paper": { "role": "neutral", "displayName": "Sidebar Paper", "canonical": "oklch(0.965 0.007 245)", "dark": "oklch(0.175 0.017 258)" },
+      "sidebar-active": { "role": "neutral", "displayName": "Sidebar Active", "canonical": "oklch(0.925 0.02 245)", "dark": "oklch(0.27 0.025 258)" },
+      "tab-todo": { "role": "secondary", "displayName": "Todo Blue", "canonical": "oklch(0.5 0.12 250)", "dark": "oklch(0.8 0.09 245)", "tonalRamp": ["oklch(0.2 0.06 250)", "oklch(0.32 0.09 250)", "oklch(0.42 0.11 250)", "oklch(0.5 0.12 250)", "oklch(0.62 0.1 250)", "oklch(0.74 0.07 250)", "oklch(0.86 0.045 250)", "oklch(0.94 0.035 245)"] },
+      "tab-todo-soft": { "role": "secondary", "displayName": "Todo Wash", "canonical": "oklch(0.94 0.035 245)", "dark": "oklch(0.32 0.05 250)" },
+      "tab-doing": { "role": "secondary", "displayName": "Manila Amber", "canonical": "oklch(0.52 0.12 62)", "dark": "oklch(0.84 0.12 82)", "tonalRamp": ["oklch(0.22 0.05 62)", "oklch(0.33 0.08 62)", "oklch(0.43 0.1 62)", "oklch(0.52 0.12 62)", "oklch(0.64 0.12 72)", "oklch(0.76 0.11 80)", "oklch(0.87 0.09 85)", "oklch(0.94 0.07 85)"] },
+      "tab-doing-soft": { "role": "secondary", "displayName": "Manila Wash", "canonical": "oklch(0.94 0.07 85)", "dark": "oklch(0.34 0.06 70)" },
+      "tab-done": { "role": "secondary", "displayName": "Ledger Green", "canonical": "oklch(0.48 0.1 155)", "dark": "oklch(0.8 0.1 155)", "tonalRamp": ["oklch(0.2 0.05 155)", "oklch(0.3 0.07 155)", "oklch(0.4 0.09 155)", "oklch(0.48 0.1 155)", "oklch(0.6 0.09 155)", "oklch(0.72 0.07 155)", "oklch(0.85 0.05 155)", "oklch(0.94 0.045 155)"] },
+      "tab-done-soft": { "role": "secondary", "displayName": "Ledger Wash", "canonical": "oklch(0.94 0.045 155)", "dark": "oklch(0.31 0.05 155)" },
+      "prio-high": { "role": "tertiary", "displayName": "Stamp Red", "canonical": "oklch(0.55 0.19 28)", "dark": "oklch(0.72 0.16 28)", "tonalRamp": ["oklch(0.22 0.08 28)", "oklch(0.33 0.12 28)", "oklch(0.44 0.16 28)", "oklch(0.55 0.19 28)", "oklch(0.66 0.15 28)", "oklch(0.77 0.1 28)", "oklch(0.87 0.06 28)", "oklch(0.95 0.025 28)"] },
+      "prio-medium": { "role": "tertiary", "displayName": "Ochre", "canonical": "oklch(0.62 0.14 70)", "dark": "oklch(0.8 0.13 78)" },
+      "prio-low": { "role": "tertiary", "displayName": "Slate", "canonical": "oklch(0.6 0.03 250)", "dark": "oklch(0.7 0.03 250)" },
+      "overdue": { "role": "tertiary", "displayName": "Overdue Red", "canonical": "oklch(0.53 0.19 27)", "dark": "oklch(0.72 0.16 27)" },
+      "destructive": { "role": "tertiary", "displayName": "Destructive Red", "canonical": "oklch(0.56 0.2 27)", "dark": "oklch(0.68 0.17 25)" },
+      "manila-panel": { "role": "neutral", "displayName": "Manila Cover (sign-in only)", "canonical": "oklch(0.94 0.065 90)", "dark": "oklch(0.255 0.03 80)" },
+      "manila-sheet": { "role": "neutral", "displayName": "Manila Sheet (sign-in only)", "canonical": "oklch(0.995 0.004 90)", "dark": "oklch(0.285 0.022 75)" },
+      "manila-ink": { "role": "neutral", "displayName": "Manila Ink (sign-in only)", "canonical": "oklch(0.27 0.035 60)", "dark": "oklch(0.96 0.015 90)" }
+    },
+    "typographyMeta": {
+      "headline": { "displayName": "Headline", "purpose": "Page H1 (\"Việc của tôi\"); 24px mobile, 28px desktop. Sign-in H1 30–36px at the same weight." },
+      "title": { "displayName": "Title", "purpose": "Dialog titles (\"Thêm task mới\", \"Sửa task\")." },
+      "body-strong": { "displayName": "Body strong", "purpose": "Task titles in rows, board card titles (600), input text." },
+      "body": { "displayName": "Body", "purpose": "Descriptions, filter pills, field labels (500), header status line." },
+      "meta": { "displayName": "Meta", "purpose": "Tabular row meta on narrow screens and board card counts." },
+      "label": { "displayName": "Label", "purpose": "Sentence-case deadline group headers; column headers at 500." }
+    },
+    "shadows": [
+      { "name": "drawer", "value": "0 1px 2px rgb(0 0 0/0.04), 0 8px 24px -12px rgb(15 23 42/0.12)", "purpose": "The task drawer under the folder tabs; the one resting shadow per view." },
+      { "name": "card-lift", "value": "0 6px 18px -10px rgb(15 23 42/0.25)", "purpose": "Board cards on hover only." },
+      { "name": "raised-option", "value": "0 1px 2px rgb(0 0 0/0.08)", "purpose": "Selected option in a segmented control." },
+      { "name": "field-inset", "value": "inset 0 1px 0 rgb(0 0 0/0.02)", "purpose": "Text inputs." },
+      { "name": "signin-sheet", "value": "0 18px 40px -18px oklch(0.55 0.11 70 / 0.45)", "purpose": "Preview sheet on the manila sign-in panel." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Acknowledgement motion: row flash fade, sign-in check and pill swap." },
+      { "name": "row-flash", "value": "hold 2400ms, fade background 1.6s ease-out-expo", "purpose": "A changed row keeps the manila wash (Doing soft at 70%) until noticed." },
+      { "name": "control-hover", "value": "150ms ease-out (Tailwind transition-colors default)", "purpose": "Hover and focus color shifts on tabs, pills, rows." },
+      { "name": "signin-moment", "value": "420ms check / 360ms pill swap, 1.4–1.55s delay, prefers-reduced-motion: no-preference only", "purpose": "The single sign-in moment: the Doing task is marked Done." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one navy action per view, with its keyboard hint.",
+      "html": "<button class=\"ds-btn-primary\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg>Thêm task<kbd class=\"ds-btn-kbd\">N</kbd></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: none; border-radius: calc(var(--radius, 0.5rem) - 2px); background: var(--primary, oklch(0.38 0.1 258)); color: var(--primary-foreground, oklch(0.99 0 0)); font: 500 14px/1 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 150ms ease-out; } .ds-btn-primary:hover { background: color-mix(in oklch, var(--primary, oklch(0.38 0.1 258)) 90%, transparent); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background, oklch(0.982 0.004 240)), 0 0 0 4px var(--ring, oklch(0.58 0.13 255)); } .ds-btn-kbd { margin-left: 4px; padding: 0 6px; border: 1px solid color-mix(in oklch, var(--primary-foreground, white) 30%, transparent); border-radius: 4px; font-size: 11px; line-height: 18px; opacity: 0.8; font-family: inherit; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary actions such as retry and reset filters.",
+      "html": "<button class=\"ds-btn-outline\">Thử lại</button>",
+      "css": ".ds-btn-outline { height: 36px; padding: 0 16px; border: 1px solid var(--input, oklch(0.87 0.014 245)); border-radius: calc(var(--radius, 0.5rem) - 2px); background: var(--card, white); color: var(--foreground, oklch(0.25 0.03 258)); font: 500 14px/1 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 150ms ease-out; } .ds-btn-outline:hover { background: var(--accent, oklch(0.945 0.016 245)); } .ds-btn-outline:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ring, oklch(0.58 0.13 255)); }"
+    },
+    {
+      "name": "Folder Tabs and Drawer",
+      "kind": "nav",
+      "refersTo": "folder-tab",
+      "description": "Status index tabs joined to the drawer; active tab shows its 3px status lip.",
+      "html": "<div class=\"ds-folder\"><div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Tất cả <span class=\"ds-tab-count\">11</span></button><button class=\"ds-tab ds-tab--active\" role=\"tab\" aria-selected=\"true\"><span class=\"ds-tab-lip\" style=\"background: var(--status-todo, oklch(0.5 0.12 250))\"></span>Todo <span class=\"ds-tab-count\">5</span></button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\"><span class=\"ds-tab-lip\" style=\"background: var(--status-doing, oklch(0.52 0.12 62))\"></span>Doing <span class=\"ds-tab-count\">4</span></button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\"><span class=\"ds-tab-lip\" style=\"background: var(--status-done, oklch(0.48 0.1 155))\"></span>Done <span class=\"ds-tab-count\">2</span></button></div><div class=\"ds-drawer\"><div class=\"ds-drawer-bar\">Tìm theo tiêu đề hoặc mô tả</div></div></div>",
+      "css": ".ds-folder { font-family: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif; color: var(--foreground, oklch(0.25 0.03 258)); } .ds-tabs { display: flex; gap: 4px; padding: 0 4px; margin-bottom: -1px; } .ds-tab { position: relative; z-index: 0; display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 1px solid transparent; border-bottom: 0; border-radius: var(--radius, 0.5rem) var(--radius, 0.5rem) 0 0; background: transparent; color: var(--muted-foreground, oklch(0.49 0.025 258)); font: 500 14px/1 inherit; font-family: inherit; cursor: pointer; transition: background-color 150ms ease-out, color 150ms ease-out; } .ds-tab:hover { background: color-mix(in oklch, var(--card, white) 60%, transparent); color: var(--foreground, oklch(0.25 0.03 258)); } .ds-tab:hover .ds-tab-lip { opacity: 0.5; } .ds-tab:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ring, oklch(0.58 0.13 255)); } .ds-tab--active { z-index: 1; background: var(--card, white); border-color: var(--border, oklch(0.9 0.012 245)); color: var(--foreground, oklch(0.25 0.03 258)); } .ds-tab-lip { position: absolute; left: 12px; right: 12px; top: 0; height: 3px; border-radius: 0 0 2px 2px; opacity: 0; transition: opacity 150ms ease-out; } .ds-tab--active .ds-tab-lip { opacity: 1; } .ds-tab-count { min-width: 24px; padding: 0 6px; border-radius: 9999px; font-size: 12px; line-height: 20px; text-align: center; font-variant-numeric: tabular-nums; } .ds-tab--active .ds-tab-count { background: var(--muted, oklch(0.955 0.008 245)); } .ds-drawer { overflow: hidden; border: 1px solid var(--border, oklch(0.9 0.012 245)); border-radius: 0 12px 12px 12px; background: var(--card, white); box-shadow: 0 1px 2px rgb(0 0 0/0.04), 0 8px 24px -12px rgb(15 23 42/0.12); } .ds-drawer-bar { padding: 12px 20px; background: color-mix(in oklch, var(--muted, oklch(0.955 0.008 245)) 40%, transparent); color: var(--muted-foreground, oklch(0.49 0.025 258)); font-size: 14px; }"
+    },
+    {
+      "name": "Status Pill",
+      "kind": "chip",
+      "refersTo": "status-pill-doing",
+      "description": "Fixed-width status menu trigger in each row; one click to change status.",
+      "html": "<div class=\"ds-pills\"><button class=\"ds-status ds-status--todo\">Todo<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"/></svg></button><button class=\"ds-status ds-status--doing\">Doing<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"/></svg></button><button class=\"ds-status ds-status--done\">Done<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"/></svg></button></div>",
+      "css": ".ds-pills { display: flex; gap: 8px; } .ds-status { display: inline-flex; align-items: center; justify-content: space-between; gap: 4px; width: 5.5rem; height: 28px; padding: 0 6px 0 10px; border: none; border-radius: 9999px; font: 600 12px/1 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: filter 150ms ease-out; } .ds-status svg { opacity: 0.7; } .ds-status:hover { filter: brightness(0.95); } .ds-status:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ring, oklch(0.58 0.13 255)); } .ds-status--todo { background: var(--status-todo-soft, oklch(0.94 0.035 245)); color: var(--status-todo, oklch(0.5 0.12 250)); } .ds-status--doing { background: var(--status-doing-soft, oklch(0.94 0.07 85)); color: var(--status-doing, oklch(0.52 0.12 62)); } .ds-status--done { background: var(--status-done-soft, oklch(0.94 0.045 155)); color: var(--status-done, oklch(0.48 0.1 155)); }"
+    },
+    {
+      "name": "Filter Pill",
+      "kind": "chip",
+      "refersTo": "filter-pill",
+      "description": "Toolbar dropdown trigger: label in faded ink, value in medium weight.",
+      "html": "<button class=\"ds-filter\"><span class=\"ds-filter-label\">Sắp xếp:</span><span class=\"ds-filter-value\">Hạn gần nhất</span><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"/></svg></button>",
+      "css": ".ds-filter { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border: 1px solid var(--input, oklch(0.87 0.014 245)); border-radius: calc(var(--radius, 0.5rem) - 2px); background: var(--card, white); color: var(--foreground, oklch(0.25 0.03 258)); font: 400 14px/1 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 150ms ease-out; } .ds-filter svg { color: var(--muted-foreground, oklch(0.49 0.025 258)); } .ds-filter:hover { background: var(--accent, oklch(0.945 0.016 245)); } .ds-filter:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ring, oklch(0.58 0.13 255)); } .ds-filter-label { color: var(--muted-foreground, oklch(0.49 0.025 258)); } .ds-filter-value { font-weight: 500; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Labeled field with hint and error line, focus-blue ring.",
+      "html": "<div class=\"ds-field\"><div class=\"ds-field-head\"><label class=\"ds-field-label\" for=\"ds-title\">Tiêu đề</label><span class=\"ds-field-hint\">0/120</span></div><input id=\"ds-title\" class=\"ds-input\" placeholder=\"Ví dụ: Nộp báo cáo đồ án\" /></div>",
+      "css": ".ds-field { display: grid; gap: 6px; font-family: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif; color: var(--foreground, oklch(0.25 0.03 258)); } .ds-field-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; } .ds-field-label { font-size: 14px; font-weight: 500; } .ds-field-hint { font-size: 12px; color: var(--muted-foreground, oklch(0.49 0.025 258)); font-variant-numeric: tabular-nums; } .ds-input { height: 40px; width: 100%; padding: 0 12px; border: 1px solid var(--input, oklch(0.87 0.014 245)); border-radius: calc(var(--radius, 0.5rem) - 2px); background: var(--card, white); color: inherit; font: 400 15px/1.4 inherit; font-family: inherit; box-shadow: inset 0 1px 0 rgb(0 0 0/0.02); outline: none; transition: border-color 150ms ease-out, box-shadow 150ms ease-out; } .ds-input::placeholder { color: color-mix(in oklch, var(--muted-foreground, oklch(0.49 0.025 258)) 80%, transparent); } .ds-input:focus-visible { border-color: var(--ring, oklch(0.58 0.13 255)); box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring, oklch(0.58 0.13 255)) 25%, transparent); } .ds-input[aria-invalid=true] { border-color: var(--destructive, oklch(0.56 0.2 27)); }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "custom",
+      "refersTo": "segmented",
+      "description": "Status or priority picker in the task dialog; each option leads with its tone dot.",
+      "html": "<div class=\"ds-seg\" role=\"radiogroup\" aria-label=\"Độ ưu tiên\"><button class=\"ds-seg-opt ds-seg-opt--on\" role=\"radio\" aria-checked=\"true\"><span class=\"ds-seg-dot\" style=\"background: var(--prio-high, oklch(0.55 0.19 28))\"></span>Cao</button><button class=\"ds-seg-opt\" role=\"radio\" aria-checked=\"false\"><span class=\"ds-seg-dot\" style=\"background: var(--prio-medium, oklch(0.62 0.14 70))\"></span>Vừa</button><button class=\"ds-seg-opt\" role=\"radio\" aria-checked=\"false\"><span class=\"ds-seg-dot\" style=\"background: var(--prio-low, oklch(0.6 0.03 250))\"></span>Thấp</button></div>",
+      "css": ".ds-seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; padding: 4px; border-radius: var(--radius, 0.5rem); background: var(--muted, oklch(0.955 0.008 245)); font-family: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif; } .ds-seg-opt { display: flex; align-items: center; justify-content: center; gap: 6px; height: 32px; border: none; border-radius: calc(var(--radius, 0.5rem) - 2px); background: transparent; color: var(--muted-foreground, oklch(0.49 0.025 258)); font: 500 14px/1 inherit; font-family: inherit; cursor: pointer; transition: color 150ms ease-out, background-color 150ms ease-out; } .ds-seg-opt:hover { color: var(--foreground, oklch(0.25 0.03 258)); } .ds-seg-opt:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ring, oklch(0.58 0.13 255)); } .ds-seg-opt--on { background: var(--card, white); color: var(--foreground, oklch(0.25 0.03 258)); box-shadow: 0 1px 2px rgb(0 0 0/0.08); } .ds-seg-dot { width: 8px; height: 8px; border-radius: 9999px; }"
+    },
+    {
+      "name": "Task Row",
+      "kind": "custom",
+      "refersTo": "task-row",
+      "description": "Ruled form line: status pill, title, board, priority square, tabular deadline; overdue in red; flashes manila after a change.",
+      "html": "<ul class=\"ds-rows\"><li class=\"ds-row ds-row--flash\"><span class=\"ds-status-mini ds-status-mini--doing\">Doing</span><div class=\"ds-row-main\"><span class=\"ds-row-title\">Viết nhật ký công việc hằng ngày</span></div><span class=\"ds-row-board\">Đồ án SE100</span><span class=\"ds-prio\"><span class=\"ds-prio-sq\" style=\"background: var(--prio-medium, oklch(0.62 0.14 70))\"></span>Vừa</span><span class=\"ds-due ds-due--over\">CN, 1/11, 17:00<span class=\"ds-due-late\">Trễ 1 ngày</span></span></li><li class=\"ds-row\"><span class=\"ds-status-mini ds-status-mini--todo\">Todo</span><div class=\"ds-row-main\"><span class=\"ds-row-title\">Vẽ ERD và sơ đồ Use Case</span><span class=\"ds-row-desc\">Hai bảng chính: users và tasks.</span></div><span class=\"ds-row-board\">Đồ án SE100</span><span class=\"ds-prio\"><span class=\"ds-prio-sq\" style=\"background: var(--prio-high, oklch(0.55 0.19 28))\"></span>Cao</span><span class=\"ds-due\">T4, 4/11, 17:00</span></li></ul>",
+      "css": ".ds-rows { list-style: none; margin: 0; padding: 0; background: var(--card, white); font-family: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif; color: var(--foreground, oklch(0.25 0.03 258)); } .ds-row { display: grid; grid-template-columns: 5.5rem minmax(0,1fr) 9rem 6rem 10.5rem; align-items: center; gap: 0 12px; padding: 12px 20px; border-bottom: 1px solid var(--border, oklch(0.9 0.012 245)); cursor: pointer; transition: background-color 150ms ease-out; } .ds-row:hover { background: color-mix(in oklch, var(--accent, oklch(0.945 0.016 245)) 50%, transparent); } .ds-row--flash { background: color-mix(in oklch, var(--status-doing-soft, oklch(0.94 0.07 85)) 70%, transparent); transition: background-color 1.6s cubic-bezier(0.16, 1, 0.3, 1); } .ds-status-mini { display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; } .ds-status-mini--todo { background: var(--status-todo-soft, oklch(0.94 0.035 245)); color: var(--status-todo, oklch(0.5 0.12 250)); } .ds-status-mini--doing { background: var(--status-doing-soft, oklch(0.94 0.07 85)); color: var(--status-doing, oklch(0.52 0.12 62)); } .ds-row-main { min-width: 0; } .ds-row-title { display: block; font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ds-row:hover .ds-row-title { text-decoration: underline; } .ds-row-desc { display: block; font-size: 14px; color: var(--muted-foreground, oklch(0.49 0.025 258)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ds-row-board { font-size: 14px; color: var(--muted-foreground, oklch(0.49 0.025 258)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ds-prio { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; } .ds-prio-sq { width: 10px; height: 10px; border-radius: 3px; } .ds-due { display: block; font-size: 14px; font-variant-numeric: tabular-nums; } .ds-due--over { color: var(--overdue, oklch(0.53 0.19 27)); font-weight: 500; } .ds-due-late { display: block; font-size: 12px; font-weight: 400; }"
+    },
+    {
+      "name": "Board Card",
+      "kind": "card",
+      "refersTo": "board-card",
+      "description": "A board as a small file folder: colored tab above a white sheet with status counts.",
+      "html": "<a class=\"ds-board\" href=\"#\"><span class=\"ds-board-tab\"></span><span class=\"ds-board-sheet\"><span class=\"ds-board-title\">Đồ án SE100</span><span class=\"ds-board-counts\"><span><i style=\"background: var(--status-todo, oklch(0.5 0.12 250))\"></i>3 Todo</span><span><i style=\"background: var(--status-doing, oklch(0.52 0.12 62))\"></i>2 Doing</span><span><i style=\"background: var(--status-done, oklch(0.48 0.1 155))\"></i>1 Done</span></span></span></a>",
+      "css": ".ds-board { display: block; width: 260px; text-decoration: none; color: var(--foreground, oklch(0.25 0.03 258)); font-family: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif; border-radius: 12px; outline: none; } .ds-board:focus-visible { box-shadow: 0 0 0 2px var(--background, oklch(0.982 0.004 240)), 0 0 0 4px var(--ring, oklch(0.58 0.13 255)); } .ds-board-tab { display: block; margin-left: 16px; width: 64px; height: 10px; border-radius: 6px 6px 0 0; background: var(--primary, oklch(0.38 0.1 258)); } .ds-board-sheet { display: flex; flex-direction: column; justify-content: space-between; min-height: 112px; padding: 14px 16px; border: 1px solid var(--border, oklch(0.9 0.012 245)); border-radius: 12px; background: var(--card, white); transition: border-color 150ms ease-out, box-shadow 150ms ease-out; } .ds-board:hover .ds-board-sheet { border-color: color-mix(in oklch, var(--ring, oklch(0.58 0.13 255)) 60%, transparent); box-shadow: 0 6px 18px -10px rgb(15 23 42/0.25); } .ds-board-title { font-size: 15px; font-weight: 600; line-height: 1.375; } .ds-board-counts { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 12px; font-size: 13px; color: var(--muted-foreground, oklch(0.49 0.025 258)); font-variant-numeric: tabular-nums; } .ds-board-counts span { display: inline-flex; align-items: center; gap: 6px; } .ds-board-counts i { width: 8px; height: 8px; border-radius: 9999px; }"
+    },
+    {
+      "name": "Sidebar Navigation",
+      "kind": "nav",
+      "refersTo": "nav-item-active",
+      "description": "Left sidebar with the three destinations; active item on a deeper paper tone.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-nav-brand\">DailyDesk</span><a class=\"ds-nav-item ds-nav-item--on\" href=\"#\">Việc của tôi</a><a class=\"ds-nav-item\" href=\"#\">Lịch</a><a class=\"ds-nav-item\" href=\"#\">Board</a></nav>",
+      "css": ".ds-nav { display: flex; flex-direction: column; gap: 2px; width: 220px; padding: 16px 12px; background: var(--sidebar, oklch(0.965 0.007 245)); color: var(--sidebar-foreground, oklch(0.3 0.03 258)); font-family: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif; } .ds-nav-brand { padding: 4px 8px 12px; font-size: 15px; font-weight: 600; letter-spacing: -0.025em; } .ds-nav-item { display: flex; align-items: center; height: 36px; padding: 0 8px; border-radius: calc(var(--radius, 0.5rem) - 2px); color: inherit; text-decoration: none; font-size: 14px; font-weight: 500; transition: background-color 150ms ease-out; } .ds-nav-item:hover { background: var(--sidebar-accent, oklch(0.925 0.02 245)); } .ds-nav-item:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--sidebar-ring, oklch(0.58 0.13 255)); } .ds-nav-item--on { background: var(--sidebar-accent, oklch(0.925 0.02 245)); color: var(--sidebar-accent-foreground, oklch(0.25 0.06 258)); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Office File Folder",
+    "overview": "DailyDesk is a filing cabinet drawer on cool office paper. Status is a set of folder index tabs physically joined to the drawer below them; each task is one ruled line on a form inside that drawer. Text and the one primary action are written in navy ink. Everything else is paper, hairlines, and three tab hues that mean exactly one thing each: Todo, Doing, Done.\n\nDensity is a working list, not a dashboard. Rows are short (12px vertical padding), metadata sits in fixed columns on desktop and folds under the title on narrow screens, and deadline is the default order of everything. The system rejects card grids for tasks, hero metrics, gradients, and glass: depth comes from one soft drawer shadow and tonal paper steps.\n\nThe one moment of motion that matters is acknowledgement: a row that just changed stays washed in manila for a beat so the person notices it. The sign-in screen carries the same folder world in a warmer manila register.",
+    "keyCharacteristics": [
+      "Cool blue-grey paper ground, white sheets, navy ink; color reserved for status and priority.",
+      "Folder index tabs with a 3px colored lip, joined to a bordered drawer.",
+      "Ruled task rows divided by hairlines, grouped under sticky deadline headers.",
+      "Be Vietnam Pro throughout; tabular figures for every date, time, and count.",
+      "Gentle 8px corners, hairline borders, one soft drawer shadow."
+    ],
+    "rules": [
+      { "name": "The Three Tabs Rule", "body": "Blue, amber, and green mean Todo, Doing, Done, and nothing else. A new feature may not borrow a status hue for decoration.", "section": "colors" },
+      { "name": "The One Navy Rule", "body": "Each view has one filled navy button. Secondary actions are outline or ghost.", "section": "colors" },
+      { "name": "The Square Means Priority Rule", "body": "Priority is a 10px rounded square (3px radius); status is a round dot or pill. The shapes never swap.", "section": "colors" },
+      { "name": "The Tabular Clock Rule", "body": "Every date, time, and count is set with tabular figures and the shared Vietnamese formats: \"Hôm nay\", \"Ngày mai\", \"T4, 4/11\", \"T4, 4/11, 17:00\", \"Tháng 11, 2026\". Do not hand-format dates in a component.", "section": "typography" },
+      { "name": "The No Small Caps Rule", "body": "Labels are sentence case at 12px; the system has no uppercase tracked micro-labels.", "section": "typography" },
+      { "name": "The Deadline First Rule", "body": "Lists default to nearest deadline and group under sticky deadline headers; other sorts flatten the groups.", "section": "layout" },
+      { "name": "The One Drawer Rule", "body": "One resting shadow per view, on the drawer. Everything else is flat until hovered or selected.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do join status tabs to the drawer with the -1px overlap and a 3px status lip on the active tab.",
+      "Do use the shared date helpers and tabular figures for every date, time, and count.",
+      "Do keep one filled navy button per view and make everything else outline or ghost.",
+      "Do mark priority with the 10px square and status with dots or pills, colored only from the status and priority tokens.",
+      "Do flash a changed row in the manila wash so the change is noticed, and respect reduced motion for any added animation.",
+      "Do design every list state: skeleton rows, empty with a first action, filtered-empty with a reset, error with \"Thử lại\"."
+    ],
+    "donts": [
+      "Don't lay tasks out as a grid of cards, or add hero metrics, gradients, or glass panels.",
+      "Don't use a status hue (blue, amber, green) for anything that is not that status.",
+      "Don't add a second resting shadow beside the drawer, or heavier shadows than the drawer's.",
+      "Don't introduce a second typeface or uppercase tracked labels.",
+      "Don't pull the manila sign-in palette into the signed-in app; it is scoped to sign-in."
+    ]
+  }
+}

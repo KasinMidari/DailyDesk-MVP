@@ -3,7 +3,7 @@ import { CalendarDays, Loader2 } from "lucide-react";
 import { vi } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { formatShort } from "@/lib/date";
+import { formatShort, monthCaption, weekdayShort } from "@/lib/date";
 import {
   Dialog,
   DialogContent,
@@ -280,6 +280,7 @@ export default function TaskFormDialog({
                       mode="single"
                       locale={vi}
                       weekStartsOn={1}
+                      formatters={{ formatCaption: (d) => monthCaption(d), formatWeekdayName: (d) => weekdayShort(d) }}
                       selected={date ? new Date(`${date}T00:00`) : undefined}
                       onSelect={(d) => {
                         if (!d) return;
