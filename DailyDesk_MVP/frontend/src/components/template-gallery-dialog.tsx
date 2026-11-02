@@ -17,14 +17,22 @@ import {
 } from "@/components/ui/select";
 import { Search, Eye } from "lucide-react";
 import { useTemplates } from "@/hooks/use-template";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import TemplatePreviewDialog from "./template-preview-dialog";
 
 interface TemplateGalleryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+
+const CATEGORY_LABEL: Record<string, string> = {
+  business: "Kinh doanh",
+  engineering: "Kỹ thuật",
+  marketing: "Marketing",
+  design: "Thiết kế",
+  education: "Học tập",
+  personal: "Cá nhân",
+  other: "Khác",
+};
 
 export default function TemplateGalleryDialog({
   open,
@@ -81,51 +89,33 @@ export default function TemplateGalleryDialog({
           <div className="flex-1 overflow-y-auto pr-2">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {filteredTemplates.map((template: any) => (
-                <Card
+                <button
                   key={template.id}
-                  className="cursor-pointer hover:border-primary transition-colors"
+                  type="button"
+                  className="group block text-left outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl"
                   onClick={() => setSelectedTemplateId(template.id)}
                 >
-                  <CardHeader
-                    className="pb-3"
-                    style={{
-                      backgroundColor: template.backgroundColor || "#0079bf",
-                      backgroundImage: template.backgroundUrl
-                        ? `url(${template.backgroundUrl})`
-                        : undefined,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      minHeight: "100px",
-                    }}
-                  >
-                    <div className="bg-black/50 backdrop-blur-sm rounded p-2">
-                      <CardTitle className="text-white text-lg">
-                        {template.name}
-                      </CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-4">
-                    <CardDescription className="line-clamp-2 mb-3">
-                      {template.description || "No description"}
-                    </CardDescription>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground capitalize">
-                        {template.category || "other"}
+                  <span
+                    aria-hidden="true"
+                    className="ml-4 block h-2.5 w-16 rounded-t-md"
+                    style={{ backgroundColor: template.backgroundColor || "var(--primary)" }}
+                  />
+                  <span className="flex min-h-32 flex-col rounded-xl border bg-card px-4 py-3.5 transition-[border-color,box-shadow] group-hover:border-ring/60 group-hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]">
+                    <span className="text-[15px] font-semibold leading-snug">{template.name}</span>
+                    <span className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                      {template.description || "Chưa có mô tả"}
+                    </span>
+                    <span className="mt-auto flex items-center justify-between pt-3 text-[13px] text-muted-foreground">
+                      <span>
+                        {CATEGORY_LABEL[template.category ?? "other"] ?? "Khác"} · {template.lists?.length ?? 0} danh sách
                       </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedTemplateId(template.id);
-                        }}
-                      >
-                        <Eye className="w-4 h-4 mr-1" />
+                      <span className="inline-flex items-center gap-1 font-medium text-foreground group-hover:underline">
+                        <Eye className="size-4" aria-hidden="true" />
                         Xem trước
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                      </span>
+                    </span>
+                  </span>
+                </button>
               ))}
             </div>
 

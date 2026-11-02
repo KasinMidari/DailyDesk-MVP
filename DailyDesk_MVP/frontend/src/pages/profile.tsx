@@ -175,7 +175,7 @@ export default function ProfilePage() {
                     className="bg-muted"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Email được quản lý bởi Auth0 và không thể thay đổi
+                    Email lấy từ tài khoản Google và không thể thay đổi ở đây
                   </p>
                 </div>
 
@@ -383,12 +383,12 @@ export default function ProfilePage() {
                 <div>
                   <h4 className="font-medium mb-2">Xác thực</h4>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Tài khoản của bạn được bảo vệ bởi Auth0. Để thay đổi mật khẩu hoặc 
-                    cài đặt xác thực hai yếu tố, vui lòng truy cập Auth0.
+                    Bạn đăng nhập bằng Google. Mật khẩu và xác thực hai lớp được quản lý
+                    trong tài khoản Google của bạn.
                   </p>
                   <Button variant="outline" asChild>
-                    <a href="https://auth0.com" target="_blank" rel="noopener noreferrer">
-                      Quản lý bảo mật trên Auth0
+                    <a href="https://myaccount.google.com/security" target="_blank" rel="noopener noreferrer">
+                      Mở cài đặt bảo mật Google
                     </a>
                   </Button>
                 </div>
