@@ -1,3 +1,4 @@
+import { USE_MOCK } from "@/mocks/install";
 import { queryApi } from "@/lib/api";
 import { queryClient } from "@/lib/query-client";
 import imageCompression from "browser-image-compression";
@@ -14,9 +15,10 @@ type UploadImageInput = {
 };
 
 export function useUploadConfig() {
+  // Khi chạy mock, ảnh không thực sự lên Cloudinary (src/mocks/install.ts giả lập).
   return {
-    cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
-    uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
+    cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || (USE_MOCK ? "mock" : undefined),
+    uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || (USE_MOCK ? "mock" : undefined),
   };
 }
 

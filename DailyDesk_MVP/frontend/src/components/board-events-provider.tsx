@@ -1,3 +1,4 @@
+import { USE_MOCK } from "@/mocks/install";
 import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 import { useAtomValue } from "jotai";
@@ -31,7 +32,8 @@ export function BoardEventsProvider({
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (!boardId || !accessToken || !queryClient) {
+    // Backend giả không có luồng sự kiện realtime.
+    if (USE_MOCK || !boardId || !accessToken || !queryClient) {
       return;
     }
 

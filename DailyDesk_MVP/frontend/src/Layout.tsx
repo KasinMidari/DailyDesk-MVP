@@ -6,7 +6,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import PageLoader from "./components/full-page-loader";
-import { Chatbox } from "@/components/chatbox";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
 import { Toaster } from "@/components/ui/sonner";
@@ -47,7 +46,6 @@ export default function Layout() {
             </Suspense>
           </ErrorBoundary>
         </main>
-        <Chatbox />
       </SidebarProvider>
     </Providers>
   );

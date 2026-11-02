@@ -17,7 +17,7 @@ import {
 } from "@/hooks/use-board";
 import PageLoader from "./components/full-page-loader";
 import { useUploadImage } from "@/hooks/use-image";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@/lib/auth";
 
 type BoardToEdit = {
   id: string;

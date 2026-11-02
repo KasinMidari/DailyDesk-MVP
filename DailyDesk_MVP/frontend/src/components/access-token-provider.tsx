@@ -1,6 +1,6 @@
 import { accessTokenAtom } from "@/stores/access-token";
 import { getAccessTokenFnAtom } from "@/stores/auth";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@/lib/auth";
 import { useAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import LandingPage from "./landing-page";

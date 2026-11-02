@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient, useQueries } from "@tanstack/rea
 import api from "@/lib/api";
 import { uuidv7 } from "uuidv7";
 import { useMembers } from "@/hooks/use-member";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@/lib/auth";
 
 export interface Label {
   id: string;

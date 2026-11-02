@@ -28,7 +28,7 @@ import { KanbanColumn } from "./KanbanColumn";
 import { BoardHeaderBar } from "./BoardHeaderBar";
 import { EditBoardDialog } from "@/components/edit-board-dialog";
 import { cardMatchesFilters, emptyFilterState, type FilterState } from "@/components/board-filter-popover";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@/lib/auth";
 import { toast } from "sonner";
 import { useSearchParams, useParams } from "react-router";
 import { BoardEventsProvider } from "@/components/board-events-provider";

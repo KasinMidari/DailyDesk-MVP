@@ -1,3 +1,4 @@
+import getConfig from "@/lib/config";
 import createClient, { type Middleware } from "openapi-fetch";
 import type { paths } from "@/lib/generated/api-schema";
 import store from "@/stores/store";
@@ -5,7 +6,11 @@ import { accessTokenAtom } from "@/stores/access-token";
 import { getAccessTokenFnAtom } from "@/stores/auth";
 import createQueryClient from "openapi-react-query";
 
-const api = createClient<paths>({ baseUrl: "http://localhost:3000" });
+const api = createClient<paths>({
+  baseUrl: getConfig().backendUrl,
+  // Gọi qua window.fetch tại thời điểm request để backend giả (src/mocks) chặn được.
+  fetch: (request) => globalThis.fetch(request),
+});
 const queryApi = createQueryClient(api);
 
 const accessTokenInjectMiddleware: Middleware = {

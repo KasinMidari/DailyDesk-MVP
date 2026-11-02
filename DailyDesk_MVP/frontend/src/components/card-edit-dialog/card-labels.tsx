@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import type { Card, Label } from "@/types/card";
 import { cn } from "@/lib/utils";
 import { useBoardLabels, useCreateLabel, useUpdateLabel } from "@/hooks/use-label";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@/lib/auth";
 import { toast } from "sonner";
 
 interface CardLabelsProps {

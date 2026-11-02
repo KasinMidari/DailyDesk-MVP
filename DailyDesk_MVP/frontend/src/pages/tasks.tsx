@@ -1,5 +1,6 @@
+import getConfig from "@/lib/config";
 import { useQuery } from "@tanstack/react-query";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@/lib/auth";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -90,7 +91,7 @@ export default function TasksPage() {
           throw new Error("No access token available");
         }
 
-        const response = await fetch("http://localhost:3000/boards/cards/all", {
+        const response = await fetch(`${getConfig().backendUrl}/boards/cards/all`, {
           headers: {
             "Authorization": `Bearer ${accessToken}`,
             "Content-Type": "application/json",

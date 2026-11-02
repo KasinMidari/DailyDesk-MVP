@@ -1,4 +1,4 @@
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@/lib/auth";
 import Home from "./Home";
 import LandingPage from "./components/landing-page";
 
