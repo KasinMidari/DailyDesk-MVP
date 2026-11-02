@@ -265,7 +265,7 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {dialogMode === "create" ? "Create Label" : "Edit Label"}
+              {dialogMode === "create" ? "Tạo nhãn" : "Sửa nhãn"}
             </DialogTitle>
             <DialogDescription>
               {dialogMode === "create"
@@ -300,7 +300,7 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
                   onClick={() => setShowColorPicker(!showColorPicker)}
                 >
                   <Palette className="h-3 w-3 mr-1" />
-                  {showColorPicker ? "Presets" : "Custom"}
+                  {showColorPicker ? "Có sẵn" : "Tuỳ chỉnh"}
                 </Button>
               </div>
 
@@ -355,7 +355,7 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
             </Button>
             <Button onClick={handleSave} disabled={isPending}>
               {isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              {dialogMode === "create" ? "Create" : "Save"}
+              {dialogMode === "create" ? "Tạo" : "Lưu"}
             </Button>
           </DialogFooter>
         </DialogContent>

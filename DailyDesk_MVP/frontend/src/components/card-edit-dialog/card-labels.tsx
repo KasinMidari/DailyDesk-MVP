@@ -193,7 +193,7 @@ export function CardLabels({ card, onUpdate, boardId, isOpen: controlledIsOpen, 
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <h4 className="font-semibold flex-1 text-center">{isCreatingNew ? "Create Label" : "Edit Label"}</h4>
+        <h4 className="font-semibold flex-1 text-center">{isCreatingNew ? "Tạo nhãn" : "Sửa nhãn"}</h4>
         <Button
           variant="ghost"
           size="icon"
@@ -243,7 +243,7 @@ export function CardLabels({ card, onUpdate, boardId, isOpen: controlledIsOpen, 
       </div>
 
       <Button onClick={handleSaveEdit} size="sm" className="w-full" disabled={isCreatingNew && !editLabelName.trim()}>
-        {isCreatingNew ? "Create" : "Save"}
+        {isCreatingNew ? "Tạo" : "Lưu"}
       </Button>
     </div>
   ) : (

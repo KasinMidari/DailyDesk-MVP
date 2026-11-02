@@ -1,3 +1,4 @@
+import CardMetaControls from "@/features/tasks/card-meta-controls";
 import { SHOW_COLLABORATION } from "@/lib/features";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -786,7 +787,7 @@ function InnerDialog({
                 triggerButton={
                   <Button variant="outline" size="sm" className="h-8">
                     <UserPlus className="h-4 w-4 mr-1" />
-                    Members {card.members && isCreateMode && card.members.length > 0 && `(${card.members.length})`}
+                    Thành viên {card.members && isCreateMode && card.members.length > 0 && `(${card.members.length})`}
                   </Button>
                 }
               />}
@@ -809,7 +810,7 @@ function InnerDialog({
                 <PopoverTrigger asChild>
                   <Button variant="outline" size="sm" className="h-8">
                     <Paperclip className="h-4 w-4 mr-1" />
-                    Attachment {localCard.attachments && localCard.attachments.length > 0 && `(${localCard.attachments.length})`}
+                    Đính kèm {localCard.attachments && localCard.attachments.length > 0 && `(${localCard.attachments.length})`}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
@@ -906,11 +907,20 @@ function InnerDialog({
                 onClick={() => handleUpdate({ isTemplate: !localCard.isTemplate })}
               >
                 <LayoutTemplate className="h-4 w-4 mr-1" />
-                {localCard.isTemplate ? "Template" : "Make template"}
+                {localCard.isTemplate ? "Mẫu" : "Lưu làm mẫu"}
               </Button>
             </div>
 
            
+
+            {!isCreateMode && localCard.id && boardId && (
+              <CardMetaControls
+                boardId={boardId}
+                cardId={localCard.id}
+                listId={localCard.listId}
+                priority={(card as { priority?: "high" | "medium" | "low" | null } | undefined)?.priority}
+              />
+            )}
 
             {/* Labels display - only show if has labels */}
             {localCard.labels && localCard.labels.length > 0 && (
@@ -934,7 +944,7 @@ function InnerDialog({
                       onClick={() => setIsPillButtonDateOpen(true)}
                     >
                       <Clock className="h-3.5 w-3.5" />
-                      <span className="text-sm">Start: {formatDueDateVN(localCard.startDate)}</span>
+                      <span className="text-sm">Bắt đầu: {formatDueDateVN(localCard.startDate)}</span>
                       <ChevronDown className="h-3.5 w-3.5 ml-1" />
                     </Button>
                   )}
@@ -946,7 +956,7 @@ function InnerDialog({
                       onClick={() => setIsPillButtonDateOpen(true)}
                     >
                       <Clock className="h-3.5 w-3.5" />
-                      <span className="text-sm">Due: {formatDueDateVN(localCard.dueAt)}</span>
+                      <span className="text-sm">Hạn: {formatDueDateVN(localCard.dueAt)}</span>
                       {localCard.repeatFrequency && <Repeat className="h-3.5 w-3.5 opacity-70" />}
                       <ChevronDown className="h-3.5 w-3.5 ml-1" />
                     </Button>

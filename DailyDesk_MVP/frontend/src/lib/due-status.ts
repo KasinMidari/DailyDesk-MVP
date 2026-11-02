@@ -23,7 +23,7 @@ export function getDueStatus(
   if (dueComplete) {
     return {
       status: "complete",
-      label: "Complete",
+      label: "Đã xong",
       color: "success",
     };
   }
@@ -31,7 +31,7 @@ export function getDueStatus(
   if (diff < 0) {
     return {
       status: "overdue",
-      label: "Overdue",
+      label: "Quá hạn",
       color: "destructive",
     };
   }
@@ -39,7 +39,7 @@ export function getDueStatus(
   if (diff <= HOURS_24) {
     return {
       status: "dueSoon",
-      label: "Due soon",
+      label: "Sắp đến hạn",
       color: "warning",
     };
   }
@@ -59,8 +59,6 @@ export function formatDueDate(dueAt: Date | string | null | undefined): string {
   const isToday = date.toDateString() === now.toDateString();
   const isSameYear = date.getFullYear() === now.getFullYear();
 
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const month = months[date.getMonth()];
   const day = date.getDate();
   const hours = date.getHours().toString().padStart(2, "0");
   const minutes = date.getMinutes().toString().padStart(2, "0");
@@ -68,34 +66,34 @@ export function formatDueDate(dueAt: Date | string | null | undefined): string {
   const hasTime = hours !== "00" || minutes !== "00";
 
   if (isToday && hasTime) {
-    return `Today at ${hours}:${minutes}`;
+    return `Hôm nay, ${hours}:${minutes}`;
   }
 
   if (isToday) {
-    return "Today";
+    return "Hôm nay";
   }
 
-  let result = `${month} ${day}`;
+  let result = `${day} thg ${date.getMonth() + 1}`;
 
   if (!isSameYear) {
     result += `, ${date.getFullYear()}`;
   }
 
   if (hasTime) {
-    result += ` at ${hours}:${minutes}`;
+    result += `, ${hours}:${minutes}`;
   }
 
   return result;
 }
 
 export const REMINDER_OPTIONS = [
-  { value: null, label: "None" },
-  { value: 1, label: "1 minute before" },
-  { value: 5, label: "5 minutes before" },
-  { value: 10, label: "10 minutes before" },
-  { value: 15, label: "15 minutes before" },
-  { value: 30, label: "30 minutes before" },
-  { value: 60, label: "1 hour before" },
-  { value: 120, label: "2 hours before" },
-  { value: 1440, label: "1 day before" },
+  { value: null, label: "Không nhắc" },
+  { value: 1, label: "Trước 1 phút" },
+  { value: 5, label: "Trước 5 phút" },
+  { value: 10, label: "Trước 10 phút" },
+  { value: 15, label: "Trước 15 phút" },
+  { value: 30, label: "Trước 30 phút" },
+  { value: 60, label: "Trước 1 giờ" },
+  { value: 120, label: "Trước 2 giờ" },
+  { value: 1440, label: "Trước 1 ngày" },
 ] as const;

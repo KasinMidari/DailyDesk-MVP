@@ -1,3 +1,4 @@
+import { vi } from "date-fns/locale";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -237,7 +238,7 @@ export function CardComments({
           className="w-full justify-start text-muted-foreground hover:text-foreground"
         >
           <Activity className="mr-2 h-4 w-4" />
-          {showActivities ? "Hide" : "Show"} Activity
+          {showActivities ? "Ẩn hoạt động" : "Hiện hoạt động"}
         </Button>
       )}
 
@@ -281,7 +282,7 @@ export function CardComments({
                         </span>
                         <span className="text-xs text-muted-foreground flex-shrink-0">
                           {formatDistanceToNow(new Date(comment.createdAt), {
-                            addSuffix: true,
+                            addSuffix: true, locale: vi,
                           })}
                         </span>
                       </div>
@@ -379,7 +380,7 @@ export function CardComments({
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {formatDistanceToNow(new Date(activity.createdAt), {
-                          addSuffix: true,
+                          addSuffix: true, locale: vi,
                         })}
                       </p>
                     </div>

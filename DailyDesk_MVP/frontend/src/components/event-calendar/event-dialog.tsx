@@ -215,7 +215,7 @@ export function EventDialog({
     <Dialog onOpenChange={(open) => !open && onClose()} open={isOpen}>
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{event?.id ? "Edit Card" : "Create Card"}</DialogTitle>
+          <DialogTitle>{event?.id ? "Sửa task" : "Tạo task"}</DialogTitle>
           <DialogDescription className="sr-only">
             {event?.id
               ? "Edit the details of this card"
@@ -267,7 +267,7 @@ export function EventDialog({
                 triggerButton={
                   <Button variant="outline" size="sm" className="h-8">
                     <Tag className="h-4 w-4 mr-1" />
-                    Labels {labels.length > 0 && `(${labels.length})`}
+                    Nhãn {labels.length > 0 && `(${labels.length})`}
                   </Button>
                 }
               />
@@ -280,7 +280,7 @@ export function EventDialog({
                 triggerButton={
                   <Button variant="outline" size="sm" className="h-8">
                     <UserPlus className="h-4 w-4 mr-1" />
-                    Members {members.length > 0 && `(${members.length})`}
+                    Thành viên {members.length > 0 && `(${members.length})`}
                   </Button>
                 }
               />

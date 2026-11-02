@@ -107,10 +107,10 @@ export function CardRecurrence({
       case "weekly":
         return "Weekly";
       case "monthly_date":
-        return "Monthly on due date";
+        return "Hằng tháng vào due date";
       case "monthly_day":
         if (card.recurrenceDay && card.recurrenceWeekday !== undefined) {
-          return `Monthly on ${ORDINALS[card.recurrenceDay - 1]} ${
+          return `Hằng tháng vào ${ORDINALS[card.recurrenceDay - 1]} ${
             WEEKDAYS[card.recurrenceWeekday]
           }`;
         }
@@ -239,7 +239,7 @@ export function CardRecurrence({
             <Popover open={isOpen} onOpenChange={setIsOpen}>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-6 px-2">
-                  {recurrenceLabel ? "Edit" : "Add"}
+                  {recurrenceLabel ? "Sửa" : "Thêm"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">

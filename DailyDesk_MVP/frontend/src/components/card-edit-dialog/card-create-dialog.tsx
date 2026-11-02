@@ -355,7 +355,7 @@ function InnerCardCreateDialog({
                   setUploadProgress({
                     current: ++currentStep,
                     total: totalSteps,
-                    step: `Adding checklist item ${i + 1}/${tempChecklistItems.length}...`,
+                    step: `Đang thêm việc con ${i + 1}/${tempChecklistItems.length}...`,
                   });
 
                   const { error } = await api.POST("/boards/{boardId}/cards/{cardId}/checklist-items", {
@@ -382,7 +382,7 @@ function InnerCardCreateDialog({
                   setUploadProgress({
                     current: ++currentStep,
                     total: totalSteps,
-                    step: `Uploading attachment ${i + 1}/${tempAttachments.length}...`,
+                    step: `Đang tải tệp ${i + 1}/${tempAttachments.length}...`,
                   });
 
                   if (attachment.file) {
@@ -671,7 +671,7 @@ function InnerCardCreateDialog({
               triggerButton={
                 <Button variant="outline" size="sm" className="h-8">
                   <Tag className="h-4 w-4 mr-1" />
-                  Labels {labels.length > 0 && `(${labels.length})`}
+                  Nhãn {labels.length > 0 && `(${labels.length})`}
                 </Button>
               }
             />
@@ -684,7 +684,7 @@ function InnerCardCreateDialog({
               triggerButton={
                 <Button variant="outline" size="sm" className="h-8">
                   <UserPlus className="h-4 w-4 mr-1" />
-                  Members {members.length > 0 && `(${members.length})`}
+                  Thành viên {members.length > 0 && `(${members.length})`}
                 </Button>
               }
             />
@@ -707,7 +707,7 @@ function InnerCardCreateDialog({
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8">
                   <Wallpaper className="h-4 w-4 mr-1" />
-                  Cover {hasCover && "(set)"}
+                  Ảnh bìa {hasCover && "(đã đặt)"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent side="bottom" align="start" className="w-[400px] p-4">
@@ -734,7 +734,7 @@ function InnerCardCreateDialog({
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8">
                   <CheckSquare className="h-4 w-4 mr-1" />
-                  Checklist {tempChecklistItems.length > 0 && `(${tempChecklistItems.length})`}
+                  Việc con {tempChecklistItems.length > 0 && `(${tempChecklistItems.length})`}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-80">
@@ -774,7 +774,7 @@ function InnerCardCreateDialog({
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8">
                   <Paperclip className="h-4 w-4 mr-1" />
-                  Attachment {tempAttachments.length > 0 && `(${tempAttachments.length})`}
+                  Đính kèm {tempAttachments.length > 0 && `(${tempAttachments.length})`}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-80">
@@ -871,7 +871,7 @@ function InnerCardCreateDialog({
                     onClick={() => setIsPillButtonDateOpen(true)}
                   >
                     <Clock className="h-3.5 w-3.5" />
-                    <span className="text-sm">Start: {formatDueDateVN(startDate)}</span>
+                    <span className="text-sm">Bắt đầu: {formatDueDateVN(startDate)}</span>
                     <ChevronDown className="h-3.5 w-3.5 ml-1" />
                   </Button>
                 )}
@@ -883,7 +883,7 @@ function InnerCardCreateDialog({
                     onClick={() => setIsPillButtonDateOpen(true)}
                   >
                     <Clock className="h-3.5 w-3.5" />
-                    <span className="text-sm">Due: {formatDueDateVN(dueAt)}</span>
+                    <span className="text-sm">Hạn: {formatDueDateVN(dueAt)}</span>
                     {repeatFrequency && <Repeat className="h-3.5 w-3.5 opacity-70" />}
                     <ChevronDown className="h-3.5 w-3.5 ml-1" />
                   </Button>

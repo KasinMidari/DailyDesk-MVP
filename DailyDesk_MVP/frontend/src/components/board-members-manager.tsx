@@ -118,7 +118,7 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
           setRole("member");
         },
         onError: (error) => {
-          toast.error(`Failed to add member: ${error.message}`);
+          toast.error(`Không thêm được thành viên: ${error.message}`);
         },
       }
     );
@@ -168,7 +168,7 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
               <DialogHeader>
                 <DialogTitle>Thêm thành viên mới</DialogTitle>
                 <DialogDescription>
-                  Search and invite users to join this board
+                  Tìm và mời người khác vào board
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">

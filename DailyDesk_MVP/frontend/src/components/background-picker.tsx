@@ -99,7 +99,7 @@ export function BackgroundPicker() {
                 <button
                   key={c}
                   type="button"
-                  aria-label={`Select background ${index + 1}`}
+                  aria-label={`Chọn ảnh nền ${index + 1}`}
                   onClick={async () => {
                     setSelectedBGIndex(index);
                     handleFilePick(await imageUrlToFile(c));

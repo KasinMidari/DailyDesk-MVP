@@ -344,7 +344,7 @@ export function CardDates({
       });
 
       onUpdate({ dueComplete: newCompleteStatus });
-      toast.success(newCompleteStatus ? "Marked as complete" : "Marked as incomplete");
+      toast.success(newCompleteStatus ? "Đã đánh dấu xong" : "Đã bỏ đánh dấu xong");
     } catch (error) {
       setIsDueComplete(!newCompleteStatus);
       toast.error("Không đổi được trạng thái");
@@ -586,7 +586,7 @@ export function CardDates({
             className="flex-1 h-8"
             disabled={!selectedDate || updateDueMutation.isPending}
           >
-            {updateDueMutation.isPending ? "Saving..." : "Save"}
+            {updateDueMutation.isPending ? "Đang lưu…" : "Lưu"}
           </Button>
           {card.dueAt && (
             <Button
@@ -596,7 +596,7 @@ export function CardDates({
               className="flex-1 h-8"
               disabled={clearDueMutation.isPending}
             >
-              {clearDueMutation.isPending ? "Removing..." : "Remove"}
+              {clearDueMutation.isPending ? "Đang gỡ…" : "Gỡ"}
             </Button>
           )}
         </div>
@@ -892,7 +892,7 @@ export function CardDates({
               className="flex-1"
               disabled={updateDueMutation.isPending}
             >
-              {updateDueMutation.isPending ? "Saving..." : "Save"}
+              {updateDueMutation.isPending ? "Đang lưu…" : "Lưu"}
             </Button>
             <Button
               onClick={handleRemove}
@@ -900,7 +900,7 @@ export function CardDates({
               className="flex-1"
               disabled={clearDueMutation.isPending}
             >
-              {clearDueMutation.isPending ? "Removing..." : "Remove"}
+              {clearDueMutation.isPending ? "Đang gỡ…" : "Gỡ"}
             </Button>
           </div>
           </div>
@@ -953,7 +953,7 @@ export function CardDates({
                   className="h-6 px-2"
                   onClick={handleToggleComplete}
                 >
-                  {isDueComplete ? "Mark incomplete" : "Mark complete"}
+                  {isDueComplete ? "Bỏ đánh dấu xong" : "Đánh dấu xong"}
                 </Button>
               </div>
             ) : null}
@@ -961,7 +961,7 @@ export function CardDates({
             <Popover open={isOpen} onOpenChange={setIsOpen}>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-6 px-2">
-                  {card.dueAt ? "Edit" : "Add"}
+                  {card.dueAt ? "Sửa" : "Thêm"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start" side="bottom">

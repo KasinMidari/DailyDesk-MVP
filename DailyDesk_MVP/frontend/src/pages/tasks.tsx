@@ -69,7 +69,7 @@ export default function TasksPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("dueDate");
-  const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
+  const viewMode = "calendar" as "list" | "calendar";
   const { mutate: updateCard } = useUpdateCard();
 
   const { data: tasks, isLoading, error, refetch } = useQuery({
@@ -101,7 +101,7 @@ export default function TasksPage() {
         if (!response.ok) {
           const errorText = await response.text();
           console.error("Fetch error:", response.status, errorText);
-          throw new Error(`Failed to fetch tasks: ${response.status}`);
+          throw new Error(`Không tải được task: ${response.status}`);
         }
         
         const data = await response.json();
@@ -265,78 +265,18 @@ export default function TasksPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">Task</h1>
-            <p className="text-muted-foreground">
-              Xem task của mọi board theo lịch
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant={viewMode === "list" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setViewMode("list")}
-            >
-              <List className="w-4 h-4 mr-2" />
-              Danh sách
-            </Button>
-            <Button
-              variant={viewMode === "calendar" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setViewMode("calendar")}
-            >
-              <CalendarDays className="w-4 h-4 mr-2" />
-              Lịch
-            </Button>
-          </div>
+    <div className="mx-auto w-full max-w-6xl px-4 pt-6 pb-16 sm:px-6 lg:px-8">
+      <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-[1.75rem]">Lịch</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Task có hạn chót của mọi board, xếp theo ngày. Kéo task sang ngày khác để đổi hạn.
+          </p>
         </div>
-      </div>
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
-            placeholder="Tìm task…"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-          />
-        </div>
-
-        <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-full md:w-[180px]">
-            <Filter className="w-4 h-4 mr-2" />
-            <SelectValue placeholder="Sắp xếp theo" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="dueDate">Hạn chót</SelectItem>
-            <SelectItem value="name">Tên</SelectItem>
-            <SelectItem value="board">Board</SelectItem>
-            <SelectItem value="created">Ngày tạo</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Task Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <Card className="p-4">
-          <div className="text-sm text-muted-foreground mb-1">Đang chờ</div>
-          <div className="text-2xl font-bold text-blue-600">
-            {tasks?.filter((t) => !t.completed).length || 0}
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-sm text-muted-foreground mb-1">Quá hạn</div>
-          <div className="text-2xl font-bold text-red-600">
-            {tasks?.filter((t) => {
-              const dueStatus = getDueStatus(t.dueAt, t.dueComplete ?? undefined);
-              return dueStatus.status === "overdue";
-            }).length || 0}
-          </div>
-        </Card>
-      </div>
+        <Link to="/" className="text-sm font-medium text-primary underline-offset-4 hover:underline">
+          Xem dạng danh sách
+        </Link>
+      </header>
 
       {/* Task List or Calendar View */}
       {isLoading ? (
@@ -345,15 +285,15 @@ export default function TasksPage() {
         </div>
       ) : error ? (
         <div className="flex items-center justify-center py-12">
-          <div className="text-lg text-red-500">Không tải được task</div>
+          <div className="text-lg text-destructive">Không tải được task</div>
         </div>
       ) : filteredAndSortedTasks.length === 0 ? (
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="text-lg text-muted-foreground mb-2">
               {searchQuery || filterStatus !== "all"
-                ? "No tasks match your filters"
-                : "No tasks yet"}
+                ? "Không có task nào khớp bộ lọc"
+                : "Chưa có task nào có hạn chót"}
             </div>
             {!searchQuery && filterStatus === "all" && (
               <p className="text-sm text-muted-foreground">

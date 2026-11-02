@@ -285,7 +285,7 @@ export default function CheckList({
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-semibold">Việc con</h3>
-          <p className="text-xs text-muted-foreground">{completedCount}/{items.length} completed</p>
+          <p className="text-xs text-muted-foreground">{completedCount}/{items.length} đã xong</p>
         </div>
         <div className="flex items-center gap-2">
           {!creating ? (

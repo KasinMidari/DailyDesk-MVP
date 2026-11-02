@@ -122,7 +122,7 @@ export function CardActionsSidebar({
              onClick={onMakeTemplateClick}
           >
             <LayoutTemplate className="w-4 h-4 mr-2" />
-            {isTemplate ? "Template" : "Make template"}
+            {isTemplate ? "Mẫu" : "Lưu làm mẫu"}
           </Button>
 
           <Button

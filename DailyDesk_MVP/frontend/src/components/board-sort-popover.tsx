@@ -66,7 +66,7 @@ export function BoardSortPopover({
           </PopoverTrigger>
         </TooltipTrigger>
         <TooltipContent>
-          {hasActiveSort ? `Sorted by ${activeOption?.label}` : "Sort"}
+          {hasActiveSort ? `Sắp xếp theo ${activeOption?.label}` : "Sort"}
         </TooltipContent>
       </Tooltip>
       <PopoverContent className="w-64 p-0" align="end">
@@ -139,7 +139,7 @@ export function BoardSortPopover({
                     onClick={() => onSortChange(option.id)}
                   >
                     <Icon className="h-3.5 w-3.5" />
-                    <span>{option.id === "dueDate-asc" ? "Earliest" : "Latest"}</span>
+                    <span>{option.id === "dueDate-asc" ? "Sớm nhất" : "Muộn nhất"}</span>
                   </button>
                 );
               })}
@@ -170,7 +170,7 @@ export function BoardSortPopover({
                     onClick={() => onSortChange(option.id)}
                   >
                     <Icon className="h-3.5 w-3.5" />
-                    <span>{option.id === "createdAt-asc" ? "Oldest" : "Newest"}</span>
+                    <span>{option.id === "createdAt-asc" ? "Cũ nhất" : "Mới nhất"}</span>
                   </button>
                 );
               })}

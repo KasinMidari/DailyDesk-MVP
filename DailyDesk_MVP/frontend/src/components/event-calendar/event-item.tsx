@@ -2,7 +2,8 @@
 
 import type { DraggableAttributes } from "@dnd-kit/core";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import { differenceInMinutes, format, getMinutes, isPast } from "date-fns";
+import { differenceInMinutes, getMinutes, isPast } from "date-fns";
+import { format } from "@/lib/date";
 import { useMemo } from "react";
 import { CheckCircle2, Repeat } from "lucide-react";
 
@@ -21,7 +22,7 @@ const doneEventClasses =
 // 'a' - am/pm
 // ':mm' - minutes with leading zero (only if the token 'mm' is present)
 const formatTimeWithOptionalMinutes = (date: Date) => {
-  return format(date, getMinutes(date) === 0 ? "ha" : "h:mma").toLowerCase();
+  return format(date, getMinutes(date) === 0 ? "H'h'" : "H:mm").toLowerCase();
 };
 
 interface EventWrapperProps {

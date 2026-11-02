@@ -37,7 +37,7 @@ export function CardPreview({
           <div className="flex items-center gap-2 text-muted-foreground">
             <CalendarIcon className="h-4 w-4" />
             <span>
-              Start: {format(new Date(startDate), "MMM dd, yyyy")}
+              Bắt đầu: {format(new Date(startDate), "MMM dd, yyyy")}
             </span>
           </div>
         )}

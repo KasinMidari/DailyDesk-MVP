@@ -1,6 +1,7 @@
 "use client";
 
-import { format, isSameDay } from "date-fns";
+import { isSameDay } from "date-fns";
+import { format } from "@/lib/date";
 import { XIcon } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 

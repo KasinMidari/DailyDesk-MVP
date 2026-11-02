@@ -1,17 +1,8 @@
 "use client";
 
 import { RiCalendarCheckLine } from "@remixicon/react";
-import {
-  addDays,
-  addMonths,
-  addWeeks,
-  endOfWeek,
-  format,
-  isSameMonth,
-  startOfWeek,
-  subMonths,
-  subWeeks,
-} from "date-fns";
+import { addDays, addMonths, addWeeks, endOfWeek, isSameMonth, startOfWeek, subMonths, subWeeks } from "date-fns";
+import { format } from "@/lib/date";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -46,6 +37,8 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+const VIEW_LABEL: Record<string, string> = { month: "Tháng", week: "Tuần", day: "Ngày", agenda: "Lịch trình" };
 
 export interface EventCalendarProps {
   events?: CalendarEvent[];
@@ -197,7 +190,7 @@ export function EventCalendar({
       onEventUpdate?.(event);
       // Show toast notification when an event is updated
       toast(`Event "${event.title}" updated`, {
-        description: format(new Date(event.start), "MMM d, yyyy"),
+        description: format(new Date(event.start), "d/M/yyyy"),
         position: "bottom-left",
       });
     } else {
@@ -207,7 +200,7 @@ export function EventCalendar({
       });
       // Show toast notification when an event is added
       toast(`Event "${event.title}" added`, {
-        description: format(new Date(event.start), "MMM d, yyyy"),
+        description: format(new Date(event.start), "d/M/yyyy"),
         position: "bottom-left",
       });
     }
@@ -224,7 +217,7 @@ export function EventCalendar({
     // Show toast notification when an event is deleted
     if (deletedEvent) {
       toast(`Event "${deletedEvent.title}" deleted`, {
-        description: format(new Date(deletedEvent.start), "MMM d, yyyy"),
+        description: format(new Date(deletedEvent.start), "d/M/yyyy"),
         position: "bottom-left",
       });
     }
@@ -241,7 +234,7 @@ export function EventCalendar({
     toast(
       `Card "${updatedEvent.title}" from list "${listLabel}" moved to ${format(
         new Date(updatedEvent.start),
-        "MMM d, yyyy",
+        "d/M/yyyy",
       )}`,
       { position: "bottom-left", className: "text-base" },
     );
@@ -249,27 +242,27 @@ export function EventCalendar({
 
   const viewTitle = useMemo(() => {
     if (view === "month") {
-      return format(currentDate, "MMMM yyyy");
+      return format(currentDate, "'Tháng' M, yyyy");
     }
     if (view === "week") {
       const start = startOfWeek(currentDate, { weekStartsOn: 0 });
       const end = endOfWeek(currentDate, { weekStartsOn: 0 });
       if (isSameMonth(start, end)) {
-        return format(start, "MMMM yyyy");
+        return format(start, "'Tháng' M, yyyy");
       }
-      return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`;
+      return `${format(start, "d/M")} – ${format(end, "d/M/yyyy")}`;
     }
     if (view === "day") {
       return (
         <>
           <span aria-hidden="true" className="min-[480px]:hidden">
-            {format(currentDate, "MMM d, yyyy")}
+            {format(currentDate, "d/M/yyyy")}
           </span>
           <span aria-hidden="true" className="max-[479px]:hidden min-md:hidden">
-            {format(currentDate, "MMMM d, yyyy")}
+            {format(currentDate, "d 'tháng' M, yyyy")}
           </span>
           <span className="max-md:hidden">
-            {format(currentDate, "EEE MMMM d, yyyy")}
+            {format(currentDate, "EEEE, d 'tháng' M, yyyy")}
           </span>
         </>
       );
@@ -280,11 +273,11 @@ export function EventCalendar({
       const end = addDays(currentDate, AgendaDaysToShow - 1);
 
       if (isSameMonth(start, end)) {
-        return format(start, "MMMM yyyy");
+        return format(start, "'Tháng' M, yyyy");
       }
-      return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`;
+      return `${format(start, "d/M")} – ${format(end, "d/M/yyyy")}`;
     }
-    return format(currentDate, "MMMM yyyy");
+    return format(currentDate, "'Tháng' M, yyyy");
   }, [currentDate, view]);
 
   return (
@@ -345,12 +338,7 @@ export function EventCalendar({
               <DropdownMenuTrigger asChild>
                 <Button className="gap-1.5 max-[479px]:h-8" variant="outline">
                   <span>
-                    <span aria-hidden="true" className="min-[480px]:hidden">
-                      {view.charAt(0).toUpperCase()}
-                    </span>
-                    <span className="max-[479px]:sr-only">
-                      {view.charAt(0).toUpperCase() + view.slice(1)}
-                    </span>
+                    {VIEW_LABEL[view]}
                   </span>
                   <ChevronDownIcon
                     aria-hidden="true"
@@ -392,7 +380,7 @@ export function EventCalendar({
                 size={16}
               />
               <span className="max-sm:sr-only">
-                {createLabel || "New event"}
+                {createLabel || "Thêm task"}
               </span>
             </Button>
           </div>

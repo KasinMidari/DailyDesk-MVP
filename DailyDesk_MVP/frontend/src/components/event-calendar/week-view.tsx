@@ -1,21 +1,7 @@
 "use client";
 
-import {
-  addHours,
-  areIntervalsOverlapping,
-  differenceInMinutes,
-  eachDayOfInterval,
-  eachHourOfInterval,
-  endOfWeek,
-  format,
-  getHours,
-  getMinutes,
-  isBefore,
-  isSameDay,
-  isToday,
-  startOfDay,
-  startOfWeek,
-} from "date-fns";
+import { addHours, areIntervalsOverlapping, differenceInMinutes, eachDayOfInterval, eachHourOfInterval, endOfWeek, getHours, getMinutes, isBefore, isSameDay, isToday, startOfDay, startOfWeek } from "date-fns";
+import { format } from "@/lib/date";
 import type React from "react";
 import { useMemo } from "react";
 
@@ -313,7 +299,7 @@ export function WeekView({
             >
               {index > 0 && (
                 <span className="flex absolute left-0 -top-3 justify-end items-center w-16 max-w-full h-6 sm:text-xs bg-background pe-2 text-[10px] text-muted-foreground/70 sm:pe-4">
-                  {format(hour, "h a")}
+                  {format(hour, "HH:mm")}
                 </span>
               )}
             </div>

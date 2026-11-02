@@ -80,7 +80,7 @@ function Field({
 const inputClass =
   "h-10 w-full rounded-md border border-input bg-card px-3 text-[15px] shadow-[inset_0_1px_0_rgb(0_0_0/0.02)] outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground/80 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/25 aria-invalid:border-destructive aria-invalid:ring-destructive/20";
 
-function Segmented<T extends string>({
+export function Segmented<T extends string>({
   name,
   value,
   options,
