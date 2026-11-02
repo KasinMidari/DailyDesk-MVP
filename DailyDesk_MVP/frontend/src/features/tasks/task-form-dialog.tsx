@@ -1,5 +1,9 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { CalendarDays, Loader2 } from "lucide-react";
+import { vi } from "date-fns/locale";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { formatShort } from "@/lib/date";
 import {
   Dialog,
   DialogContent,
@@ -35,6 +39,14 @@ type Props = {
 };
 
 const PRIORITIES: Priority[] = ["high", "medium", "low"];
+
+const BASE_TIMES = [
+  ...Array.from({ length: 34 }, (_, i) => {
+    const m = 6 * 60 + i * 30; // 06:00 → 22:30
+    return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+  }),
+  "23:59",
+];
 
 function toLocalParts(iso: string | null) {
   if (!iso) return { date: "", time: "" };
@@ -151,6 +163,8 @@ export default function TaskFormDialog({
   const [status, setStatus] = useState<Status>(defaultStatus);
   const [boardId, setBoardId] = useState("");
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const TIME_OPTIONS = time && !BASE_TIMES.includes(time) ? [...BASE_TIMES, time].sort() : BASE_TIMES;
   const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
@@ -244,23 +258,51 @@ export default function TaskFormDialog({
                 Bỏ hạn
               </button>
             ) : "Không bắt buộc"}>
-              <div className="grid grid-cols-[1fr_8rem] gap-2">
-                <input
-                  id={`${id}-date`}
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  aria-invalid={!!errors.dueAt}
-                  className={cn(inputClass, "tabular")}
-                />
-                <input
-                  type="time"
+              <div className="grid grid-cols-[1fr_7.5rem] gap-2">
+                <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+                  <PopoverTrigger asChild>
+                    <button
+                      id={`${id}-date`}
+                      type="button"
+                      aria-invalid={!!errors.dueAt}
+                      className={cn(inputClass, "flex items-center gap-2 text-left tabular")}
+                    >
+                      <CalendarDays className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                      {date ? (
+                        formatShort(new Date(`${date}T00:00`))
+                      ) : (
+                        <span className="text-muted-foreground/80">Chọn ngày</span>
+                      )}
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent align="start" className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      locale={vi}
+                      weekStartsOn={1}
+                      selected={date ? new Date(`${date}T00:00`) : undefined}
+                      onSelect={(d) => {
+                        if (!d) return;
+                        setDate(toLocalParts(d.toISOString()).date);
+                        if (!time) setTime("17:00");
+                        setPickerOpen(false);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <select
                   aria-label="Giờ"
-                  value={time}
+                  value={time || "23:59"}
                   onChange={(e) => setTime(e.target.value)}
                   disabled={!date}
                   className={cn(inputClass, "tabular disabled:opacity-50")}
-                />
+                >
+                  {TIME_OPTIONS.map((t) => (
+                    <option key={t} value={t}>
+                      {t === "23:59" ? "Cuối ngày" : t}
+                    </option>
+                  ))}
+                </select>
               </div>
             </Field>
 

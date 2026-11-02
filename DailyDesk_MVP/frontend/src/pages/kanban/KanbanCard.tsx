@@ -1,3 +1,4 @@
+import { formatShort } from "@/lib/date";
 import {
   KanbanBoardCard,
   KanbanBoardCardTitle,
@@ -196,16 +197,11 @@ export function KanbanCard({
     };
   }, [normalizedCard.dueAt, normalizedCard.dueComplete, normalizedCard.repeatFrequency]);
 
-  const formatShortDateVN = (value: Date | string) => {
-    const date = typeof value === "string" ? new Date(value) : value;
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    return `${day} thg ${month}`;
-  };
+  const formatShortDateVN = (value: Date | string) => formatShort(value);
 
   const getDateRangeLabel = () => {
     if (normalizedCard.startDate && displayDueAt) {
-      return `${formatShortDateVN(normalizedCard.startDate)} - ${formatShortDateVN(displayDueAt)}`;
+      return `${formatShortDateVN(normalizedCard.startDate)} – ${formatShortDateVN(displayDueAt)}`;
     }
     if (displayDueAt) {
       return formatShortDateVN(displayDueAt);
@@ -213,7 +209,7 @@ export function KanbanCard({
     if (normalizedCard.startDate) {
       return formatShortDateVN(normalizedCard.startDate);
     }
-    return "Repeats";
+    return "Lặp lại";
   };
 
   const shouldShowDateRow =
@@ -279,7 +275,7 @@ export function KanbanCard({
                         <TooltipTrigger asChild>
                           <div
                             onClick={handleToggleComplete}
-                            className={`flex-shrink-0 cursor-pointer transition-opacity ${isDone ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                            className={`flex-shrink-0 cursor-pointer transition-opacity ${isDone ? "opacity-100" : "opacity-60 group-hover:opacity-100"}`}
                             role="checkbox"
                             aria-checked={isDone}
                             tabIndex={-1}
@@ -312,24 +308,22 @@ export function KanbanCard({
                 </div>
               </div>
             ) : normalizedCard.coverColor ? (
-              <div
-                className="relative w-full min-h-[100px] flex items-end rounded-md"
-                style={{ backgroundColor: normalizedCard.coverColor }}
-              >
+              <div className="relative flex w-full flex-col overflow-hidden rounded-md">
+                <div aria-hidden="true" className="-mx-3 -mt-3 mb-1 h-8" style={{ backgroundColor: normalizedCard.coverColor }} />
                 {normalizedCard.isTemplate && (
-                  <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-black/20 backdrop-blur-[1px] text-[10px] font-medium text-white shadow-sm">
+                  <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-card/90 text-[10px] font-medium text-foreground">
                     <LayoutTemplate className="h-3 w-3" />
                     Mẫu
                   </div>
                 )}
-                <div className="w-full bg-gradient-to-t from-black/70 to-transparent p-3 pt-8">
+                <div className="w-full pt-1">
                   <div className="flex items-center gap-2">
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div
                             onClick={handleToggleComplete}
-                            className={`flex-shrink-0 cursor-pointer transition-opacity ${isDone ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                            className={`flex-shrink-0 cursor-pointer transition-opacity ${isDone ? "opacity-100" : "opacity-60 group-hover:opacity-100"}`}
                             role="checkbox"
                             aria-checked={isDone}
                             tabIndex={-1}
@@ -337,7 +331,7 @@ export function KanbanCard({
                             <div className={`h-5 w-5 shrink-0 rounded-full border-2 ${
                               isDone
                                 ? 'bg-green-500 border-green-500 flex items-center justify-center'
-                                : 'border-white/70 hover:border-white'
+                                : 'border-muted-foreground/60 hover:border-foreground'
                             }`}>
                               {isDone && (
                                 <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -353,12 +347,12 @@ export function KanbanCard({
                       </Tooltip>
                     </TooltipProvider>
                     <div className="flex flex-col gap-1 min-w-0">
-                      <KanbanBoardCardTitle className={`text-white drop-shadow-sm line-clamp-2 ${normalizedCard.completed ? "line-through opacity-75" : ""}`}>
+                      <KanbanBoardCardTitle className={`line-clamp-2 ${normalizedCard.completed ? "line-through opacity-75" : ""}`}>
                         {normalizedCard.title}
                       </KanbanBoardCardTitle>
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-1">{shouldShowDateRow && <DateRow className="text-white/80 " />}<PriorityMark className="text-white/80 " /></div>
+                  <div className="flex flex-wrap items-center gap-1">{shouldShowDateRow && <DateRow className="text-muted-foreground" />}<PriorityMark className="text-muted-foreground" /></div>
                 </div>
               </div>
             ) : (
@@ -375,7 +369,7 @@ export function KanbanCard({
                       <TooltipTrigger asChild>
                         <div
                           onClick={handleToggleComplete}
-                          className={`flex-shrink-0 cursor-pointer transition-opacity ${isDone ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                          className={`flex-shrink-0 cursor-pointer transition-opacity ${isDone ? "opacity-100" : "opacity-60 group-hover:opacity-100"}`}
                           role="checkbox"
                           aria-checked={isDone}
                           tabIndex={-1}

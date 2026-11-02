@@ -195,7 +195,7 @@ export default function Home() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-[1.75rem]">
-              Board của tôi
+              Board
             </h1>
             <p className="mt-1 text-muted-foreground">
               Sắp xếp việc học, việc làm và việc nhà
@@ -213,7 +213,7 @@ export default function Home() {
         </header>
 
         {/* Recent Boards Section (only show if there are recent boards) */}
-        {!searchTerm && recentBoards.length > 0 && (
+        {!searchTerm && recentBoards.length > 0 && allBoards.length > MAX_RECENT_BOARDS && (
           <section className="w-full">
             <div className="flex items-center gap-2 mb-3">
               <Clock className="w-5 h-5 text-muted-foreground" />
@@ -227,6 +227,7 @@ export default function Home() {
                   <BoardCard
                     id={board.id}
                     name={board.name}
+                  lists={(board as any).lists}
                     backgroundUrl={board.backgroundUrl ?? undefined}
                     backgroundColor={board.backgroundColor ?? undefined}
                     onEdit={() =>
@@ -278,11 +279,11 @@ export default function Home() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {/* Create New Board Card - Always visible */}
             <Card
-              className="flex flex-col justify-center items-start rounded-xl border-2 border-dashed border-border bg-card/50 transition-colors cursor-pointer hover:border-ring hover:bg-accent w-full min-h-[120px]"
+              className="mt-2.5 flex min-h-28 w-full cursor-pointer flex-col items-start justify-center rounded-xl border-2 border-dashed border-border bg-transparent shadow-none transition-colors hover:border-ring hover:bg-accent"
               onClick={() => setIsCreateDialogOpen(true)}
             >
               <CardContent className="w-full flex flex-col items-center gap-2">
-                <Plus className="mb-2 w-8 h-8 text-muted-foreground" />
+                <Plus className="size-5 text-muted-foreground" />
                 <p className="text-sm font-medium text-foreground">
                   Tạo board mới
                 </p>
@@ -294,6 +295,7 @@ export default function Home() {
                 <BoardCard
                   id={board.id}
                   name={board.name}
+                  lists={(board as any).lists}
                   backgroundUrl={board.backgroundUrl ?? undefined}
                   backgroundColor={board.backgroundColor ?? undefined}
                   onEdit={() =>
@@ -348,6 +350,7 @@ export default function Home() {
                   <BoardCard
                     id={board.id}
                     name={board.name}
+                  lists={(board as any).lists}
                     backgroundUrl={board.backgroundUrl ?? undefined}
                     backgroundColor={board.backgroundColor ?? undefined}
                     onEdit={() =>

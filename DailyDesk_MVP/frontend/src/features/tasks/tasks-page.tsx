@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { format, formatDistanceToNowStrict, isToday, isTomorrow } from "date-fns";
+import { format, formatDistanceToNowStrict } from "date-fns";
+import { formatDue } from "@/lib/date";
 import { vi } from "date-fns/locale";
 import { toast } from "sonner";
 import {
@@ -32,7 +33,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import {
   PRIORITY_LABEL,
@@ -69,13 +69,7 @@ const STATUS_SOFT: Record<Status, string> = {
   done: "bg-status-done-soft",
 };
 
-function dueText(iso: string) {
-  const d = new Date(iso);
-  const hm = format(d, "HH:mm");
-  if (isToday(d)) return `Hôm nay, ${hm}`;
-  if (isTomorrow(d)) return `Ngày mai, ${hm}`;
-  return format(d, "EEE d/M, HH:mm", { locale: vi });
-}
+const dueText = (iso: string) => formatDue(iso);
 
 function useFilters() {
   const [params, setParams] = useSearchParams();
@@ -132,7 +126,7 @@ function FolderTabs({
     ...STATUS_ORDER.map((s) => ({ key: s, label: STATUS_LABEL[s] })),
   ];
   return (
-    <div role="tablist" aria-label="Lọc theo trạng thái" className="-mb-px flex gap-1 overflow-x-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div role="tablist" aria-label="Lọc theo trạng thái" className="-mb-px grid grid-cols-4 gap-0.5 px-0.5 sm:flex sm:gap-1 sm:px-1">
       {tabs.map((t) => {
         const active = value === t.key;
         return (
@@ -143,7 +137,7 @@ function FolderTabs({
             aria-selected={active}
             onClick={() => onChange(t.key)}
             className={cn(
-              "group relative flex h-10 shrink-0 items-center gap-2 rounded-t-lg border border-b-0 px-4 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+              "group relative flex h-10 min-w-0 items-center justify-center gap-1 rounded-t-lg border border-b-0 px-1 text-[13px] font-medium sm:shrink-0 sm:justify-start sm:gap-2 sm:px-4 sm:text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
               active
                 ? "z-10 border-border bg-card text-foreground"
                 : "border-transparent text-muted-foreground hover:bg-card/60 hover:text-foreground",
@@ -162,7 +156,7 @@ function FolderTabs({
             {t.label}
             <span
               className={cn(
-                "min-w-6 rounded-full px-1.5 text-center text-xs tabular leading-5",
+                "min-w-5 rounded-full px-1 text-center text-xs tabular leading-5 sm:min-w-6 sm:px-1.5",
                 active ? "bg-muted text-foreground" : "bg-transparent",
               )}
             >
@@ -370,7 +364,6 @@ function SkeletonRows() {
 }
 
 export default function TasksPage() {
-  const { user } = useAuth();
   const tasksQuery = useTasks();
   const boardsQuery = useBoardsSummary();
   const createTask = useCreateTask();
@@ -488,14 +481,13 @@ export default function TasksPage() {
     }
   }
 
-  const today = format(new Date(), "EEEE, 'ngày' d 'tháng' M", { locale: vi });
+  const today = format(new Date(), "EEEE d/M", { locale: vi });
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 pt-6 pb-16 sm:px-6 lg:px-8">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm text-muted-foreground"><span className="inline-block first-letter:uppercase">{today}</span>{user?.name ? ` · Chào ${user.name}` : ""}</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-[1.75rem]">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-[1.75rem]">
             Việc của tôi
           </h1>
           {tasksQuery.isSuccess && (
@@ -516,6 +508,8 @@ export default function TasksPage() {
                   </button>
                 </>
               )}
+              {" · "}
+              <span className="inline-block first-letter:uppercase">{today}</span>
             </p>
           )}
         </div>

@@ -302,7 +302,7 @@ h6 {
 }
 
 .dark .signin {
-  --signin-panel: oklch(0.235 0.025 75);
+  --signin-panel: oklch(0.255 0.03 80);
   --signin-sheet: oklch(0.285 0.022 75);
   --signin-ink: oklch(0.96 0.015 90);
   --signin-ink-soft: oklch(0.78 0.03 85);

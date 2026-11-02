@@ -1,3 +1,4 @@
+import { formatDue } from "@/lib/date";
 import CardMetaControls from "@/features/tasks/card-meta-controls";
 import { SHOW_COLLABORATION } from "@/lib/features";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -213,15 +214,8 @@ function InnerDialog({
 
   const imageFile = croppedFile || selectedFile;
 
-  const formatDueDateVN = (date: Date | string): string => {
-    const d = typeof date === "string" ? new Date(date) : date;
-    const hours = d.getHours().toString().padStart(2, "0");
-    const minutes = d.getMinutes().toString().padStart(2, "0");
-    const day = d.getDate();
-    const monthNames = ["thg 1", "thg 2", "thg 3", "thg 4", "thg 5", "thg 6", "thg 7", "thg 8", "thg 9", "thg 10", "thg 11", "thg 12"];
-    const month = monthNames[d.getMonth()];
-    return `${hours}:${minutes} ${day} ${month}`;
-  };
+  const formatDueDateVN = (date: Date | string): string => formatDue(date);
+
 
   /* ---------- PREVIEW IMAGE ---------- */
   const previewImageUrl = useMemo(() => {

@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,114 +5,111 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import type { HTMLAttributes, MouseEvent } from "react";
+import type { MouseEvent } from "react";
 import { Link } from "react-router";
-import { Button } from "./ui/button";
+import { statusFromList } from "@/features/tasks/api";
+import { cn } from "@/lib/utils";
+
+type ListLike = { name: string; cards?: unknown[] };
 
 export interface BoardCardProps {
   id: string;
   name: string;
   backgroundUrl?: string;
   backgroundColor?: string;
+  lists?: ListLike[];
   onEdit?: () => void;
   onDelete?: () => void;
   compact?: boolean;
 }
 
+/** Board là một bìa hồ sơ: tab màu ở mép trên, nhãn mực, số task theo trạng thái. */
 export function BoardCard({
   id,
   name: title,
   backgroundUrl,
   backgroundColor,
+  lists = [],
   onEdit,
   onDelete,
   compact = false,
 }: BoardCardProps) {
-  // Image takes priority over color
-  let backgroundStyle: HTMLAttributes<HTMLDivElement>["style"];
-  if (backgroundUrl) {
-    backgroundStyle = {
-      backgroundImage: `url(${backgroundUrl})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-    };
-  } else if (backgroundColor) {
-    backgroundStyle = { backgroundColor };
-  } else {
-    backgroundStyle = { backgroundColor: "#6366f1" }; // Default indigo color
-  }
+  const counts = { todo: 0, doing: 0, done: 0 };
+  lists.forEach((l) => {
+    counts[statusFromList(l.name)] += l.cards?.length ?? 0;
+  });
+  const total = counts.todo + counts.doing + counts.done;
 
-  const handleMenuClick = (e: MouseEvent) => {
+  const stop = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-  };
-
-  const handleEdit = (e: MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onEdit?.();
-  };
-
-  const handleDelete = (e: MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onDelete?.();
   };
 
   return (
-    <Link to={`/board/${id}`}>
-      <Card
-        key={id}
-        className={`group overflow-hidden rounded-xl relative border-0 transition-all cursor-pointer hover:shadow-md ${compact ? 'h-[15vh]' : 'min-h-[20vh] pb-14 gap-0'}`}
-      >
-        {/* Background layer with proper clipping */}
-        <div 
-          className="absolute inset-0 bg-center bg-no-repeat bg-cover rounded-xl"
-          style={backgroundStyle}
-        />
-        {/* Overlay */}
-        <div className={`absolute inset-0 pointer-events-none backdrop-blur-sm dark:bg-black/25 group-hover:bg-black/20 dark:group-hover:bg-black/40 transition-colors ${compact ? 'rounded-xl rounded-b-none mb-10' : 'mb-16'}`} />
-
-        <CardHeader className="flex flex-row justify-between items-start p-4 py-0 z-5">
-          <CardTitle className="text-md font-medium overflow-hidden text-ellipsis max-w-[70%] z-10">
-            {title}
-          </CardTitle>
-
-          {/* Menu Button */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild onClick={handleMenuClick}>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 z-20 bg-transparent hover:bg-white/40"
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" onClick={handleMenuClick}>
-              <DropdownMenuItem onClick={handleEdit}>
-                <Pencil className="mr-2 h-4 w-4" />
-                Sửa
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={handleDelete}
-                className="text-destructive focus:text-destructive"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Xoá
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </CardHeader>
-
-        {!compact && (
-          <CardContent className="z-10 p-4 pt-0">
-            <p className="text-sm text-white dark:text-gray-200 ">
-              Bấm để mở board
-            </p>
-          </CardContent>
+    <Link
+      to={`/board/${id}`}
+      className="group block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    >
+      {/* Tab của bìa hồ sơ */}
+      <span
+        aria-hidden="true"
+        className="ml-4 block h-2.5 w-16 rounded-t-md"
+        style={
+          backgroundUrl
+            ? { backgroundImage: `url(${backgroundUrl})`, backgroundSize: "cover", backgroundPosition: "center" }
+            : { backgroundColor: backgroundColor || "var(--primary)" }
+        }
+      />
+      <div
+        className={cn(
+          "relative flex flex-col justify-between rounded-xl border bg-card px-4 py-3.5 transition-[border-color,box-shadow] group-hover:border-ring/60 group-hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]",
+          compact ? "min-h-20" : "min-h-28",
         )}
-      </Card>
+      >
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug">{title}</h3>
+          {(onEdit || onDelete) && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild onClick={stop}>
+                <button
+                  type="button"
+                  aria-label={`Thao tác với board ${title}`}
+                  className="-mt-1 -mr-1.5 grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <MoreHorizontal className="size-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" onClick={stop}>
+                {onEdit && (
+                  <DropdownMenuItem onClick={(e) => { stop(e); onEdit(); }}>
+                    <Pencil className="size-4" />
+                    Sửa
+                  </DropdownMenuItem>
+                )}
+                {onDelete && (
+                  <DropdownMenuItem variant="destructive" onClick={(e) => { stop(e); onDelete(); }}>
+                    <Trash2 className="size-4" />
+                    Xoá
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
+        {!compact && (
+          <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-foreground tabular">
+            {total === 0 ? (
+              "Chưa có task"
+            ) : (
+              <>
+                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-status-todo" aria-hidden="true" />{counts.todo} Todo</span>
+                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-status-doing" aria-hidden="true" />{counts.doing} Doing</span>
+                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-status-done" aria-hidden="true" />{counts.done} Done</span>
+              </>
+            )}
+          </p>
+        )}
+      </div>
     </Link>
   );
 }

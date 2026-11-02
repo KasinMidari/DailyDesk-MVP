@@ -14,5 +14,5 @@ THESIS: The app is an office file folder. Status tabs are folder index tabs join
 OWN-WORLD: Cool office-paper ground (oklch 0.982 0.004 240), navy ink for text and the one primary action, three tab hues (blue Todo, manila amber Doing, green Done) and three priority marks (red, amber, slate square). Be Vietnam Pro, tabular figures for dates. 0.5rem radius, hairline borders, one soft drawer shadow.
 STORY: The visitor sees what is overdue and what is next, changes status in one click, and adds a task with only a title required.
 FIRST VIEWPORT: Left sidebar (Việc của tôi / Lịch / Board). Header: date line, H1 "Việc của tôi", open/overdue counts, navy "Thêm task" button with N shortcut at right. Below: folder tabs, then the drawer with search, priority/board/sort pills, column header, deadline groups.
-FORM: Office file folder with ruled rows; grounded candidate 6 of 7; raise from the gate-board challenger: a changed row stays lit until noticed and deadline orders everything. seed: none (unavailable)
+FORM: Office file folder with ruled rows; grounded candidate 6 of 7; raise from the gate-board challenger: a changed row stays lit until noticed and deadline orders everything. seed:2a03c2b8115956ea
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

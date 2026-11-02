@@ -40,13 +40,13 @@ export function WeekView({
   onEventCreate,
 }: WeekViewProps) {
   const days = useMemo(() => {
-    const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
-    const weekEnd = endOfWeek(currentDate, { weekStartsOn: 0 });
+    const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
+    const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
     return eachDayOfInterval({ end: weekEnd, start: weekStart });
   }, [currentDate]);
 
   const weekStart = useMemo(
-    () => startOfWeek(currentDate, { weekStartsOn: 0 }),
+    () => startOfWeek(currentDate, { weekStartsOn: 1 }),
     [currentDate],
   );
 

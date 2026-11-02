@@ -41,15 +41,15 @@ export function MonthView({
   const days = useMemo(() => {
     const monthStart = startOfMonth(currentDate);
     const monthEnd = endOfMonth(monthStart);
-    const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 });
-    const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 0 });
+    const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 });
+    const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
 
     return eachDayOfInterval({ end: calendarEnd, start: calendarStart });
   }, [currentDate]);
 
   const weekdays = useMemo(() => {
     return Array.from({ length: 7 }).map((_, i) => {
-      const date = addDays(startOfWeek(new Date()), i);
+      const date = addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), i);
       return format(date, "EEE");
     });
   }, []);
