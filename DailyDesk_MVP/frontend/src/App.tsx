@@ -1,6 +1,6 @@
 import { useAuth0 } from "@/lib/auth";
 import Home from "./Home";
-import LandingPage from "./components/landing-page";
+import SignInScreen from "./components/sign-in-screen";
 
 interface AppProps {
   children?: React.ReactNode;
@@ -11,7 +11,7 @@ function App({ children }: AppProps) {
   return (
     <>
       {!isAuthenticated ? (
-        <LandingPage />
+        <SignInScreen />
       ) : (
         <div className="h-full w-full">
           <Home />

@@ -272,3 +272,146 @@ h6 {
 .renew-spin {
   animation: due-renew-spin 2s ease-out;
 }
+
+/* ---------- Màn đăng nhập ---------- */
+.signin {
+  --signin-panel: oklch(0.94 0.065 90);
+  --signin-sheet: oklch(0.995 0.004 90);
+  --signin-ink: oklch(0.27 0.035 60);
+  --signin-ink-soft: oklch(0.46 0.045 65);
+  --signin-line: oklch(0.9 0.03 85);
+  --signin-shadow: oklch(0.55 0.11 70 / 0.45);
+  --signin-todo-bg: oklch(0.93 0.045 230);
+  --signin-todo-fg: oklch(0.42 0.1 240);
+  --signin-doing-bg: oklch(0.91 0.1 88);
+  --signin-doing-fg: oklch(0.43 0.09 65);
+  --signin-done-bg: oklch(0.92 0.06 150);
+  --signin-done-fg: oklch(0.4 0.09 150);
+  --signin-done-mark: oklch(0.62 0.15 150);
+}
+
+.dark .signin {
+  --signin-panel: oklch(0.235 0.025 75);
+  --signin-sheet: oklch(0.285 0.022 75);
+  --signin-ink: oklch(0.96 0.015 90);
+  --signin-ink-soft: oklch(0.78 0.03 85);
+  --signin-line: oklch(1 0 0 / 0.08);
+  --signin-shadow: oklch(0 0 0 / 0.6);
+  --signin-todo-bg: oklch(0.35 0.06 235);
+  --signin-todo-fg: oklch(0.88 0.06 230);
+  --signin-doing-bg: oklch(0.38 0.07 75);
+  --signin-doing-fg: oklch(0.92 0.09 88);
+  --signin-done-bg: oklch(0.34 0.06 150);
+  --signin-done-fg: oklch(0.88 0.08 150);
+  --signin-done-mark: oklch(0.7 0.14 150);
+}
+
+.signin-panel {
+  background: var(--signin-panel);
+}
+
+.signin-check {
+  border-color: var(--signin-ink-soft);
+  color: transparent;
+}
+
+.signin-pill {
+  display: inline-grid;
+}
+.signin-pill > * {
+  grid-area: 1 / 1;
+  text-align: center;
+}
+.signin-pill-to {
+  visibility: hidden;
+}
+
+.signin-task[data-status="todo"] .signin-pill {
+  background: var(--signin-todo-bg);
+  color: var(--signin-todo-fg);
+}
+.signin-task[data-status="doing"] .signin-pill {
+  background: var(--signin-doing-bg);
+  color: var(--signin-doing-fg);
+}
+.signin-task[data-status="done"] .signin-pill {
+  background: var(--signin-done-bg);
+  color: var(--signin-done-fg);
+}
+.signin-task[data-status="done"] .signin-check {
+  background: var(--signin-done-mark);
+  border-color: var(--signin-done-mark);
+  color: white;
+}
+.signin-task[data-status="done"] .signin-title {
+  color: var(--signin-ink-soft);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in oklch, var(--signin-ink-soft) 60%, transparent);
+}
+
+/* Khoảnh khắc duy nhất: task "Doing" được đánh dấu xong. */
+@media (prefers-reduced-motion: no-preference) {
+  .signin-task[data-status="doing"] .signin-check {
+    animation: signin-check 420ms cubic-bezier(0.16, 1, 0.3, 1) 1.4s both;
+  }
+  .signin-task[data-status="doing"] .signin-pill {
+    animation: signin-pill 360ms cubic-bezier(0.16, 1, 0.3, 1) 1.5s both;
+  }
+  .signin-task[data-status="doing"] .signin-pill-to {
+    animation: signin-swap-in 360ms cubic-bezier(0.16, 1, 0.3, 1) 1.5s both;
+  }
+  .signin-task[data-status="doing"] .signin-pill-from {
+    animation: signin-swap-out 240ms ease-out 1.5s both;
+  }
+  .signin-task[data-status="doing"] .signin-title {
+    animation: signin-strike 360ms ease-out 1.55s both;
+  }
+}
+
+@keyframes signin-check {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(0.82);
+  }
+  100% {
+    transform: scale(1);
+    background: var(--signin-done-mark);
+    border-color: var(--signin-done-mark);
+    color: white;
+  }
+}
+@keyframes signin-pill {
+  to {
+    background: var(--signin-done-bg);
+    color: var(--signin-done-fg);
+  }
+}
+@keyframes signin-swap-in {
+  from {
+    visibility: visible;
+    opacity: 0;
+    transform: translateY(4px);
+    filter: blur(2px);
+  }
+  to {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes signin-swap-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@keyframes signin-strike {
+  to {
+    color: var(--signin-ink-soft);
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in oklch, var(--signin-ink-soft) 60%, transparent);
+  }
+}

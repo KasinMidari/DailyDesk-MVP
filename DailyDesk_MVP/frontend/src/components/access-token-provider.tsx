@@ -3,7 +3,7 @@ import { getAccessTokenFnAtom } from "@/stores/auth";
 import { useAuth0 } from "@/lib/auth";
 import { useAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
-import LandingPage from "./landing-page";
+import SignInScreen from "./sign-in-screen";
 
 export default function AccessTokenProvider({
   children,
@@ -58,7 +58,7 @@ export default function AccessTokenProvider({
       <div className="flex h-screen w-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">Đang tải…</p>
         </div>
       </div>
     );
@@ -66,7 +66,7 @@ export default function AccessTokenProvider({
 
   // Show login page if not authenticated
   if (!auth.isAuthenticated) {
-    return <LandingPage />;
+    return <SignInScreen />;
   }
 
   // Wait for access token to be fetched before rendering children
@@ -76,7 +76,7 @@ export default function AccessTokenProvider({
       <div className="flex h-screen w-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-muted-foreground">Authenticating...</p>
+          <p className="text-muted-foreground">Đang xác thực…</p>
         </div>
       </div>
     );
