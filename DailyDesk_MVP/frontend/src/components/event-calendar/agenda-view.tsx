@@ -49,9 +49,9 @@ export function AgendaView({
             className="mb-2 text-muted-foreground/50"
             size={32}
           />
-          <h3 className="text-lg font-medium">No events found</h3>
+          <h3 className="text-lg font-medium">Không có sự kiện</h3>
           <p className="text-muted-foreground">
-            There are no events scheduled for this time period.
+            Không có task nào trong khoảng thời gian này.
           </p>
         </div>
       ) : (

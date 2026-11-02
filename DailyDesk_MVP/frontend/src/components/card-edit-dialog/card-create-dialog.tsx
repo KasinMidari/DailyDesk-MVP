@@ -280,7 +280,7 @@ function InnerCardCreateDialog({
     if (dueAt) {
       const dueDateTime = typeof dueAt === "string" ? new Date(dueAt) : dueAt;
       if (dueDateTime.getTime() < Date.now()) {
-        toast.error("Due date cannot be in the past");
+        toast.error("Hạn chót không được ở quá khứ");
         return;
       }
     }
@@ -288,7 +288,7 @@ function InnerCardCreateDialog({
       const startDateTime = typeof startDate === "string" ? new Date(startDate) : startDate;
       const dueDateTime = typeof dueAt === "string" ? new Date(dueAt) : dueAt;
       if (startDateTime.getTime() > dueDateTime.getTime()) {
-        toast.error("Start date cannot be after due date");
+        toast.error("Ngày bắt đầu không được sau hạn chót");
         return;
       }
     }
@@ -435,9 +435,9 @@ function InnerCardCreateDialog({
               queryClient.invalidateQueries({ queryKey: ["board", boardId] });
 
               if (errors.length > 0) {
-                toast.error(`Card created, but ${errors.length} item(s) failed to upload`, { duration: 8000 });
+                toast.error(`Đã tạo task, nhưng ${errors.length} tệp chưa tải lên được`, { duration: 8000 });
               } else {
-                toast.success("Card created successfully!");
+                toast.success("Đã thêm task");
               }
 
               resetForm();
@@ -445,7 +445,7 @@ function InnerCardCreateDialog({
               onClose();
             } catch (error) {
               console.error("Error during batch upload:", error);
-              toast.error("Card created, but some items failed. Please edit the card to add them manually.");
+              toast.error("Đã tạo task, nhưng một vài mục chưa lưu được. Mở task để thêm lại nhé.");
               resetForm();
               onCreated?.(newCard as Card);
               onClose();
@@ -499,7 +499,7 @@ function InnerCardCreateDialog({
 
   const handleClose = () => {
     if (isBatchUploading) {
-      toast.error("Please wait for uploads to complete");
+      toast.error("Chờ tải tệp xong đã nhé");
       return;
     }
     resetForm();
@@ -555,9 +555,9 @@ function InnerCardCreateDialog({
         showCloseButton={false}
       >
         <VisuallyHidden>
-          <DialogTitle>Create Card</DialogTitle>
+          <DialogTitle>Tạo task</DialogTitle>
           <DialogDescription>
-            Create a new card with title, description, labels, members, due date, and cover
+            Tạo task mới với tiêu đề, mô tả, nhãn, hạn chót và ảnh bìa
           </DialogDescription>
         </VisuallyHidden>
 
@@ -589,7 +589,7 @@ function InnerCardCreateDialog({
                   </div>
                 </>
               ) : (
-                <p className="text-sm text-muted-foreground">Creating card...</p>
+                <p className="text-sm text-muted-foreground">Đang tạo task…</p>
               )}
             </div>
           </div>
@@ -626,7 +626,7 @@ function InnerCardCreateDialog({
             <label className="text-sm font-medium text-muted-foreground">Card Title *</label>
             <Input
               autoFocus
-              placeholder="Enter card title..."
+              placeholder="Nhập tiêu đề task…"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="text-lg font-semibold"
@@ -635,7 +635,7 @@ function InnerCardCreateDialog({
 
           {lists && lists.length > 0 && (
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-muted-foreground">List</label>
+              <label className="text-sm font-medium text-muted-foreground">Danh sách</label>
               <Select
                 value={activeListId}
                 onValueChange={(nextListId) => {
@@ -647,7 +647,7 @@ function InnerCardCreateDialog({
                 }}
               >
                 <SelectTrigger className="h-10">
-                  <SelectValue placeholder="Select list" />
+                  <SelectValue placeholder="Chọn danh sách" />
                 </SelectTrigger>
                 <SelectContent>
                   {lists.map((list) => (
@@ -698,7 +698,7 @@ function InnerCardCreateDialog({
                 triggerButton={
                   <Button variant="outline" size="sm" className="h-8">
                     <Clock className="h-4 w-4 mr-1" />
-                    Dates
+                    Ngày
                   </Button>
                 }
               />
@@ -714,7 +714,7 @@ function InnerCardCreateDialog({
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     <Wallpaper className="w-5 h-5" />
-                    <h3 className="font-semibold">Cover</h3>
+                    <h3 className="font-semibold">Ảnh bìa</h3>
                   </div>
                   <BackgroundPicker />
                   {hasCover && (
@@ -724,7 +724,7 @@ function InnerCardCreateDialog({
                       onClick={() => resetBackground()}
                       className="w-full"
                     >
-                      Remove Cover
+                      Bỏ ảnh bìa
                     </Button>
                   )}
                 </div>
@@ -739,9 +739,9 @@ function InnerCardCreateDialog({
               </PopoverTrigger>
               <PopoverContent className="w-80">
                 <div className="space-y-4">
-                  <h4 className="font-medium text-sm">Add Checklist Item</h4>
+                  <h4 className="font-medium text-sm">Thêm việc con</h4>
                   <Input
-                    placeholder="Enter item name..."
+                    placeholder="Nhập tên mục…"
                     value={newChecklistItemName}
                     onChange={(e) => setNewChecklistItemName(e.target.value)}
                     onKeyDown={(e) => {
@@ -757,14 +757,14 @@ function InnerCardCreateDialog({
                       setIsChecklistPopoverOpen(false);
                       setNewChecklistItemName("");
                     }}>
-                      Cancel
+                      Huỷ
                     </Button>
                     <Button size="sm" onClick={() => {
                       handleAddTempChecklistItem(newChecklistItemName);
                       setNewChecklistItemName("");
                       setIsChecklistPopoverOpen(false);
                     }} disabled={!newChecklistItemName.trim()}>
-                      Add
+                      Thêm
                     </Button>
                   </div>
                 </div>
@@ -780,11 +780,11 @@ function InnerCardCreateDialog({
               <PopoverContent className="w-80">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <h4 className="font-medium text-sm">Attach</h4>
+                    <h4 className="font-medium text-sm">Đính kèm</h4>
                     <Button variant="outline" size="sm" className="w-full justify-start"
                       onClick={() => attachmentFileInputRef.current?.click()}>
                       <Paperclip className="h-4 w-4 mr-2" />
-                      Computer
+                      Máy tính
                     </Button>
                     <input ref={attachmentFileInputRef} type="file" className="hidden"
                       onChange={(e) => {
@@ -798,8 +798,8 @@ function InnerCardCreateDialog({
                     />
                   </div>
                   <div className="space-y-2 pt-2 border-t">
-                    <UILabel htmlFor="attach-link-url" className="text-xs">Or attach a link</UILabel>
-                    <Input id="attach-link-url" placeholder="Paste a link..."
+                    <UILabel htmlFor="attach-link-url" className="text-xs">Hoặc đính kèm link</UILabel>
+                    <Input id="attach-link-url" placeholder="Dán link…"
                       value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleAddTempAttachmentLink()}
                     />
@@ -812,9 +812,9 @@ function InnerCardCreateDialog({
                         setIsAttachmentPopoverOpen(false);
                         setLinkUrl("");
                         setLinkName("");
-                      }}>Cancel</Button>
+                      }}>Huỷ</Button>
                       <Button size="sm" onClick={handleAddTempAttachmentLink} disabled={!linkUrl.trim()}>
-                        Attach
+                        Đính kèm
                       </Button>
                     </div>
                   </div>
@@ -861,7 +861,7 @@ function InnerCardCreateDialog({
 
           {(startDate || dueAt) && (
             <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">Dates</label>
+              <label className="text-sm font-medium text-muted-foreground">Ngày</label>
               <div className="flex flex-wrap gap-2">
                 {startDate && (
                   <Button
@@ -896,7 +896,7 @@ function InnerCardCreateDialog({
           {tempChecklistItems.length > 0 && (
             <div className="space-y-3 p-4 rounded-md bg-muted/30">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold">Checklist Preview</h3>
+                <h3 className="text-sm font-semibold">Xem trước việc con</h3>
                 <span className="text-xs text-muted-foreground">
                   {tempChecklistItems.filter(i => i.completed).length}/{tempChecklistItems.length} completed
                 </span>
@@ -924,7 +924,7 @@ function InnerCardCreateDialog({
             <div className="space-y-3 p-4 rounded-md bg-muted/30">
               <h3 className="text-sm font-semibold flex items-center gap-2">
                 <Paperclip className="h-4 w-4" />
-                Attachments Preview
+                Xem trước tệp đính kèm
               </h3>
               <div className="space-y-3">
                 {tempAttachments.map((attachment) => {
@@ -961,9 +961,9 @@ function InnerCardCreateDialog({
 
           {/* Description */}
           <div className="flex flex-col gap-2 flex-1">
-            <label className="text-sm font-medium text-muted-foreground">Description</label>
+            <label className="text-sm font-medium text-muted-foreground">Mô tả</label>
             <Textarea
-              placeholder="Add a description..."
+              placeholder="Thêm mô tả…"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="flex-1 resize-none min-h-[100px]"
@@ -973,7 +973,7 @@ function InnerCardCreateDialog({
           {/* Footer with Create button */}
           <div className="flex justify-end gap-2 pt-2 border-t">
             <Button variant="outline" onClick={handleClose}>
-              Cancel
+              Huỷ
             </Button>
             <Button onClick={handleCreate} disabled={!title.trim() || isSubmitting}>
               {isSubmitting ? "Creating..." : "Create Card"}

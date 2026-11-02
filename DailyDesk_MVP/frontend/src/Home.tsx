@@ -182,29 +182,29 @@ export default function Home() {
       case "member":
         return "bg-sky-400/20 text-sky-600 border-sky-600/30";
       case "viewer":
-        return "bg-gray-500/20 text-gray-900 border-gray-700/30";
+        return "bg-secondary text-secondary-foreground";
       default:
-        return "bg-gray-500/20 text-gray-400";
+        return "bg-secondary text-muted-foreground";
     }
   };
 
   return (
     <Suspense fallback={<PageLoader />}>
-      <div className="flex flex-col w-full h-full p-6 pb-20 gap-6 dark:bg-black overflow-y-auto">
+      <div className="flex flex-col w-full h-full mx-auto max-w-6xl px-4 pt-6 pb-20 gap-6 sm:px-6 lg:px-8 overflow-y-auto">
         {/* Header with Search */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
           <div>
-            <h1 className="text-2xl font-bold text-black dark:text-white">
-              Dashboard
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-[1.75rem]">
+              Board của tôi
             </h1>
             <p className="mt-1 text-muted-foreground">
-              Organize your work and life
+              Sắp xếp việc học, việc làm và việc nhà
             </p>
           </div>
           <div className="relative w-full md:w-72">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search boards..."
+              placeholder="Tìm board…"
               className="pl-8"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -217,8 +217,8 @@ export default function Home() {
           <section className="w-full">
             <div className="flex items-center gap-2 mb-3">
               <Clock className="w-5 h-5 text-muted-foreground" />
-              <h2 className="text-lg font-semibold text-black dark:text-white">
-                Recent Boards
+              <h2 className="text-base font-semibold text-foreground">
+                Mở gần đây
               </h2>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -256,8 +256,8 @@ export default function Home() {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <Clipboard className="w-5 h-5 text-muted-foreground" />
-              <h2 className="text-lg font-semibold text-black dark:text-white">
-                My Boards
+              <h2 className="text-base font-semibold text-foreground">
+                Board của tôi
               </h2>
               <Badge variant="secondary" className="ml-1">
                 {filteredOwnedBoards.length}
@@ -270,7 +270,7 @@ export default function Home() {
                 onClick={() => setIsAllOwnedBoardsOpen(true)}
                 className="text-muted-foreground hover:text-foreground"
               >
-                See All
+                Xem tất cả
                 <ChevronRight className="ml-1 h-4 w-4" />
               </Button>
             )}
@@ -278,13 +278,13 @@ export default function Home() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {/* Create New Board Card - Always visible */}
             <Card
-              className="flex flex-col justify-center items-start border-2 border-gray-500 border-dashed transition-all cursor-pointer hover:border-gray-400 hover:bg-gray-300/20 w-full min-h-[120px]"
+              className="flex flex-col justify-center items-start rounded-xl border-2 border-dashed border-border bg-card/50 transition-colors cursor-pointer hover:border-ring hover:bg-accent w-full min-h-[120px]"
               onClick={() => setIsCreateDialogOpen(true)}
             >
               <CardContent className="w-full flex flex-col items-center gap-2">
-                <Plus className="mb-2 w-8 h-8 text-gray-500" />
-                <p className="text-sm font-medium text-gray-700 dark:text-white">
-                  Create new board
+                <Plus className="mb-2 w-8 h-8 text-muted-foreground" />
+                <p className="text-sm font-medium text-foreground">
+                  Tạo board mới
                 </p>
               </CardContent>
             </Card>
@@ -323,8 +323,8 @@ export default function Home() {
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-muted-foreground" />
-                <h2 className="text-lg font-semibold text-black dark:text-white">
-                  Invited Boards
+                <h2 className="text-base font-semibold text-foreground">
+                  Board được mời
                 </h2>
                 <Badge variant="secondary" className="ml-1">
                   {filteredInvitedBoards.length}
@@ -337,7 +337,7 @@ export default function Home() {
                   onClick={() => setIsAllInvitedBoardsOpen(true)}
                   className="text-muted-foreground hover:text-foreground"
                 >
-                  See All
+                  Xem tất cả
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Button>
               )}
@@ -383,11 +383,11 @@ export default function Home() {
           <section>
             <div className="flex items-center gap-2 mb-3">
               <Users className="w-5 h-5 text-muted-foreground" />
-              <h2 className="text-lg font-semibold text-black dark:text-white">
-                Invited Boards
+              <h2 className="text-base font-semibold text-foreground">
+                Board được mời
               </h2>
             </div>
-            <p className="text-muted-foreground text-sm">No matching invited boards found.</p>
+            <p className="text-muted-foreground text-sm">Không có board được mời nào khớp.</p>
           </section>
         )}
 

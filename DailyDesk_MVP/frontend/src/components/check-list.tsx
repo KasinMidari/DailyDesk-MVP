@@ -200,7 +200,7 @@ export default function CheckList({
                 type="button"
                 size="icon-sm"
                 variant="ghost"
-                aria-label="Assign member"
+                aria-label="Giao cho thành viên"
               >
                 <User className="h-4 w-4" />
               </Button>
@@ -265,7 +265,7 @@ export default function CheckList({
               if (confirmed) handleDelete(item.id);
             }}
             disabled={deleteMutation.isPending}
-            aria-label="Delete checklist item"
+            aria-label="Xoá việc con"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6h18M9 6v12a1 1 0 001 1h4a1 1 0 001-1V6" />
@@ -284,7 +284,7 @@ export default function CheckList({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold">Checklist</h3>
+          <h3 className="text-sm font-semibold">Việc con</h3>
           <p className="text-xs text-muted-foreground">{completedCount}/{items.length} completed</p>
         </div>
         <div className="flex items-center gap-2">
@@ -293,14 +293,14 @@ export default function CheckList({
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
               </svg>
-              Add item
+              Thêm mục
             </Button>
           ) : (
             <div className="flex items-center gap-2">
               <Input
                 value={newItem}
                 onChange={(e) => setNewItem(e.target.value)}
-                placeholder="Enter checklist name..."
+                placeholder="Nhập tên việc con…"
                 className="min-w-[220px]"
                 autoFocus
               />
@@ -315,7 +315,7 @@ export default function CheckList({
                 )}
               </Button>
               <Button onClick={handleCancel} size="sm" variant="ghost" type="button">
-                Cancel
+                Huỷ
               </Button>
             </div>
           )}
@@ -327,10 +327,10 @@ export default function CheckList({
       </div>
 
       <div className="space-y-2">
-        {isLoading && <div className="text-sm text-muted-foreground">Loading...</div>}
+        {isLoading && <div className="text-sm text-muted-foreground">Đang tải…</div>}
         {/* Only show error if error exists AND not just empty checklist */}
         {isError && items.length > 0 && (
-          <div className="text-destructive">Failed to load checklist.</div>
+          <div className="text-destructive">Không tải được việc con.</div>
         )}
 
         {items.length === 0 && !isLoading ? (

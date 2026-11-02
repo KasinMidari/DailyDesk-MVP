@@ -2,7 +2,6 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Outlet } from "react-router";
 import Providers from "./components/providers";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import PageLoader from "./components/full-page-loader";
@@ -17,10 +16,9 @@ export default function Layout() {
       <SidebarProvider>
         <AppSidebar />
         <main className="flex flex-col w-full h-screen bg-background overflow-hidden">
-          <ReactQueryDevtools initialIsOpen={false} />
           {/* Header with Search Bar */}
-          <div className="sticky top-0 right-0 flex items-center justify-between gap-3 px-6 py-2 z-50 bg-background/80 backdrop-blur-sm w-full">
-            <div className="flex items-center gap-3 min-w-[50vw]" >
+          <div className="sticky top-0 right-0 flex items-center justify-between gap-3 px-3 py-2 z-50 sm:px-6 border-b bg-background/80 backdrop-blur-sm w-full">
+            <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
             <SidebarTrigger />
             <GlobalSearch />
             </div>
@@ -34,7 +32,7 @@ export default function Layout() {
           <ErrorBoundary
             fallback={
               <div className="flex justify-center items-center w-full h-full">
-                Something went wrong
+                Có lỗi xảy ra
               </div>
             }
           >

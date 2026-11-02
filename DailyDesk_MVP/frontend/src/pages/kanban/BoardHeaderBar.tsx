@@ -1,3 +1,4 @@
+import { SHOW_COLLABORATION } from "@/lib/features";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -130,25 +131,25 @@ export function BoardHeaderBar({
   // Handle copy board link
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast.success("Link copied to clipboard!", { position: "bottom-left" });
+    toast.success("Đã sao chép link", { position: "bottom-left" });
   };
 
   // Handle delete board
   const handleDeleteBoard = async () => {
     if (!isOwner) {
-      toast.error("Only the board owner can delete this board", { position: "bottom-left" });
+      toast.error("Chỉ chủ board mới xoá được board này", { position: "bottom-left" });
       return;
     }
 
     setIsDeleting(true);
     try {
       await deleteBoard(boardId);
-      toast.success("Board deleted successfully!", { position: "bottom-left" });
+      toast.success("Đã xoá board", { position: "bottom-left" });
       setIsDeleteDialogOpen(false);
       window.location.href = "/";
     } catch (error) {
       console.error("Failed to delete board:", error);
-      toast.error("Failed to delete board. Please try again.", { position: "bottom-left" });
+      toast.error("Không xoá được board. Thử lại nhé.", { position: "bottom-left" });
     } finally {
       setIsDeleting(false);
     }
@@ -185,7 +186,7 @@ export function BoardHeaderBar({
                 <Pencil className="h-3.5 w-3.5" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Edit Board</TooltipContent>
+            <TooltipContent>Sửa board</TooltipContent>
           </Tooltip>
         </div>
 
@@ -196,7 +197,7 @@ export function BoardHeaderBar({
             <Sheet open={isMembersSheetOpen} onOpenChange={setIsMembersSheetOpen}>
               <SheetTrigger asChild>
                 <div className="flex items-center cursor-pointer group hidden lg:flex">
-                  <div className="flex -space-x-2">
+                  <div className={SHOW_COLLABORATION ? "flex -space-x-2" : "hidden"}>
                     {allMembers.slice(0, 5).map((member, index) => {
                       const colorClass = AVATAR_COLORS[index % AVATAR_COLORS.length];
                       const initials = getInitials(member.name);
@@ -259,7 +260,7 @@ export function BoardHeaderBar({
               </SheetTrigger>
               <SheetContent>
                 <SheetHeader>
-                  <SheetTitle>Manage Board Members</SheetTitle>
+                  <SheetTitle>Quản lý thành viên</SheetTitle>
                   <SheetDescription>
                     Add or remove members from <b>{boardName}</b>
                   </SheetDescription>
@@ -288,7 +289,7 @@ export function BoardHeaderBar({
                 <Search className="h-3.5 w-3.5 text-foreground/60 shrink-0" />
                 <Input
                   type="text"
-                  placeholder="Search..."
+                  placeholder="Tìm…"
                   value={filters.searchQuery}
                   onChange={(e) => onFiltersChange({ ...filters, searchQuery: e.target.value })}
                   className="h-5 w-20 md:w-40 bg-transparent border-none text-foreground placeholder:text-muted-foreground text-xs focus-visible:ring-0 focus-visible:ring-offset-0 px-0"
@@ -332,11 +333,11 @@ export function BoardHeaderBar({
                       </Button>
                     </SheetTrigger>
                   </TooltipTrigger>
-                  <TooltipContent>Labels</TooltipContent>
+                  <TooltipContent>Nhãn</TooltipContent>
                 </Tooltip>
                 <SheetContent>
                   <SheetHeader>
-                    <SheetTitle>Board Labels</SheetTitle>
+                    <SheetTitle>Nhãn của board</SheetTitle>
                     <SheetDescription>
                       Create and manage labels for <b>{boardName}</b>
                     </SheetDescription>
@@ -365,20 +366,20 @@ export function BoardHeaderBar({
                       </Button>
                     </DropdownMenuTrigger>
                   </TooltipTrigger>
-                  <TooltipContent>More</TooltipContent>
+                  <TooltipContent>Thêm</TooltipContent>
                 </Tooltip>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuItem onClick={handleCopyLink}>
                     <Copy className="h-4 w-4 mr-2" />
-                    Copy Board Link
+                    Sao chép link board
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setIsLabelsSheetOpen(true)} className="md:hidden">
                     <Tags className="h-4 w-4 mr-2" />
-                    Manage Labels
+                    Quản lý nhãn
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={onEditBoard}>
                     <Settings className="h-4 w-4 mr-2" />
-                    Board Settings
+                    Cài đặt board
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -387,7 +388,7 @@ export function BoardHeaderBar({
                     disabled={!isOwner}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Delete Board
+                    Xoá board
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -395,13 +396,13 @@ export function BoardHeaderBar({
           </TooltipProvider>
 
           {/* Share Button */}
-          <Button
+          {SHOW_COLLABORATION && <Button
             className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 h-8 px-3"
             onClick={() => setIsMembersSheetOpen(true)}
           >
             <Share2 className="h-4 w-4" />
-            <span>Share</span>
-          </Button>
+            <span>Chia sẻ</span>
+          </Button>}
         </div>
       </div>
 
@@ -409,14 +410,14 @@ export function BoardHeaderBar({
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Board</AlertDialogTitle>
+            <AlertDialogTitle>Xoá board</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete <strong>"{boardName}"</strong>? This action cannot be undone. 
+              Bạn chắc chắn muốn xoá <strong>"{boardName}"</strong>? This action cannot be undone. 
               All lists, cards, and data in this board will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>Huỷ</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteBoard}
               disabled={isDeleting}
@@ -425,12 +426,12 @@ export function BoardHeaderBar({
               {isDeleting ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Deleting...
+                  Đang xoá…
                 </>
               ) : (
                 <>
                   <Trash2 className="h-4 w-4 mr-2" />
-                  Delete Board
+                  Xoá board
                 </>
               )}
             </AlertDialogAction>

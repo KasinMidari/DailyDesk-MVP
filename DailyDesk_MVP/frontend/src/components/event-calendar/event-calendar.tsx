@@ -316,11 +316,11 @@ export function EventCalendar({
                 className="min-[480px]:hidden"
                 size={16}
               />
-              <span className="max-[479px]:sr-only">Today</span>
+              <span className="max-[479px]:sr-only">Hôm nay</span>
             </Button>
             <div className="flex items-center sm:gap-2">
               <Button
-                aria-label="Previous"
+                aria-label="Trước"
                 onClick={handlePrevious}
                 size="icon"
                 variant="ghost"
@@ -328,7 +328,7 @@ export function EventCalendar({
                 <ChevronLeftIcon aria-hidden="true" size={16} />
               </Button>
               <Button
-                aria-label="Next"
+                aria-label="Sau"
                 onClick={handleNext}
                 size="icon"
                 variant="ghost"
@@ -361,16 +361,16 @@ export function EventCalendar({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="min-w-32">
                 <DropdownMenuItem onClick={() => setView("month")}>
-                  Month <DropdownMenuShortcut>M</DropdownMenuShortcut>
+                  Tháng <DropdownMenuShortcut>M</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setView("week")}>
-                  Week <DropdownMenuShortcut>W</DropdownMenuShortcut>
+                  Tuần <DropdownMenuShortcut>W</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setView("day")}>
-                  Day <DropdownMenuShortcut>D</DropdownMenuShortcut>
+                  Ngày <DropdownMenuShortcut>D</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setView("agenda")}>
-                  Agenda <DropdownMenuShortcut>A</DropdownMenuShortcut>
+                  Lịch trình <DropdownMenuShortcut>A</DropdownMenuShortcut>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

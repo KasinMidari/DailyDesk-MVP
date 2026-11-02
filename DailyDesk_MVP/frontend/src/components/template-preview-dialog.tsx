@@ -64,7 +64,7 @@ export default function TemplatePreviewDialog({
         {isCreating ? (
           <div className="flex flex-col items-center justify-center py-12 gap-4">
             <Spinner className="size-10" />
-            <p className="text-xl font-semibold">Creating your board...</p>
+            <p className="text-xl font-semibold">Đang tạo board…</p>
           </div>
         ) : (
           <>
@@ -82,7 +82,7 @@ export default function TemplatePreviewDialog({
                 <Badge variant="secondary" className="capitalize">
                   {template.category || "other"}
                 </Badge>
-                {template.isPublic && <Badge variant="outline">Public</Badge>}
+                {template.isPublic && <Badge variant="outline">Công khai</Badge>}
               </div>
 
               {/* Background Preview */}
@@ -188,13 +188,13 @@ export default function TemplatePreviewDialog({
 
             <DialogFooter>
               <Button variant="outline" onClick={onClose}>
-                Cancel
+                Huỷ
               </Button>
               <Button
                 onClick={handleUseTemplate}
                 disabled={!boardName.trim() || isCreating}
               >
-                Use This Template
+                Dùng mẫu này
               </Button>
             </DialogFooter>
           </>

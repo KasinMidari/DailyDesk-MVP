@@ -195,7 +195,7 @@ export function CardComments({
           onChange={(e) => setCommentText(e.target.value)}
           onFocus={() => setIsComposing(true)}
           onKeyDown={handleKeyDown}
-          placeholder="Write a comment..."
+          placeholder="Viết bình luận…"
           className="resize-none min-h-[80px] text-sm"
           disabled={isAddingComment}
         />
@@ -208,7 +208,7 @@ export function CardComments({
               size="sm"
               disabled={isAddingComment}
             >
-              Cancel
+              Huỷ
             </Button>
             <Button
               onClick={handleSubmit}
@@ -218,7 +218,7 @@ export function CardComments({
               {isAddingComment ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
+                  Đang lưu…
                 </>
               ) : (
                 "Save"
@@ -253,7 +253,7 @@ export function CardComments({
         <div className="space-y-3">
           {displayItems.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-4">
-              No comments yet. Be the first to comment!
+              Chưa có bình luận nào.
             </p>
           ) : (
             displayItems.map((item) => {
@@ -306,7 +306,7 @@ export function CardComments({
                               {isUpdatingComment ? (
                                 <>
                                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                  Saving...
+                                  Đang lưu…
                                 </>
                               ) : (
                                 "Save"
@@ -318,7 +318,7 @@ export function CardComments({
                               size="sm"
                               disabled={isUpdatingComment}
                             >
-                              Cancel
+                              Huỷ
                             </Button>
                           </div>
                         </div>
@@ -337,14 +337,14 @@ export function CardComments({
                               onClick={() => handleStartEdit(comment.id, comment.content)}
                               className="hover:underline text-muted-foreground hover:text-foreground"
                             >
-                              Edit
+                              Sửa
                             </button>
                             <span className="text-muted-foreground">•</span>
                             <button
                               onClick={() => handleDeleteComment(comment.id)}
                               className="hover:underline text-muted-foreground hover:text-foreground"
                             >
-                              Delete
+                              Xoá
                             </button>
                           </div>
                         </>
@@ -394,16 +394,16 @@ export function CardComments({
       {/* Pending comments (Create Mode) */}
       {isCreateMode && pendingComments.length > 0 && (
         <div className="space-y-3 mt-3 border-t pt-3">
-          <p className="text-xs font-semibold text-muted-foreground">Pending Comments (will be saved on create)</p>
+          <p className="text-xs font-semibold text-muted-foreground">Bình luận chờ lưu (lưu khi tạo task)</p>
           {pendingComments.map((comment, index) => (
             <div key={`pending-${index}`} className="flex gap-2 items-start text-sm opacity-80">
                <Avatar className="w-6 h-6 flex-shrink-0">
-                  <AvatarFallback className="text-xs">You</AvatarFallback>
+                  <AvatarFallback className="text-xs">Bạn</AvatarFallback>
                </Avatar>
                <div className="flex-1 min-w-0 space-y-1">
                  <div className="flex items-center gap-2">
-                   <span className="font-semibold truncate">You</span>
-                   <span className="text-xs text-muted-foreground">Just now</span>
+                   <span className="font-semibold truncate">Bạn</span>
+                   <span className="text-xs text-muted-foreground">Vừa xong</span>
                  </div>
                  <div className="bg-background rounded p-2 border border-dashed">
                    <p className="text-sm whitespace-pre-wrap break-words">{comment}</p>

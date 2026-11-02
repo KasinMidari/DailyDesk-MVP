@@ -46,7 +46,7 @@ export default function TemplateGalleryDialog({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle>Template Gallery</DialogTitle>
+            <DialogTitle>Thư viện mẫu</DialogTitle>
           </DialogHeader>
 
           {/* Search and Filter */}
@@ -54,7 +54,7 @@ export default function TemplateGalleryDialog({
             <div className="relative flex-1">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search templates..."
+                placeholder="Tìm mẫu…"
                 className="pl-8"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -65,14 +65,14 @@ export default function TemplateGalleryDialog({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="business">Business</SelectItem>
-                <SelectItem value="engineering">Engineering</SelectItem>
+                <SelectItem value="all">Tất cả danh mục</SelectItem>
+                <SelectItem value="business">Kinh doanh</SelectItem>
+                <SelectItem value="engineering">Kỹ thuật</SelectItem>
                 <SelectItem value="marketing">Marketing</SelectItem>
-                <SelectItem value="design">Design</SelectItem>
-                <SelectItem value="education">Education</SelectItem>
-                <SelectItem value="personal">Personal</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
+                <SelectItem value="design">Thiết kế</SelectItem>
+                <SelectItem value="education">Học tập</SelectItem>
+                <SelectItem value="personal">Cá nhân</SelectItem>
+                <SelectItem value="other">Khác</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -121,7 +121,7 @@ export default function TemplateGalleryDialog({
                         }}
                       >
                         <Eye className="w-4 h-4 mr-1" />
-                        Preview
+                        Xem trước
                       </Button>
                     </div>
                   </CardContent>
@@ -131,7 +131,7 @@ export default function TemplateGalleryDialog({
 
             {filteredTemplates.length === 0 && (
               <div className="text-center py-12">
-                <p className="text-muted-foreground">No templates found</p>
+                <p className="text-muted-foreground">Không tìm thấy mẫu</p>
               </div>
             )}
           </div>

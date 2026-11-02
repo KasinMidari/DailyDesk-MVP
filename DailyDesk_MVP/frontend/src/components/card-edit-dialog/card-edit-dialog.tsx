@@ -1,3 +1,4 @@
+import { SHOW_COLLABORATION } from "@/lib/features";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import type { Card } from "@/types/card";
@@ -306,7 +307,7 @@ function InnerDialog({
           : dueAt;
 
         if (nextStart && nextDue && nextStart.getTime() > nextDue.getTime()) {
-          toast.error("Start date cannot be after due date");
+          toast.error("Ngày bắt đầu không được sau hạn chót");
           return;
         }
 
@@ -314,7 +315,7 @@ function InnerDialog({
         if (updates.dueAt !== undefined) {
           const nextDueAt = nextDue;
           if (nextDueAt && nextDueAt.getTime() < Date.now()) {
-            toast.error("Due date cannot be in the past");
+            toast.error("Hạn chót không được ở quá khứ");
             return;
           }
           setDueAt(nextDueAt);
@@ -341,14 +342,14 @@ function InnerDialog({
         : dueAt;
 
       if (nextStart && nextDue && nextStart.getTime() > nextDue.getTime()) {
-        toast.error("Start date cannot be after due date");
+        toast.error("Ngày bắt đầu không được sau hạn chót");
         return;
       }
 
       if (updates.dueAt !== undefined) {
         const nextDueAt = nextDue;
         if (nextDueAt && nextDueAt.getTime() < Date.now()) {
-          toast.error("Due date cannot be in the past");
+          toast.error("Hạn chót không được ở quá khứ");
           return;
         }
       }
@@ -697,9 +698,9 @@ function InnerDialog({
         showCloseButton={false}
       >
         <VisuallyHidden>
-          <DialogTitle>Edit Card</DialogTitle>
+          <DialogTitle>Sửa task</DialogTitle>
           <DialogDescription>
-            Edit card details, labels, members, and cover
+            Sửa chi tiết, nhãn và ảnh bìa của task
           </DialogDescription>
         </VisuallyHidden>
 
@@ -708,7 +709,7 @@ function InnerDialog({
           <div className="absolute inset-0 z-50 bg-background/80 flex items-center justify-center">
             <div className="flex flex-col items-center gap-3">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p className="text-sm text-muted-foreground">Updating card...</p>
+              <p className="text-sm text-muted-foreground">Đang cập nhật task…</p>
             </div>
           </div>
         )}
@@ -771,11 +772,11 @@ function InnerDialog({
                 triggerButton={
                   <Button variant="outline" size="sm" className="h-8">
                     <Tag className="h-4 w-4 mr-1" />
-                    Labels {card.labels && isCreateMode && card.labels.length > 0 && `(${card.labels.length})`}
+                    Nhãn {card.labels && isCreateMode && card.labels.length > 0 && `(${card.labels.length})`}
                   </Button>
                 }
               />
-              <CardMembers
+              {SHOW_COLLABORATION && <CardMembers
                 card={localCard}
                 onUpdate={handleUpdate}
                 boardId={boardId || ""}
@@ -788,7 +789,7 @@ function InnerDialog({
                     Members {card.members && isCreateMode && card.members.length > 0 && `(${card.members.length})`}
                   </Button>
                 }
-              />
+              />}
               {!localCard.startDate && !localCard.dueAt && (
                 <CardDates
                   card={localCard}
@@ -799,7 +800,7 @@ function InnerDialog({
                   triggerButton={
                     <Button variant="outline" size="sm" className="h-8">
                       <Clock className="h-4 w-4 mr-1" />
-                      Dates
+                      Ngày
                     </Button>
                   }
                 />
@@ -814,7 +815,7 @@ function InnerDialog({
                 <PopoverContent className="w-80">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <h4 className="font-medium text-sm">Attach</h4>
+                      <h4 className="font-medium text-sm">Đính kèm</h4>
                       <div className="space-y-2">
                         <Button
                           variant="outline"
@@ -826,12 +827,12 @@ function InnerDialog({
                           {uploadAttachmentMutation.isPending ? (
                             <>
                               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                              Uploading...
+                              Đang tải lên…
                             </>
                           ) : (
                             <>
                               <Paperclip className="h-4 w-4 mr-2" />
-                              Computer
+                              Máy tính
                             </>
                           )}
                         </Button>
@@ -845,11 +846,11 @@ function InnerDialog({
                       </div>
                       <div className="space-y-2 pt-2 border-t">
                         <Label htmlFor="attach-link-url" className="text-xs">
-                          Or attach a link
+                          Hoặc đính kèm link
                         </Label>
                         <Input
                           id="attach-link-url"
-                          placeholder="Paste a link..."
+                          placeholder="Dán link…"
                           value={linkUrl}
                           onChange={(e) => setLinkUrl(e.target.value)}
                           onKeyDown={(e) => {
@@ -874,7 +875,7 @@ function InnerDialog({
                               setLinkName("");
                             }}
                           >
-                            Cancel
+                            Huỷ
                           </Button>
                           <Button
                             size="sm"
@@ -884,7 +885,7 @@ function InnerDialog({
                             {createLinkMutation.isPending ? (
                               <>
                                 <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-                                Attaching...
+                                Đang đính kèm…
                               </>
                             ) : (
                               "Attach"
@@ -923,7 +924,7 @@ function InnerDialog({
 
             {(localCard.startDate || localCard.dueAt) && (
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Dates</label>
+                <label className="text-sm font-medium text-muted-foreground">Ngày</label>
                 <div className="flex flex-wrap gap-2">
                   {localCard.startDate && (
                     <Button
@@ -977,7 +978,7 @@ function InnerDialog({
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold flex items-center gap-2">
                   <Paperclip className="h-4 w-4" />
-                  Attachments
+                  Tệp đính kèm
                 </h3>
                 <div className="space-y-3">
                   {localCard.attachments.map((attachment) => {
@@ -1034,12 +1035,12 @@ function InnerDialog({
                               className="h-7 text-xs"
                               onClick={() => handleRemoveAttachment(attachment.id)}
                             >
-                              Delete
+                              Xoá
                             </Button>
                             <a href={attachment.url} download={displayName}>
                               <Button variant="ghost" size="sm" className="h-7 text-xs">
                                 <Download className="h-3 w-3 mr-1" />
-                                Download
+                                Tải xuống
                               </Button>
                             </a>
                           </div>
@@ -1072,7 +1073,7 @@ function InnerDialog({
                 {/* Header */}
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold">
-                    Comments and Activity
+                    Bình luận và hoạt động
                   </span>
                 </div>
 
@@ -1091,7 +1092,7 @@ function InnerDialog({
                 {isCreateMode && (
                   <div className="flex justify-end gap-2 pt-4 border-t mt-auto">
                     <Button variant="outline" onClick={handleClose}>
-                      Cancel
+                      Huỷ
                     </Button>
                     <Button onClick={handleCreateCard} disabled={isSubmitting}>
                       {isSubmitting ? "Creating..." : "Create Card"}

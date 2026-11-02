@@ -52,7 +52,7 @@ export default function CreateBoardDialog({
           {isSubmitting ? (
             <div className="flex flex-col items-center justify-center h-full gap-4 py-20">
               <Spinner className="size-10" />
-              <p className="text-xl font-semibold">Creating board...</p>
+              <p className="text-xl font-semibold">Đang tạo board…</p>
             </div>
           ) : (
             <DialogForm
@@ -112,7 +112,7 @@ function DialogForm({
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Create New Board</DialogTitle>
+        <DialogTitle>Tạo board mới</DialogTitle>
         <DialogDescription>
           Give your board a name and choose a background color or image. You can
           change both later.
@@ -121,7 +121,7 @@ function DialogForm({
 
       <form onSubmit={handleSubmit} className="grid gap-8 ">
         <div className="grid gap-4">
-          <Label htmlFor="board-title">Board Title</Label>
+          <Label htmlFor="board-title">Tên board</Label>
           <Input
             id="board-title"
             placeholder="e.g. Marketing Campaign 2025"
@@ -132,16 +132,16 @@ function DialogForm({
         </div>
 
         <div className="grid gap-4">
-          <Label>Background</Label>
+          <Label>Ảnh nền</Label>
           <BackgroundPicker />
         </div>
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>
-            Cancel
+            Huỷ
           </Button>
           <Button type="submit" disabled={!title.trim()}>
-            Create Board
+            Tạo board
           </Button>
         </DialogFooter>
       </form>

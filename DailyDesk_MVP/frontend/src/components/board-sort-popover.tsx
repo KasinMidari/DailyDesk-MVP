@@ -71,7 +71,7 @@ export function BoardSortPopover({
       </Tooltip>
       <PopoverContent className="w-64 p-0" align="end">
         <div className="p-3 border-b flex items-center justify-between">
-          <h3 className="font-semibold text-sm">Sort Cards</h3>
+          <h3 className="font-semibold text-sm">Sắp xếp task</h3>
           {hasActiveSort && (
             <Button
               variant="ghost"
@@ -80,7 +80,7 @@ export function BoardSortPopover({
               onClick={clearSort}
             >
               <X className="h-3 w-3 mr-1" />
-              Clear
+              Xoá
             </Button>
           )}
         </div>
@@ -90,7 +90,7 @@ export function BoardSortPopover({
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Type className="h-4 w-4" />
-              <span>By Name</span>
+              <span>Theo tên</span>
             </div>
             <div className="grid grid-cols-2 gap-1.5">
               {SORT_OPTIONS.filter((opt) => opt.category === "name").map((option) => {
@@ -121,7 +121,7 @@ export function BoardSortPopover({
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Calendar className="h-4 w-4" />
-              <span>By Due Date</span>
+              <span>Theo hạn chót</span>
             </div>
             <div className="grid grid-cols-2 gap-1.5">
               {SORT_OPTIONS.filter((opt) => opt.category === "dueDate").map((option) => {
@@ -152,7 +152,7 @@ export function BoardSortPopover({
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Clock className="h-4 w-4" />
-              <span>By Order</span>
+              <span>Theo thứ tự</span>
             </div>
             <div className="grid grid-cols-2 gap-1.5">
               {SORT_OPTIONS.filter((opt) => opt.category === "createdAt").map((option) => {

@@ -95,7 +95,7 @@ export function EventsPopup({
       <div className="flex sticky top-0 justify-between items-center p-3 border-b bg-background">
         <h3 className="font-medium">{format(date, "d MMMM yyyy")}</h3>
         <button
-          aria-label="Close"
+          aria-label="Đóng"
           className="p-1 rounded-full hover:bg-muted"
           onClick={onClose}
           type="button"
@@ -106,7 +106,7 @@ export function EventsPopup({
 
       <div className="p-3 space-y-2">
         {events.length === 0 ? (
-          <div className="py-2 text-sm text-muted-foreground">No events</div>
+          <div className="py-2 text-sm text-muted-foreground">Không có sự kiện</div>
         ) : (
           events.map((event) => {
             const eventStart = new Date(event.start);

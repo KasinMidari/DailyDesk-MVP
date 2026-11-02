@@ -297,13 +297,13 @@ function TemplateGallery() {
         value={selectedCategory} 
         onChange={(e) => setSelectedCategory(e.target.value)}
       >
-        <option value="">All Categories</option>
-        <option value="business">Business</option>
-        <option value="engineering">Engineering</option>
+        <option value="">Tất cả danh mục</option>
+        <option value="business">Kinh doanh</option>
+        <option value="engineering">Kỹ thuật</option>
         <option value="marketing">Marketing</option>
-        <option value="design">Design</option>
-        <option value="education">Education</option>
-        <option value="personal">Personal</option>
+        <option value="design">Thiết kế</option>
+        <option value="education">Học tập</option>
+        <option value="personal">Cá nhân</option>
       </select>
 
       <div className="template-grid">
@@ -388,13 +388,13 @@ function SaveAsTemplateButton({ boardId }: { boardId: string }) {
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
             >
-              <option value="business">Business</option>
-              <option value="engineering">Engineering</option>
+              <option value="business">Kinh doanh</option>
+              <option value="engineering">Kỹ thuật</option>
               <option value="marketing">Marketing</option>
-              <option value="design">Design</option>
-              <option value="education">Education</option>
-              <option value="personal">Personal</option>
-              <option value="other">Other</option>
+              <option value="design">Thiết kế</option>
+              <option value="education">Học tập</option>
+              <option value="personal">Cá nhân</option>
+              <option value="other">Khác</option>
             </select>
 
             <label>
@@ -403,12 +403,12 @@ function SaveAsTemplateButton({ boardId }: { boardId: string }) {
                 checked={formData.isPublic}
                 onChange={(e) => setFormData({ ...formData, isPublic: e.target.checked })}
               />
-              Make this template public
+              Cho mọi người dùng mẫu này
             </label>
 
             <button type="submit">Save Template</button>
             <button type="button" onClick={() => setIsOpen(false)}>
-              Cancel
+              Huỷ
             </button>
           </form>
         </div>

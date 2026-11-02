@@ -124,16 +124,16 @@ export function CardRecurrence({
   const popoverContent = (
     <div className="space-y-3 p-3 w-80">
       <div>
-        <h4 className="font-semibold mb-1">Recurrence</h4>
+        <h4 className="font-semibold mb-1">Lặp lại</h4>
         <p className="text-xs text-muted-foreground">
-          Set a recurring pattern for this card
+          Đặt lịch lặp cho task
         </p>
       </div>
 
       <div className="space-y-3">
         <div>
           <label className="text-sm font-medium mb-2 block">
-            Repeat Pattern
+            Kiểu lặp
           </label>
           <Select
             value={recurrence}
@@ -143,11 +143,11 @@ export function CardRecurrence({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="never">Never</SelectItem>
-              <SelectItem value="daily_weekdays">Daily (Monday to Friday)</SelectItem>
-              <SelectItem value="weekly">Weekly</SelectItem>
-              <SelectItem value="monthly_date">Monthly on due date</SelectItem>
-              <SelectItem value="monthly_day">Monthly on specific day</SelectItem>
+              <SelectItem value="never">Không lặp</SelectItem>
+              <SelectItem value="daily_weekdays">Hằng ngày (thứ Hai đến thứ Sáu)</SelectItem>
+              <SelectItem value="weekly">Hằng tuần</SelectItem>
+              <SelectItem value="monthly_date">Hằng tháng vào ngày đến hạn</SelectItem>
+              <SelectItem value="monthly_day">Hằng tháng vào thứ cố định</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -163,7 +163,7 @@ export function CardRecurrence({
                 onValueChange={(value) => setRecurrenceDay(Number(value))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select ordinal" />
+                  <SelectValue placeholder="Chọn tuần" />
                 </SelectTrigger>
                 <SelectContent>
                   {ORDINALS.map((ordinal, index) => (
@@ -177,14 +177,14 @@ export function CardRecurrence({
 
             <div>
               <label className="text-sm font-medium mb-2 block">
-                Day of Week
+                Thứ
               </label>
               <Select
                 value={recurrenceWeekday.toString()}
                 onValueChange={(value) => setRecurrenceWeekday(Number(value))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select day" />
+                  <SelectValue placeholder="Chọn thứ" />
                 </SelectTrigger>
                 <SelectContent>
                   {WEEKDAYS.map((day, index) => (
@@ -201,7 +201,7 @@ export function CardRecurrence({
 
       <div className="flex gap-2 pt-2 border-t">
         <Button onClick={handleSave} size="sm" className="flex-1">
-          Save
+          Lưu
         </Button>
         <Button
           onClick={() => setIsOpen(false)}
@@ -209,7 +209,7 @@ export function CardRecurrence({
           size="sm"
           className="flex-1"
         >
-          Cancel
+          Huỷ
         </Button>
       </div>
     </div>
@@ -225,7 +225,7 @@ export function CardRecurrence({
           {/* Header */}
           <div className="flex items-center gap-2">
             <Repeat className="w-5 h-5" />
-            <h3 className="font-semibold">Recurrence</h3>
+            <h3 className="font-semibold">Lặp lại</h3>
           </div>
 
           {/* Recurrence display */}

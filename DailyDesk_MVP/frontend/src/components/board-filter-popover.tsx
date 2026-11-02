@@ -114,7 +114,7 @@ export function BoardFilterPopover({
       </Tooltip>
       <PopoverContent className="w-72 p-0" align="end">
         <div className="p-3 border-b flex items-center justify-between">
-          <h3 className="font-semibold text-sm">Filter Cards</h3>
+          <h3 className="font-semibold text-sm">Lọc task</h3>
           {hasActiveFilters && (
             <Button
               variant="ghost"
@@ -123,7 +123,7 @@ export function BoardFilterPopover({
               onClick={clearFilters}
             >
               <X className="h-3 w-3 mr-1" />
-              Clear all
+              Xoá hết
             </Button>
           )}
         </div>
@@ -133,7 +133,7 @@ export function BoardFilterPopover({
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Tag className="h-4 w-4" />
-              <span>Labels</span>
+              <span>Nhãn</span>
             </div>
             {labels.length > 0 ? (
               <div className="space-y-1">
@@ -167,7 +167,7 @@ export function BoardFilterPopover({
                 })}
               </div>
             ) : (
-              <p className="text-xs text-muted-foreground italic">No labels available</p>
+              <p className="text-xs text-muted-foreground italic">Chưa có nhãn</p>
             )}
           </div>
 
@@ -177,7 +177,7 @@ export function BoardFilterPopover({
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <User className="h-4 w-4" />
-              <span>Members</span>
+              <span>Thành viên</span>
             </div>
             {members.length > 0 ? (
               <div className="space-y-1">
@@ -235,7 +235,7 @@ export function BoardFilterPopover({
                 })}
               </div>
             ) : (
-              <p className="text-xs text-muted-foreground italic">No members available</p>
+              <p className="text-xs text-muted-foreground italic">Chưa có thành viên</p>
             )}
           </div>
 
@@ -245,7 +245,7 @@ export function BoardFilterPopover({
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Calendar className="h-4 w-4" />
-              <span>Due Date</span>
+              <span>Hạn chót</span>
             </div>
             <div className="space-y-1.5">
               <div
@@ -256,7 +256,7 @@ export function BoardFilterPopover({
                   checked={filters.dueDate.includes("overdue")}
                   className="pointer-events-none"
                 />
-                <span className="text-sm text-red-500">Overdue</span>
+                <span className="text-sm text-red-500">Quá hạn</span>
               </div>
               <div
                 className="flex items-center gap-2 cursor-pointer hover:bg-accent rounded-md p-1 -m-1"
@@ -266,7 +266,7 @@ export function BoardFilterPopover({
                   checked={filters.dueDate.includes("dueSoon")}
                   className="pointer-events-none"
                 />
-                <span className="text-sm text-yellow-500">Due soon (24h)</span>
+                <span className="text-sm text-yellow-500">Sắp đến hạn (24 giờ)</span>
               </div>
               <div
                 className="flex items-center gap-2 cursor-pointer hover:bg-accent rounded-md p-1 -m-1"
@@ -276,7 +276,7 @@ export function BoardFilterPopover({
                   checked={filters.dueDate.includes("notOverdue")}
                   className="pointer-events-none"
                 />
-                <span className="text-sm text-green-500">Not overdue</span>
+                <span className="text-sm text-green-500">Chưa quá hạn</span>
               </div>
             </div>
           </div>

@@ -60,7 +60,7 @@ export function AddListForm({ onAddList }: AddListFormProps) {
         <div className="px-2 space-y-2">
           <Input
             autoFocus
-            placeholder="Enter list title..."
+            placeholder="Nhập tên danh sách…"
             value={newListTitle}
             onChange={(e) => setNewListTitle(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -68,7 +68,7 @@ export function AddListForm({ onAddList }: AddListFormProps) {
           />
           <div className="flex gap-2">
             <Button size="sm" onClick={handleAdd} disabled={!newListTitle.trim()}>
-              Add
+              Thêm
             </Button>
             <Button
               size="sm"
@@ -76,7 +76,7 @@ export function AddListForm({ onAddList }: AddListFormProps) {
               onClick={handleCancel}
               className="ml-auto"
             >
-              Cancel
+              Huỷ
             </Button>
           </div>
         </div>
@@ -91,7 +91,7 @@ export function AddListForm({ onAddList }: AddListFormProps) {
       onClick={() => setIsAddingList(true)}
     >
       <PlusIcon className="mr-2 size-4 " />
-      Add List
+      Thêm danh sách
     </Button>
   );
 }

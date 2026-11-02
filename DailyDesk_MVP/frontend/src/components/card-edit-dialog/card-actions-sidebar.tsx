@@ -1,3 +1,4 @@
+import { SHOW_COLLABORATION } from "@/lib/features";
 import {
   User,
   Tag,
@@ -45,19 +46,21 @@ export function CardActionsSidebar({
       {/* Add to card section */}
       <div className="space-y-2">
         <p className="text-xs font-semibold text-muted-foreground">
-          Add to card
+          Thêm vào task
         </p>
 
         <div className="space-y-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-full justify-start"
-            onClick={onMembersClick}
-          >
-            <User className="w-4 h-4 mr-2" />
-            Members
-          </Button>
+          {SHOW_COLLABORATION && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start"
+              onClick={onMembersClick}
+            >
+              <User className="w-4 h-4 mr-2" />
+              Thành viên
+            </Button>
+          )}
 
           <Button
             variant="ghost"
@@ -66,7 +69,7 @@ export function CardActionsSidebar({
             onClick={onLabelsClick}
           >
             <Tag className="w-4 h-4 mr-2" />
-            Labels
+            Nhãn
           </Button>
 
           <Button
@@ -76,7 +79,7 @@ export function CardActionsSidebar({
             onClick={onDatesClick}
           >
             <Clock className="w-4 h-4 mr-2" />
-            Dates
+            Ngày
           </Button>
 
           <Button
@@ -85,10 +88,10 @@ export function CardActionsSidebar({
             className="w-full justify-start"
             onClick={onAttachmentClick}
             disabled
-            title="Coming soon"
+            title="Sắp có"
           >
             <Paperclip className="w-4 h-4 mr-2" />
-            Attachment
+            Tệp đính kèm
           </Button>
 
           <Button
@@ -97,10 +100,10 @@ export function CardActionsSidebar({
             className="w-full justify-start"
             onClick={onCoverClick}
             disabled
-            title="Coming soon"
+            title="Sắp có"
           >
             <Image className="w-4 h-4 mr-2" />
-            Cover
+            Ảnh bìa
           </Button>
         </div>
       </div>
@@ -109,7 +112,7 @@ export function CardActionsSidebar({
 
       {/* Actions section */}
       <div className="space-y-2">
-        <p className="text-xs font-semibold text-muted-foreground">Actions</p>
+        <p className="text-xs font-semibold text-muted-foreground">Thao tác</p>
 
         <div className="space-y-1">
           <Button
@@ -128,10 +131,10 @@ export function CardActionsSidebar({
             className="w-full justify-start"
             onClick={onMoveClick}
             disabled
-            title="Coming soon"
+            title="Sắp có"
           >
             <ArrowRight className="w-4 h-4 mr-2" />
-            Move
+            Chuyển
           </Button>
 
           <Button
@@ -140,10 +143,10 @@ export function CardActionsSidebar({
             className="w-full justify-start"
             onClick={onCopyClick}
             disabled
-            title="Coming soon"
+            title="Sắp có"
           >
             <Copy className="w-4 h-4 mr-2" />
-            Copy
+            Sao chép
           </Button>
 
           <Button
@@ -152,10 +155,10 @@ export function CardActionsSidebar({
             className="w-full justify-start"
             onClick={onArchiveClick}
             disabled
-            title="Coming soon"
+            title="Sắp có"
           >
             <Archive className="w-4 h-4 mr-2" />
-            Archive
+            Lưu trữ
           </Button>
 
           <Separator className="my-2" />
@@ -167,7 +170,7 @@ export function CardActionsSidebar({
             onClick={onDeleteClick}
           >
             <Trash2 className="w-4 h-4 mr-2" />
-            Delete
+            Xoá
           </Button>
         </div>
       </div>

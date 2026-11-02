@@ -80,7 +80,7 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
 
   const handleAddMember = () => {
     if (!selectedUser) {
-      toast.error("Please select a user to add");
+      toast.error("Hãy chọn người cần thêm");
       return;
     }
 
@@ -146,7 +146,7 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
   };
 
   if (isLoading) {
-    return <div className="p-4">Loading...</div>;
+    return <div className="p-4">Đang tải…</div>;
   }
 
   return (
@@ -161,12 +161,12 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
             <DialogTrigger asChild>
               <Button size="sm">
                 <Plus className="h-4 w-4 mr-1" />
-                Add Member
+                Thêm thành viên
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-md">
               <DialogHeader>
-                <DialogTitle>Add New Member</DialogTitle>
+                <DialogTitle>Thêm thành viên mới</DialogTitle>
                 <DialogDescription>
                   Search and invite users to join this board
                 </DialogDescription>
@@ -204,7 +204,7 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="role">Role</Label>
+                      <Label htmlFor="role">Vai trò</Label>
                       <Select
                         value={role}
                         onValueChange={(value) =>
@@ -215,8 +215,8 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="member">Member (Can edit)</SelectItem>
-                          {isOwner && <SelectItem value="admin">Admin (Full access)</SelectItem>}
+                          <SelectItem value="member">Thành viên (được sửa)</SelectItem>
+                          {isOwner && <SelectItem value="admin">Quản trị (toàn quyền)</SelectItem>}
                         </SelectContent>
                       </Select>
                     </div>
@@ -225,12 +225,12 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
                   <div className="space-y-2">
                     <Label htmlFor="search">
                       <UserIcon className="h-4 w-4 inline mr-1" />
-                      Search Users
+                      Tìm người dùng
                     </Label>
                     <Input
                       id="search"
                       type="text"
-                      placeholder="Search by name or email..."
+                      placeholder="Tìm theo tên hoặc email…"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       autoComplete="off"
@@ -241,11 +241,11 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
                       <div className="border rounded-lg max-h-64 overflow-y-auto">
                         {isSearching ? (
                           <div className="p-4 text-center text-sm text-muted-foreground">
-                            Searching...
+                            Đang tìm…
                           </div>
                         ) : searchResults.length === 0 ? (
                           <div className="p-4 text-center text-sm text-muted-foreground">
-                            No users found
+                            Không tìm thấy người dùng
                           </div>
                         ) : (
                           <div className="p-2 space-y-1">
@@ -289,7 +289,7 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
 
                     {searchQuery.length > 0 && searchQuery.length < 2 && (
                       <p className="text-xs text-muted-foreground">
-                        Type at least 2 characters to search
+                        Gõ ít nhất 2 ký tự để tìm
                       </p>
                     )}
                   </div>
@@ -300,7 +300,7 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
                   variant="outline"
                   onClick={() => setIsAddDialogOpen(false)}
                 >
-                  Cancel
+                  Huỷ
                 </Button>
                 <Button
                   onClick={handleAddMember}
@@ -339,7 +339,7 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
               </div>
             </div>
             <span className="text-sm font-medium text-primary px-3">
-              Owner
+              Chủ board
             </span>
           </div>
         )}
@@ -347,7 +347,7 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
         {members.length === 0 && !ownerInfo ? (
           <div className="text-center py-8 text-muted-foreground">
             <Users className="h-12 w-12 mx-auto mb-2 opacity-50" />
-            <p>No members yet</p>
+            <p>Chưa có thành viên</p>
             {canManageMembers && (
               <p className="text-sm mt-1">
                 Click "Add Member" to invite others
@@ -394,8 +394,8 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="member">Member</SelectItem>
-                        {isOwner && <SelectItem value="admin">Admin</SelectItem>}
+                        <SelectItem value="member">Thành viên</SelectItem>
+                        {isOwner && <SelectItem value="admin">Quản trị</SelectItem>}
                       </SelectContent>
                     </Select>
                   ) : (

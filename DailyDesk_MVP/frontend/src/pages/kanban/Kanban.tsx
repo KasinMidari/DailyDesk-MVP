@@ -218,7 +218,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
       backgroundUrl,
     });
 
-    toast.success("Board updated!", { position: "bottom-left" });
+    toast.success("Đã cập nhật board", { position: "bottom-left" });
   };
 
   useEffect(() => {
@@ -301,7 +301,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
       await updateList(draggedColumnId, { order: newOrder });
     } catch (e) {
       console.error("Failed to reorder column:", e);
-      toast.error("Failed to reorder list", { position: "bottom-left" });
+      toast.error("Không sắp xếp lại được danh sách", { position: "bottom-left" });
     }
   };
 
@@ -361,20 +361,20 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
   const handleSaveColumnEdit = async (columnId: string, newName: string) => {
     try {
       await updateList(columnId, { name: newName });
-      toast.success("List updated!", { position: "bottom-left" });
+      toast.success("Đã cập nhật danh sách", { position: "bottom-left" });
     } catch (error) {
       console.error("Failed to update list:", error);
-      toast.error("Failed to update list", { position: "bottom-left" });
+      toast.error("Không cập nhật được danh sách", { position: "bottom-left" });
     }
   };
 
   const handleDeleteColumn = async (columnId: string) => {
     try {
       await deleteList(columnId);
-      toast.success("List deleted!", { position: "bottom-left" });
+      toast.success("Đã xoá danh sách", { position: "bottom-left" });
     } catch (error) {
       console.error("Failed to delete list:", error);
-      toast.error("Failed to delete list", { position: "bottom-left" });
+      toast.error("Không xoá được danh sách", { position: "bottom-left" });
     }
   };
 
@@ -388,7 +388,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
 
     const targetListId = event.listId || lists[0]?.id;
     if (!targetListId) {
-      toast.error("Please create a list first", { position: "bottom-left" });
+      toast.error("Hãy tạo danh sách trước", { position: "bottom-left" });
       return;
     }
 
@@ -409,10 +409,10 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
       },
       {
         onSuccess: () => {
-          toast.success("Event created", { position: "bottom-left" });
+          toast.success("Đã tạo sự kiện", { position: "bottom-left" });
         },
         onError: () => {
-          toast.error("Failed to create event", { position: "bottom-left" });
+          toast.error("Không tạo được sự kiện", { position: "bottom-left" });
         },
       },
     );
@@ -426,14 +426,14 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
     const nextStartDate = event.startDate ? new Date(event.startDate) : null;
     const nextDueAt = event.dueAt ? new Date(event.dueAt) : null;
     if (nextDueAt && nextDueAt.getTime() < Date.now()) {
-      toast.error("Failed: due date cannot be earlier than today", {
+      toast.error("Không lưu được: hạn chót không được trước hôm nay", {
         position: "bottom-left",
         className: "text-base",
       });
       return false;
     }
     if (nextStartDate && nextDueAt && nextStartDate.getTime() > nextDueAt.getTime()) {
-      toast.error("Start date cannot be after due date", { position: "bottom-left" });
+      toast.error("Ngày bắt đầu không được sau hạn chót", { position: "bottom-left" });
       return false;
     }
 
@@ -467,11 +467,11 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
 
   const handleOpenCalendarCreate = (date?: Date) => {
     if (!lists.length) {
-      toast.error("Please create a list first", { position: "bottom-left" });
+      toast.error("Hãy tạo danh sách trước", { position: "bottom-left" });
       return;
     }
     if (date && date.getTime() < Date.now()) {
-      toast.error("Due date cannot be in the past", { position: "bottom-left" });
+      toast.error("Hạn chót không được ở quá khứ", { position: "bottom-left" });
       return;
     }
     setCalendarCreateDate(date ?? null);
@@ -498,12 +498,12 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
       { boardId, cardId },
       {
         onSuccess: () => {
-          toast.success("Card deleted!", { position: "bottom-left" });
+          toast.success("Đã xoá task", { position: "bottom-left" });
           setIsCardDialogOpen(false);
           setSelectedCard(null);
         },
         onError: () => {
-          toast.error("Failed to delete card", { position: "bottom-left" });
+          toast.error("Không xoá được task", { position: "bottom-left" });
         },
       }
     );
@@ -566,7 +566,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
                 className="h-8 px-3 text-sm"
                 onClick={() => setViewMode("calendar")}
               >
-                Calendar
+                Lịch
               </Button>
             </div>
           </div>

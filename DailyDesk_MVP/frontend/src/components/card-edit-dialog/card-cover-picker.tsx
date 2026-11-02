@@ -30,7 +30,7 @@ export function CardCoverPicker({ card, onRemoveCover }: CardCoverPickerProps) {
     <div className="space-y-4 mb-5">
       <div className="flex items-center gap-2">
         <Wallpaper className="w-5 h-5" />
-        <h3 className="font-semibold">Cover</h3>
+        <h3 className="font-semibold">Ảnh bìa</h3>
       </div>
 
       <div className="flex-1">
@@ -43,7 +43,7 @@ export function CardCoverPicker({ card, onRemoveCover }: CardCoverPickerProps) {
         onClick={handleRemoveCover}
         className="w-full rounded-dm bg-white hover:bg-white/80 cursor-pointer select-none shadow-sm text-black"
       >
-        Remove Cover
+        Bỏ ảnh bìa
       </Button>
     </div>
   );

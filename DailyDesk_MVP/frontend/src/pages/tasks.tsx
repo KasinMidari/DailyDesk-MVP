@@ -251,7 +251,7 @@ export default function TasksPage() {
   if (authLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="text-lg">Loading...</div>
+        <div className="text-lg">Đang tải…</div>
       </div>
     );
   }
@@ -259,7 +259,7 @@ export default function TasksPage() {
   if (!isAuthenticated) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="text-lg">Please log in to view tasks</div>
+        <div className="text-lg">Đăng nhập để xem task</div>
       </div>
     );
   }
@@ -269,9 +269,9 @@ export default function TasksPage() {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Cards</h1>
+            <h1 className="text-4xl font-bold mb-2">Task</h1>
             <p className="text-muted-foreground">
-              View and manage all your cards across all boards
+              Xem task của mọi board theo lịch
             </p>
           </div>
           <div className="flex gap-2">
@@ -281,7 +281,7 @@ export default function TasksPage() {
               onClick={() => setViewMode("list")}
             >
               <List className="w-4 h-4 mr-2" />
-              List
+              Danh sách
             </Button>
             <Button
               variant={viewMode === "calendar" ? "default" : "outline"}
@@ -289,7 +289,7 @@ export default function TasksPage() {
               onClick={() => setViewMode("calendar")}
             >
               <CalendarDays className="w-4 h-4 mr-2" />
-              Calendar
+              Lịch
             </Button>
           </div>
         </div>
@@ -298,7 +298,7 @@ export default function TasksPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
-            placeholder="Search tasks..."
+            placeholder="Tìm task…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -308,13 +308,13 @@ export default function TasksPage() {
         <Select value={sortBy} onValueChange={setSortBy}>
           <SelectTrigger className="w-full md:w-[180px]">
             <Filter className="w-4 h-4 mr-2" />
-            <SelectValue placeholder="Sort by" />
+            <SelectValue placeholder="Sắp xếp theo" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="dueDate">Due Date</SelectItem>
-            <SelectItem value="name">Name</SelectItem>
+            <SelectItem value="dueDate">Hạn chót</SelectItem>
+            <SelectItem value="name">Tên</SelectItem>
             <SelectItem value="board">Board</SelectItem>
-            <SelectItem value="created">Created Date</SelectItem>
+            <SelectItem value="created">Ngày tạo</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -322,13 +322,13 @@ export default function TasksPage() {
       {/* Task Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <Card className="p-4">
-          <div className="text-sm text-muted-foreground mb-1">Pending</div>
+          <div className="text-sm text-muted-foreground mb-1">Đang chờ</div>
           <div className="text-2xl font-bold text-blue-600">
             {tasks?.filter((t) => !t.completed).length || 0}
           </div>
         </Card>
         <Card className="p-4">
-          <div className="text-sm text-muted-foreground mb-1">Overdue</div>
+          <div className="text-sm text-muted-foreground mb-1">Quá hạn</div>
           <div className="text-2xl font-bold text-red-600">
             {tasks?.filter((t) => {
               const dueStatus = getDueStatus(t.dueAt, t.dueComplete ?? undefined);
@@ -341,11 +341,11 @@ export default function TasksPage() {
       {/* Task List or Calendar View */}
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="text-lg">Loading tasks...</div>
+          <div className="text-lg">Đang tải task…</div>
         </div>
       ) : error ? (
         <div className="flex items-center justify-center py-12">
-          <div className="text-lg text-red-500">Error loading tasks</div>
+          <div className="text-lg text-red-500">Không tải được task</div>
         </div>
       ) : filteredAndSortedTasks.length === 0 ? (
         <div className="flex items-center justify-center py-12">
@@ -357,7 +357,7 @@ export default function TasksPage() {
             </div>
             {!searchQuery && filterStatus === "all" && (
               <p className="text-sm text-muted-foreground">
-                Create a board and add some tasks to get started
+                Tạo một board và thêm vài task để bắt đầu
               </p>
             )}
           </div>
@@ -476,7 +476,7 @@ export default function TasksPage() {
                                 {task.dueComplete && (
                                   <div className="flex items-center gap-1 text-green-600">
                                     <CheckCircle2 className="w-4 h-4" />
-                                    <span className="text-xs">Due Complete</span>
+                                    <span className="text-xs">Đã xong</span>
                                   </div>
                                 )}
 

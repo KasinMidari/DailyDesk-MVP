@@ -66,15 +66,16 @@ export function GlobalSearch() {
       {/* Search trigger button */}
       <button
         onClick={() => setOpen(true)}
-        className="relative flex-1 max-w-2xl h-10 px-3 py-2 text-sm bg-background border border-input rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-left"
+        aria-label="Tìm kiếm"
+        className="relative h-9 min-w-0 flex-1 max-w-xl rounded-md border border-input bg-card px-3 text-left text-sm transition-colors hover:bg-accent outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <div className="flex items-center gap-2">
-          <Search className="h-4 w-4 text-muted-foreground" />
-          <span className="text-muted-foreground">
-            Search for boards, cards, lists...
+          <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <span className="truncate text-muted-foreground">
+            Tìm board, task, danh sách…
           </span>
-          <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-            <span className="text-xs">⌘</span>K
+          <kbd className="ml-auto pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+            Ctrl K
           </kbd>
         </div>
       </button>
@@ -84,11 +85,11 @@ export function GlobalSearch() {
         open={open}
         onOpenChange={setOpen}
         shouldFilter={false}
-        title="Search"
-        description="Search for boards, cards, lists, and more"
+        title="Tìm"
+        description="Tìm nhanh board, task và danh sách"
       >
         <CommandInput
-          placeholder="Search for boards, cards, lists..."
+          placeholder="Tìm board, task, danh sách…"
           value={searchQuery}
           onValueChange={setSearchQuery}
         />
@@ -97,13 +98,13 @@ export function GlobalSearch() {
             <div className="py-6 text-center text-sm">
               <div className="flex items-center justify-center gap-2">
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                <span>Searching...</span>
+                <span>Đang tìm…</span>
               </div>
             </div>
           )}
 
           {!isLoading && !hasResults && debouncedQuery && (
-            <CommandEmpty>No results found</CommandEmpty>
+            <CommandEmpty>Không có kết quả</CommandEmpty>
           )}
 
           {!isLoading && hasResults && (

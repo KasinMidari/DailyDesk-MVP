@@ -93,14 +93,14 @@ export function BoardCard({
             <DropdownMenuContent align="end" onClick={handleMenuClick}>
               <DropdownMenuItem onClick={handleEdit}>
                 <Pencil className="mr-2 h-4 w-4" />
-                Edit
+                Sửa
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={handleDelete}
                 className="text-destructive focus:text-destructive"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                Xoá
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -109,7 +109,7 @@ export function BoardCard({
         {!compact && (
           <CardContent className="z-10 p-4 pt-0">
             <p className="text-sm text-white dark:text-gray-200 ">
-              Click to open board
+              Bấm để mở board
             </p>
           </CardContent>
         )}

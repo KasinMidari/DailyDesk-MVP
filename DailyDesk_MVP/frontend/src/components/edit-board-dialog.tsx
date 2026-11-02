@@ -69,7 +69,7 @@ export function EditBoardDialog({
           {isSubmitting ? (
             <div className="flex flex-col items-center justify-center h-full gap-4 py-20">
               <Spinner className="size-10" />
-              <p className="text-xl font-semibold">Updating board...</p>
+              <p className="text-xl font-semibold">Đang cập nhật board…</p>
             </div>
           ) : (
             <EditDialogForm
@@ -132,7 +132,7 @@ function EditDialogForm({
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Edit Board</DialogTitle>
+        <DialogTitle>Sửa board</DialogTitle>
         <DialogDescription>
           Update your board's name and background. Changes will be saved
           immediately.
@@ -141,7 +141,7 @@ function EditDialogForm({
 
       <form onSubmit={handleSubmit} className="grid gap-8 pb-8">
         <div className="grid gap-4">
-          <Label htmlFor="board-title">Board Title</Label>
+          <Label htmlFor="board-title">Tên board</Label>
           <Input
             id="board-title"
             placeholder="e.g. Marketing Campaign 2025"
@@ -152,16 +152,16 @@ function EditDialogForm({
         </div>
 
         <div className="grid gap-4">
-          <Label>Background</Label>
+          <Label>Ảnh nền</Label>
           <BackgroundPicker />
         </div>
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>
-            Cancel
+            Huỷ
           </Button>
           <Button type="submit" disabled={!title.trim()}>
-            Save Changes
+            Lưu thay đổi
           </Button>
         </DialogFooter>
       </form>

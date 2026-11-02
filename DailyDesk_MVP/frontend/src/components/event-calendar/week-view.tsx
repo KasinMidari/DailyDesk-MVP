@@ -244,7 +244,7 @@ export function WeekView({
           <div className="grid grid-cols-8">
             <div className="relative border-r border-border/70">
               <span className="absolute bottom-0 left-0 w-16 max-w-full h-6 text-right sm:text-xs pe-2 text-[10px] text-muted-foreground/70 sm:pe-4">
-                All day
+                Cả ngày
               </span>
             </div>
             {days.map((day, dayIndex) => {

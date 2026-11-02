@@ -130,14 +130,14 @@ export default function CreateTemplateDialog({
         {isSubmitting ? (
           <div className="flex flex-col items-center justify-center py-12 gap-4">
             <Spinner className="size-10" />
-            <p className="text-xl font-semibold">Creating template...</p>
+            <p className="text-xl font-semibold">Đang tạo mẫu…</p>
           </div>
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle>Create Board Template</DialogTitle>
+              <DialogTitle>Tạo mẫu board</DialogTitle>
               <DialogDescription>
-                Create a reusable template for your boards
+                Tạo mẫu để dùng lại cho các board sau
               </DialogDescription>
             </DialogHeader>
 
@@ -154,37 +154,37 @@ export default function CreateTemplateDialog({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Mô tả</Label>
                 <Textarea
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Describe your template..."
+                  placeholder="Mô tả mẫu…"
                   rows={2}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="category">Category</Label>
+                  <Label htmlFor="category">Danh mục</Label>
                   <Select value={category} onValueChange={setCategory}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="business">Business</SelectItem>
-                      <SelectItem value="engineering">Engineering</SelectItem>
+                      <SelectItem value="business">Kinh doanh</SelectItem>
+                      <SelectItem value="engineering">Kỹ thuật</SelectItem>
                       <SelectItem value="marketing">Marketing</SelectItem>
-                      <SelectItem value="design">Design</SelectItem>
-                      <SelectItem value="education">Education</SelectItem>
-                      <SelectItem value="personal">Personal</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="design">Thiết kế</SelectItem>
+                      <SelectItem value="education">Học tập</SelectItem>
+                      <SelectItem value="personal">Cá nhân</SelectItem>
+                      <SelectItem value="other">Khác</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="background">Background Color</Label>
+                  <Label htmlFor="background">Màu nền</Label>
                   <div className="flex gap-2">
                     <Input
                       id="background"
@@ -210,7 +210,7 @@ export default function CreateTemplateDialog({
                   onChange={(e) => setIsPublic(e.target.checked)}
                   className="rounded"
                 />
-                <Label htmlFor="isPublic">Make this template public</Label>
+                <Label htmlFor="isPublic">Cho mọi người dùng mẫu này</Label>
               </div>
 
               {/* Lists */}
@@ -224,7 +224,7 @@ export default function CreateTemplateDialog({
                     onClick={handleAddList}
                   >
                     <Plus className="size-4 mr-1" />
-                    Add List
+                    Thêm danh sách
                   </Button>
                 </div>
                 <div className="space-y-2">
@@ -251,7 +251,7 @@ export default function CreateTemplateDialog({
               {/* Labels */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label>Labels (Optional)</Label>
+                  <Label>Nhãn (không bắt buộc)</Label>
                   <Button
                     type="button"
                     variant="outline"
@@ -260,7 +260,7 @@ export default function CreateTemplateDialog({
                     disabled={labels.length >= 10}
                   >
                     <Plus className="size-4 mr-1" />
-                    Add Label
+                    Thêm nhãn
                   </Button>
                 </div>
                 <div className="space-y-2">
@@ -297,13 +297,13 @@ export default function CreateTemplateDialog({
 
             <DialogFooter>
               <Button variant="outline" onClick={() => onOpenChange(false)}>
-                Cancel
+                Huỷ
               </Button>
               <Button
                 onClick={handleSubmit}
                 disabled={!name.trim() || lists.filter((l) => l.name.trim()).length === 0}
               >
-                Create Template
+                Tạo mẫu
               </Button>
             </DialogFooter>
           </>

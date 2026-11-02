@@ -55,7 +55,7 @@ export function AllBoardsDialog({
         <div className="relative">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search boards..."
+            placeholder="Tìm board…"
             className="pl-10"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -67,7 +67,7 @@ export function AllBoardsDialog({
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 py-2">
             {filteredBoards.length === 0 ? (
               <div className="col-span-full text-center text-muted-foreground py-8">
-                No boards found
+                Không tìm thấy board
               </div>
             ) : (
               filteredBoards.map((board) => (

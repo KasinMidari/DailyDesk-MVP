@@ -108,12 +108,12 @@ export function CardLabels({ card, onUpdate, boardId, isOpen: controlledIsOpen, 
             setIsCreatingNew(false);
             setEditLabelName("");
             setEditLabelColor(LABEL_COLORS[0].color);
-            toast.success("Label created successfully!");
+            toast.success("Đã tạo nhãn");
           },
           onError: (error: any) => {
             const errorMsg = error?.message || "Failed to create label";
             if (errorMsg.includes("409") || errorMsg.includes("tồn tại") || errorMsg.includes("duplicate")) {
-              toast.error("A label with this name and color already exists");
+              toast.error("Đã có nhãn trùng tên và màu");
             } else {
               toast.error(errorMsg);
             }
@@ -161,7 +161,7 @@ export function CardLabels({ card, onUpdate, boardId, isOpen: controlledIsOpen, 
         onError: (error: any) => {
           const errorMsg = error?.message || "Failed to update label";
           if (errorMsg.includes("409") || errorMsg.includes("tồn tại") || errorMsg.includes("duplicate")) {
-            toast.error("A label with this name and color already exists");
+            toast.error("Đã có nhãn trùng tên và màu");
           } else {
             toast.error(errorMsg);
           }
@@ -205,11 +205,11 @@ export function CardLabels({ card, onUpdate, boardId, isOpen: controlledIsOpen, 
       </div>
 
       <div className="space-y-2">
-        <UILabel className="text-xs">Label Name</UILabel>
+        <UILabel className="text-xs">Tên nhãn</UILabel>
         <Input
           value={editLabelName}
           onChange={(e) => setEditLabelName(e.target.value)}
-          placeholder="Label name"
+          placeholder="Tên nhãn"
           className="h-8"
           autoFocus={isCreatingNew}
           onKeyDown={(e) => {
@@ -223,7 +223,7 @@ export function CardLabels({ card, onUpdate, boardId, isOpen: controlledIsOpen, 
       </div>
 
       <div className="space-y-2">
-        <UILabel className="text-xs">Color</UILabel>
+        <UILabel className="text-xs">Màu</UILabel>
         <div className="flex flex-wrap gap-1">
           {LABEL_COLORS.map((colorDef) => (
             <button
@@ -250,7 +250,7 @@ export function CardLabels({ card, onUpdate, boardId, isOpen: controlledIsOpen, 
     // Normal mode
     <div className="space-y-3 p-3 w-80">
       <div className="flex items-center justify-between">
-        <h4 className="font-semibold">Labels</h4>
+        <h4 className="font-semibold">Nhãn</h4>
         <Button
           variant="ghost"
           size="icon"
@@ -265,7 +265,7 @@ export function CardLabels({ card, onUpdate, boardId, isOpen: controlledIsOpen, 
       <Input
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Search labels..."
+        placeholder="Tìm nhãn…"
         className="h-8"
       />
 
@@ -273,10 +273,10 @@ export function CardLabels({ card, onUpdate, boardId, isOpen: controlledIsOpen, 
       <div className="space-y-2 max-h-60 overflow-y-auto scroll-smooth"   onWheel={(e) => {
     e.stopPropagation();
   }}>
-        <UILabel className="text-xs scro">Labels</UILabel>
+        <UILabel className="text-xs scro">Nhãn</UILabel>
         {filteredLabels.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
-            No labels found
+            Không tìm thấy nhãn
           </p>
         ) : (
           filteredLabels.map((label) => {
@@ -321,7 +321,7 @@ export function CardLabels({ card, onUpdate, boardId, isOpen: controlledIsOpen, 
           className="w-full"
           onClick={handleStartCreate}
         >
-          Create New Label
+          Tạo nhãn mới
         </Button>
       </div>
     </div>
@@ -334,7 +334,7 @@ export function CardLabels({ card, onUpdate, boardId, isOpen: controlledIsOpen, 
         <div className="space-y-2">
           {/* Header */}
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-sm">Labels</h3>
+            <h3 className="font-semibold text-sm">Nhãn</h3>
           </div>
 
           {/* Labels display */}

@@ -194,7 +194,7 @@ export function CardDates({
     }
 
     if (!boardId) {
-      toast.error("Board ID is required");
+      toast.error("Thiếu mã board");
       return;
     }
 
@@ -221,10 +221,10 @@ export function CardDates({
         repeatInterval: isRepeatEnabled ? repeatInterval : null,
       });
 
-      toast.success("Dates updated");
+      toast.success("Đã cập nhật ngày");
       setIsOpen(false);
     } catch (error) {
-      toast.error("Failed to update dates");
+      toast.error("Không cập nhật được ngày");
       console.error("❌ Update dates error:", error);
     }
   };
@@ -254,7 +254,7 @@ export function CardDates({
     }
 
     if (!boardId) {
-      toast.error("Board ID is required");
+      toast.error("Thiếu mã board");
       return;
     }
 
@@ -283,10 +283,10 @@ export function CardDates({
       setRepeatFrequency("weekly");
       setRepeatInterval(1);
 
-      toast.success("Dates removed");
+      toast.success("Đã bỏ ngày");
       setIsOpen(false);
     } catch (error) {
-      toast.error("Failed to remove dates");
+      toast.error("Không bỏ được ngày");
       console.error(error);
     }
   };
@@ -302,7 +302,7 @@ export function CardDates({
 
     // Validate: due date cannot be before today
     if (date < today) {
-      toast.error("Due date cannot be before today");
+      toast.error("Hạn chót không được trước hôm nay");
       return;
     }
 
@@ -311,7 +311,7 @@ export function CardDates({
       const startDateOnly = new Date(startDate);
       startDateOnly.setHours(0, 0, 0, 0);
       if (date < startDateOnly) {
-        toast.error("Due date cannot be before start date");
+        toast.error("Hạn chót không được trước ngày bắt đầu");
         return;
       }
     }
@@ -332,7 +332,7 @@ export function CardDates({
 
     if (!boardId) {
       setIsDueComplete(!newCompleteStatus);
-      toast.error("Board ID is required");
+      toast.error("Thiếu mã board");
       return;
     }
 
@@ -347,7 +347,7 @@ export function CardDates({
       toast.success(newCompleteStatus ? "Marked as complete" : "Marked as incomplete");
     } catch (error) {
       setIsDueComplete(!newCompleteStatus);
-      toast.error("Failed to update status");
+      toast.error("Không đổi được trạng thái");
       console.error(error);
     }
   };
@@ -418,15 +418,15 @@ export function CardDates({
     >
       <div className="space-y-3 p-3">
         <div>
-          <h4 className="font-semibold mb-1 text-sm">Dates</h4>
+          <h4 className="font-semibold mb-1 text-sm">Ngày</h4>
           <p className="text-xs text-muted-foreground">
-            Set start and due dates
+            Đặt ngày bắt đầu và hạn chót
           </p>
         </div>
 
         {/* Start Date */}
         <div className="space-y-2">
-          <Label className="text-xs font-medium">Start Date</Label>
+          <Label className="text-xs font-medium">Ngày bắt đầu</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -446,7 +446,7 @@ export function CardDates({
                     setStartDate(date);
                     if (selectedDate && date > selectedDate) {
                       handleDateSelect(date);
-                      toast.success("Due date has been adjusted");
+                      toast.success("Đã điều chỉnh hạn chót");
                     }
                   }
                 }}
@@ -466,7 +466,7 @@ export function CardDates({
 
         {/* Due Date */}
         <div className="space-y-2">
-          <Label className="text-xs font-medium">Due Date</Label>
+          <Label className="text-xs font-medium">Hạn chót</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -507,20 +507,20 @@ export function CardDates({
             htmlFor="time-enabled-popover"
             className="text-xs font-medium cursor-pointer"
           >
-            Set time
+            Đặt giờ
           </Label>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="reminder" className="text-xs font-medium">
-            Reminder
+            Nhắc nhở
           </Label>
           <Select
             value={reminderMinutes?.toString() || "null"}
             onValueChange={(value) => setReminderMinutes(value === "null" ? null : Number(value))}
           >
             <SelectTrigger id="reminder" className="w-full h-8">
-              <SelectValue placeholder="Select reminder" />
+              <SelectValue placeholder="Chọn lời nhắc" />
             </SelectTrigger>
             <SelectContent className="max-h-60 overflow-y-auto">
               {REMINDER_OPTIONS.map((option) => (
@@ -544,7 +544,7 @@ export function CardDates({
               htmlFor="repeat-enabled-popover"
               className="text-xs font-medium cursor-pointer"
             >
-              Repeat
+              Lặp lại
             </Label>
           </div>
           {isRepeatEnabled && (
@@ -654,7 +654,7 @@ export function CardDates({
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col">
           <DialogHeader>
-            <DialogTitle>Dates</DialogTitle>
+            <DialogTitle>Ngày</DialogTitle>
           </DialogHeader>
 
           <div
@@ -682,7 +682,7 @@ export function CardDates({
                 }}
               />
               <Label htmlFor="start-date-checkbox" className="text-sm font-medium">
-                Start date
+                Ngày bắt đầu
               </Label>
             </div>
             {isStartDateEnabled && (
@@ -706,7 +706,7 @@ export function CardDates({
                           setStartDate(date);
                           if (isDueDateEnabled && selectedDate && date > selectedDate) {
                             handleDateSelect(date);
-                            toast.success("Due date has been adjusted");
+                            toast.success("Đã điều chỉnh hạn chót");
                           }
                         }
                       }}
@@ -741,7 +741,7 @@ export function CardDates({
                 }}
               />
               <Label htmlFor="due-date-checkbox" className="text-sm font-medium">
-                Due date
+                Hạn chót
               </Label>
             </div>
             {isDueDateEnabled && (
@@ -766,12 +766,12 @@ export function CardDates({
                           today.setHours(0, 0, 0, 0);
 
                           if (date < today) {
-                            toast.error("Due date cannot be before today");
+                            toast.error("Hạn chót không được trước hôm nay");
                             return;
                           }
 
                           if (isStartDateEnabled && startDate && date < startDate) {
-                            toast.error("Due date cannot be before start date");
+                            toast.error("Hạn chót không được trước ngày bắt đầu");
                             return;
                           }
                           handleDateSelect(date);
@@ -804,21 +804,21 @@ export function CardDates({
               htmlFor="time-enabled-dialog"
               className="text-sm font-medium cursor-pointer"
             >
-              Set time
+              Đặt giờ
             </Label>
           </div>
 
           {isDueDateEnabled && (
             <div className="space-y-2">
               <Label htmlFor="reminder-dialog" className="text-sm font-medium">
-                Set up reminders
+                Đặt lời nhắc
               </Label>
               <Select
                 value={reminderMinutes?.toString() || "null"}
                 onValueChange={(value) => setReminderMinutes(value === "null" ? null : Number(value))}
               >
                 <SelectTrigger id="reminder-dialog" className="w-full">
-                  <SelectValue placeholder="None" />
+                  <SelectValue placeholder="Không" />
                 </SelectTrigger>
                 <SelectContent className="max-h-60 overflow-y-auto">
                   {REMINDER_OPTIONS.map((option) => (
@@ -833,7 +833,7 @@ export function CardDates({
 
           {isDueDateEnabled && reminderMinutes && (
             <p className="text-xs text-muted-foreground">
-              Reminders will be sent to all members and watchers of this card
+              Lời nhắc sẽ hiện cho task này
             </p>
           )}
 
@@ -850,7 +850,7 @@ export function CardDates({
                   htmlFor="repeat-enabled-dialog"
                   className="text-sm font-medium cursor-pointer"
                 >
-                  Repeat
+                  Lặp lại
                 </Label>
               </div>
               {isRepeatEnabled && (
@@ -915,7 +915,7 @@ export function CardDates({
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Clock className="w-5 h-5" />
-            <h3 className="font-semibold">Due Date</h3>
+            <h3 className="font-semibold">Hạn chót</h3>
           </div>
 
           <div className="pl-7 flex items-center gap-2">

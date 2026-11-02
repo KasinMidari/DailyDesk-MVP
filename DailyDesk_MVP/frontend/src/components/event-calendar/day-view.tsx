@@ -198,7 +198,7 @@ export function DayView({
           <div className="grid grid-cols-[3rem_1fr] sm:grid-cols-[4rem_1fr]">
             <div className="relative">
               <span className="absolute bottom-0 left-0 w-16 max-w-full h-6 text-right sm:text-xs pe-2 text-[10px] text-muted-foreground/70 sm:pe-4">
-                All day
+                Cả ngày
               </span>
             </div>
             <div className="relative p-1 border-r last:border-r-0 border-border/70">

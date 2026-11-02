@@ -75,7 +75,7 @@ export function CardHeader({ card, onUpdate }: CardHeaderProps) {
         className="mt-1"
         checked={isDone}
         onCheckedChange={handleToggleCompleted}
-        aria-label="Mark card as complete"
+        aria-label="Đánh dấu đã xong"
       />
 
       <div className="flex-1 min-w-0">

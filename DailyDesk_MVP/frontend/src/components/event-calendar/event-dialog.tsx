@@ -229,7 +229,7 @@ export function EventDialog({
         )}
         <div className="grid gap-4 py-4">
           <div className="*:not-first:mt-1.5">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">Tiêu đề</Label>
             <Input
               id="title"
               onChange={(e) => setTitle(e.target.value)}
@@ -239,10 +239,10 @@ export function EventDialog({
 
           {lists && lists.length > 0 && (
             <div className="*:not-first:mt-1.5">
-              <Label htmlFor="list">List</Label>
+              <Label htmlFor="list">Danh sách</Label>
               <Select onValueChange={setListId} value={listId}>
                 <SelectTrigger id="list">
-                  <SelectValue placeholder="Select a list" />
+                  <SelectValue placeholder="Chọn danh sách" />
                 </SelectTrigger>
                 <SelectContent>
                   {lists.map((list) => (
@@ -288,7 +288,7 @@ export function EventDialog({
           )}
 
           <div className="*:not-first:mt-1.5">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Mô tả</Label>
             <Textarea
               id="description"
               onChange={(e) => setDescription(e.target.value)}
@@ -298,7 +298,7 @@ export function EventDialog({
           </div>
 
           <div className="*:not-first:mt-1.5">
-            <Label>Dates</Label>
+            <Label>Ngày</Label>
             <CardDates
               card={tempCard as Card}
               createMode
@@ -311,7 +311,7 @@ export function EventDialog({
         <DialogFooter className="flex-row sm:justify-between">
           {event?.id && (
             <Button
-              aria-label="Delete event"
+              aria-label="Xoá sự kiện"
               onClick={handleDelete}
               size="icon"
               variant="outline"
@@ -321,9 +321,9 @@ export function EventDialog({
           )}
           <div className="flex flex-1 gap-2 justify-end">
             <Button onClick={onClose} variant="outline">
-              Cancel
+              Huỷ
             </Button>
-            <Button onClick={handleSave}>Save</Button>
+            <Button onClick={handleSave}>Lưu</Button>
           </div>
         </DialogFooter>
       </DialogContent>

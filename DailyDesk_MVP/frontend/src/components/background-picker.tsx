@@ -65,7 +65,7 @@ export function BackgroundPicker() {
               : "border-transparent"
           )}
         >
-          Color
+          Màu
         </button>
 
         <button
@@ -78,7 +78,7 @@ export function BackgroundPicker() {
               : "border-transparent"
           )}
         >
-          Image
+          Ảnh
         </button>
       </div>
 
@@ -116,7 +116,7 @@ export function BackgroundPicker() {
             </div>
           </div>
           <div className="flex gap-2 items-center ml-3 flex-[1]">
-            <span className="text-sm text-muted-foreground">Preview</span>
+            <span className="text-sm text-muted-foreground">Xem trước</span>
             {selectedBGIndex !== null && colorPalette[selectedBGIndex] ? (
               <div
                 className="w-full h-9 rounded-md border bg-cover bg-center"
@@ -176,7 +176,7 @@ export function BackgroundPicker() {
             >
               <CardContent className="w-full p-0 pb-1 flex items-center justify-center ">
                 <p className="text-sm font-medium text-gray-700 dark:text-white  ">
-                  Custom
+                  Tuỳ chỉnh
                 </p>
               </CardContent>
             </Card>
@@ -207,13 +207,13 @@ export function BackgroundPicker() {
                 />
               ) : (
                 <span className="text-xs text-muted-foreground select-none">
-                  No image selected
+                  Chưa chọn ảnh
                 </span>
               )}
             </div>
             {imagePreview && (
               <p className="text-xs text-muted-foreground">
-                Click preview to crop image
+                Bấm vào ảnh để cắt
               </p>
             )}
           </div>

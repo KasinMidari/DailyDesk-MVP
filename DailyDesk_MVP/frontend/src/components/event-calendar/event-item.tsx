@@ -269,7 +269,7 @@ export function EventItem({
       </div>
       <div className="text-xs opacity-70">
         {event.allDay ? (
-          <span>All day</span>
+          <span>Cả ngày</span>
         ) : (
           <span className="uppercase">
             {formatTimeWithOptionalMinutes(displayStart)} -{" "}

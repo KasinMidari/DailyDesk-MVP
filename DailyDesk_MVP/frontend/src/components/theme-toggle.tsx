@@ -21,7 +21,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={handleClick}
-      aria-label="Toggle theme"
+      aria-label="Đổi giao diện sáng/tối"
       className="relative z-50 cursor-pointer bg-transparent"
     >
       {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}

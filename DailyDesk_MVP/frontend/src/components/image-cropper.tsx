@@ -93,22 +93,22 @@ const ImageCropper = ({
     <Dialog open={open} onOpenChange={onOpenChange || handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Crop Image</DialogTitle>
+          <DialogTitle>Cắt ảnh</DialogTitle>
           <DialogDescription>
-            Adjust and crop your image to fit perfectly.
+            Kéo và cắt ảnh cho vừa khung.
           </DialogDescription>
         </DialogHeader>
 
         <div className="py-4">
           {!selectedFile || !imageUrl ? (
             <p className="text-center text-sm text-muted-foreground py-10">
-              No image selected
+              Chưa chọn ảnh
             </p>
           ) : isImageLoading ? (
             <div className="flex flex-col items-center space-y-4 py-12">
               <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
               <p className="text-sm text-muted-foreground">
-                Loading image...
+                Đang tải ảnh…
               </p>
             </div>
           ) : !croppedImage ? (
@@ -136,10 +136,10 @@ const ImageCropper = ({
                   <ImageCropContent className="max-h-[40vh] w-auto" />
                   <div className="flex justify-center gap-3 w-full">
                     <Button variant="outline" onClick={handleClose}>
-                      Cancel
+                      Huỷ
                     </Button>
                     <ImageCropApply asChild>
-                      <Button>Apply Crop</Button>
+                      <Button>Cắt ảnh</Button>
                     </ImageCropApply>
                   </div>
                 </div>
@@ -147,7 +147,7 @@ const ImageCropper = ({
             </div>
           ) : (
             <div className="flex flex-col items-center space-y-6">
-              <p className="text-sm font-medium">Cropped Preview</p>
+              <p className="text-sm font-medium">Ảnh sau khi cắt</p>
               <img
                 src={croppedImage}
                 alt="Cropped"
@@ -155,10 +155,10 @@ const ImageCropper = ({
               />
               <div className="flex gap-3">
                 <Button variant="outline" onClick={handleReset}>
-                  Start Over
+                  Làm lại
                 </Button>
                 <Button variant="outline" onClick={handleClose}>
-                  Cancel
+                  Huỷ
                 </Button>
                 <Button
                   onClick={() => {
@@ -166,7 +166,7 @@ const ImageCropper = ({
                     handleClose();
                   }}
                 >
-                  Use This Image
+                  Dùng ảnh này
                 </Button>
               </div>
             </div>

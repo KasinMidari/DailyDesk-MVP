@@ -99,7 +99,7 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
   // Handle create
   const handleCreate = () => {
     if (!dialogData.name.trim()) {
-      toast.error("Please enter a label name");
+      toast.error("Hãy nhập tên nhãn");
       return;
     }
     createLabel(
@@ -109,7 +109,7 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
           closeDialog();
         },
         onError: () => {
-          toast.error("Failed to create label");
+          toast.error("Không tạo được nhãn");
         },
       }
     );
@@ -118,7 +118,7 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
   // Handle update
   const handleUpdate = () => {
     if (!dialogData.name.trim()) {
-      toast.error("Please enter a label name");
+      toast.error("Hãy nhập tên nhãn");
       return;
     }
     if (!dialogData.id) return;
@@ -130,7 +130,7 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
           closeDialog();
         },
         onError: () => {
-          toast.error("Failed to update label");
+          toast.error("Không cập nhật được nhãn");
         },
       }
     );
@@ -142,10 +142,10 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
       { userId: selectedUserId, labelId },
       {
         onSuccess: () => {
-          toast.success("Label deleted!");
+          toast.success("Đã xoá nhãn");
         },
         onError: () => {
-          toast.error("Failed to delete label");
+          toast.error("Không xoá được nhãn");
         },
       }
     );
@@ -182,11 +182,11 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-2">
               <User className="h-4 w-4" />
-              View labels from:
+              Xem nhãn của:
             </label>
             <Select value={selectedUserId} onValueChange={setSelectedUserId}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a member" />
+                <SelectValue placeholder="Chọn thành viên" />
               </SelectTrigger>
               <SelectContent>
                 {members.map((member) => (
@@ -255,7 +255,7 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
             onClick={openCreateDialog}
           >
             <Plus className="h-4 w-4 mr-2" />
-            Create new label
+            Tạo nhãn mới
           </Button>
         )}
       </div>
@@ -277,13 +277,13 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
           <div className="space-y-4 py-4">
             {/* Label Name Input */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Name</label>
+              <label className="text-sm font-medium">Tên</label>
               <Input
                 value={dialogData.name}
                 onChange={(e) =>
                   setDialogData((prev) => ({ ...prev, name: e.target.value }))
                 }
-                placeholder="Enter label name"
+                placeholder="Nhập tên nhãn"
                 autoFocus
               />
             </div>
@@ -291,7 +291,7 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
             {/* Color Selection */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium">Color</label>
+                <label className="text-sm font-medium">Màu</label>
                 <Button
                   type="button"
                   variant="ghost"
@@ -335,7 +335,7 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
               {/* Preview */}
               <div className="mt-3">
                 <label className="text-sm text-muted-foreground mb-1 block">
-                  Preview
+                  Xem trước
                 </label>
                 <div
                   className="h-8 rounded px-3 flex items-center"
@@ -351,7 +351,7 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
 
           <DialogFooter>
             <Button variant="outline" onClick={closeDialog} disabled={isPending}>
-              Cancel
+              Huỷ
             </Button>
             <Button onClick={handleSave} disabled={isPending}>
               {isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}

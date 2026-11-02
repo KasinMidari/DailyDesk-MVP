@@ -88,10 +88,10 @@ export function AddCardForm({ columnId, cardsCount }: AddCardFormProps) {
       {
         onSuccess: () => {
           setIsCreatingFromTemplate(false);
-          toast.success("Card created from template");
+          toast.success("Đã tạo task từ mẫu");
         },
         onError: () => {
-          toast.error("Failed to create card from template");
+          toast.error("Không tạo được task từ mẫu");
           setIsCreatingFromTemplate(false);
         }
       }
@@ -104,7 +104,7 @@ export function AddCardForm({ columnId, cardsCount }: AddCardFormProps) {
       <KanbanBoardColumnFooter className="flex gap-1">
         <KanbanBoardColumnButton onClick={openDialog} className="flex-1">
           <PlusIcon className="mr-2 size-4" />
-          Add Card
+          Thêm task
         </KanbanBoardColumnButton>
         
         <Popover>
@@ -118,7 +118,7 @@ export function AddCardForm({ columnId, cardsCount }: AddCardFormProps) {
               </Button>
             </PopoverTrigger>
             <PopoverContent side="right" align="start" className="w-64 p-2">
-              <div className="text-sm font-medium mb-2 px-2 text-muted-foreground">Templates</div>
+              <div className="text-sm font-medium mb-2 px-2 text-muted-foreground">Mẫu</div>
               <div className="space-y-1">
                  <Button 
                     variant="ghost" 
@@ -126,7 +126,7 @@ export function AddCardForm({ columnId, cardsCount }: AddCardFormProps) {
                     onClick={() => setIsCreatingTemplate(true)}
                  >
                     <PlusIcon className="mr-2 h-4 w-4" />
-                    Create new template
+                    Tạo mẫu mới
                  </Button>
                  
                  {templates.length > 0 && <div className="h-px bg-border my-1" />}
@@ -153,7 +153,7 @@ export function AddCardForm({ columnId, cardsCount }: AddCardFormProps) {
                     ))}
                     {templates.length === 0 && (
                         <div className="text-xs text-muted-foreground px-2 py-4 text-center">
-                            No templates found. Create one to get started!
+                            Chưa có mẫu nào.
                         </div>
                     )}
                  </div>

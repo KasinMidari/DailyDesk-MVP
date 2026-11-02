@@ -112,9 +112,9 @@ export function CardMembers({ card, onUpdate, boardId, isOpen: controlledIsOpen,
   const popoverContent = (
     <div className="space-y-3">
       <div>
-        <h4 className="font-semibold mb-1">Members</h4>
+        <h4 className="font-semibold mb-1">Thành viên</h4>
         <p className="text-xs text-muted-foreground">
-          Assign members to this card
+          Giao task cho thành viên
         </p>
       </div>
 
@@ -122,7 +122,7 @@ export function CardMembers({ card, onUpdate, boardId, isOpen: controlledIsOpen,
       <Input
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Search members..."
+        placeholder="Tìm thành viên…"
         className="h-8"
       />
 
@@ -130,7 +130,7 @@ export function CardMembers({ card, onUpdate, boardId, isOpen: controlledIsOpen,
       <div className="space-y-1 max-h-60 overflow-y-auto">
         {filteredMembers.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
-            No members found
+            Không tìm thấy thành viên
           </p>
         ) : (
           filteredMembers.map((member) => {
@@ -176,7 +176,7 @@ export function CardMembers({ card, onUpdate, boardId, isOpen: controlledIsOpen,
         <div className="space-y-2">
           {/* Header */}
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-sm">Members</h3>
+            <h3 className="font-semibold text-sm">Thành viên</h3>
           </div>
 
           {/* Members display */}

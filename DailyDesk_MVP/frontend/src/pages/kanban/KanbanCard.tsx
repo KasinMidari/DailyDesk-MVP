@@ -219,6 +219,18 @@ export function KanbanCard({
   const shouldShowDateRow =
     !!normalizedCard.startDate || !!displayDueAt || !!normalizedCard.repeatFrequency;
 
+  const priority = (card as { priority?: "high" | "medium" | "low" | null }).priority ?? null;
+  const PriorityMark = ({ className = "" }: { className?: string }) =>
+    priority ? (
+      <span className={`inline-flex items-center gap-1 rounded-sm px-1 py-0.5 text-xs ${className}`}>
+        <span
+          aria-hidden="true"
+          className={`inline-block size-2 rounded-[2px] ${priority === "high" ? "bg-prio-high" : priority === "medium" ? "bg-prio-medium" : "bg-prio-low"}`}
+        />
+        {priority === "high" ? "Cao" : priority === "medium" ? "Vừa" : "Thấp"}
+      </span>
+    ) : null;
+
   const DateRow = ({ className }: { className: string }) => (
     <div
       className={`relative flex items-center gap-1 text-xs rounded-sm px-1 py-0.5 ${className} ${
@@ -252,7 +264,7 @@ export function KanbanCard({
                 {normalizedCard.isTemplate && (
                   <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-blue-500 text-[10px] font-medium text-white shadow-sm">
                     <LayoutTemplate className="h-3 w-3" />
-                    Template
+                    Mẫu
                   </div>
                 )}
                 <img
@@ -286,7 +298,7 @@ export function KanbanCard({
                           </div>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>{isDone ? "Mark incomplete" : "Mark complete"}</p>
+                          <p>{isDone ? "Bỏ đánh dấu xong" : "Đánh dấu xong"}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -296,7 +308,7 @@ export function KanbanCard({
                       </KanbanBoardCardTitle>
                     </div>
                   </div>
-                  {shouldShowDateRow && <DateRow className="text-white/80" />}
+                  <div className="flex flex-wrap items-center gap-1">{shouldShowDateRow && <DateRow className="text-white/80" />}<PriorityMark className="text-white/80" /></div>
                 </div>
               </div>
             ) : normalizedCard.coverColor ? (
@@ -307,7 +319,7 @@ export function KanbanCard({
                 {normalizedCard.isTemplate && (
                   <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-black/20 backdrop-blur-[1px] text-[10px] font-medium text-white shadow-sm">
                     <LayoutTemplate className="h-3 w-3" />
-                    Template
+                    Mẫu
                   </div>
                 )}
                 <div className="w-full bg-gradient-to-t from-black/70 to-transparent p-3 pt-8">
@@ -336,7 +348,7 @@ export function KanbanCard({
                           </div>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>{isDone ? "Mark incomplete" : "Mark complete"}</p>
+                          <p>{isDone ? "Bỏ đánh dấu xong" : "Đánh dấu xong"}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -346,7 +358,7 @@ export function KanbanCard({
                       </KanbanBoardCardTitle>
                     </div>
                   </div>
-                  {shouldShowDateRow && <DateRow className="text-white/80 " />}
+                  <div className="flex flex-wrap items-center gap-1">{shouldShowDateRow && <DateRow className="text-white/80 " />}<PriorityMark className="text-white/80 " /></div>
                 </div>
               </div>
             ) : (
@@ -354,7 +366,7 @@ export function KanbanCard({
                  {normalizedCard.isTemplate && (
                   <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 text-[10px] font-medium max-w-fit mb-0.5">
                     <LayoutTemplate className="h-3 w-3" />
-                    Template
+                    Mẫu
                   </div>
                 )}
                 <div className="flex items-center gap-2">
@@ -382,7 +394,7 @@ export function KanbanCard({
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>{isDone ? "Mark incomplete" : "Mark complete"}</p>
+                        <p>{isDone ? "Bỏ đánh dấu xong" : "Đánh dấu xong"}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -390,14 +402,14 @@ export function KanbanCard({
                     {normalizedCard.title}
                   </KanbanBoardCardTitle>
                 </div>
-                {shouldShowDateRow && <DateRow className="text-muted-foreground px-6" />}
+                <div className="flex flex-wrap items-center gap-1">{shouldShowDateRow && <DateRow className="text-muted-foreground px-6" />}<PriorityMark className="text-muted-foreground px-6" /></div>
               </div>
             )}
           </KanbanBoardCard>
         </ContextMenuTrigger>
         <ContextMenuContent>
-          <ContextMenuItem onClick={openCardDialog}>Edit</ContextMenuItem>
-          <ContextMenuItem onClick={handleDelete}>Remove</ContextMenuItem>
+          <ContextMenuItem onClick={openCardDialog}>Sửa</ContextMenuItem>
+          <ContextMenuItem onClick={handleDelete}>Gỡ</ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
       <ConfirmDialog />

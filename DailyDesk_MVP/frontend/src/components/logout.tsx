@@ -21,7 +21,7 @@ const LogoutButton = () => {
 
   return (
     <button onClick={handleLogout}>
-      Log Out
+      Đăng xuất
     </button>
   );
 };

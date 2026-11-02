@@ -44,15 +44,15 @@ export function DeleteBoardDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Board</AlertDialogTitle>
+          <AlertDialogTitle>Xoá board</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete <strong>"{boardName}"</strong>? This
+            Bạn chắc chắn muốn xoá <strong>"{boardName}"</strong>? This
             action cannot be undone. All lists and cards in this board will be
             permanently deleted.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isDeleting}>Huỷ</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
             disabled={isDeleting}
@@ -61,7 +61,7 @@ export function DeleteBoardDialog({
             {isDeleting ? (
               <>
                 <Spinner className="mr-2 size-4" />
-                Deleting...
+                Đang xoá…
               </>
             ) : (
               "Delete"

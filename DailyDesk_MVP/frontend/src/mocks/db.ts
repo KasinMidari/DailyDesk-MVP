@@ -25,7 +25,7 @@ export type MockDb = {
 };
 
 const STORAGE_KEY = "dailydesk-mock-db";
-const VERSION = 1;
+const VERSION = 2;
 
 /** Danh bạ người dùng giả để tìm và mời thành viên vào board. */
 export const DIRECTORY = [
@@ -64,6 +64,7 @@ export function emptyCard(): Row {
     longitude: null,
     completed: false,
     isTemplate: false,
+    priority: null as "high" | "medium" | "low" | null,
   };
 }
 
@@ -91,10 +92,12 @@ function seed(): MockDb {
     db.labels.push(row);
     return row;
   };
-  const high = label("Ưu tiên cao", "#f87168");
-  const mid = label("Ưu tiên vừa", "#f5cd47");
-  const low = label("Ưu tiên thấp", "#4bce97");
   const study = label("Học tập", "#579dff");
+  const work = label("Công việc", "#9f8fef");
+  const home = label("Cá nhân", "#4bce97");
+  const high = { priority: "high" };
+  const mid = { priority: "medium" };
+  const low = { priority: "low" };
 
   const board = (name: string, backgroundColor: string) => {
     const row = { id: uuidv7(), name, userId, backgroundColor, backgroundUrl: null, backgroundPublicId: null };
@@ -145,27 +148,27 @@ function seed(): MockDb {
   const doing = list(project.id, "Doing", 1);
   const done = list(project.id, "Done", 2);
 
-  const erd = card(todo.id, 0, "Vẽ ERD và sơ đồ Use Case", {
+  const erd = card(todo.id, 0, "Vẽ ERD và sơ đồ Use Case", { ...high, 
     description: "Hai bảng chính: users và tasks. Xuất ảnh PNG để đưa vào README.",
     dueAt: at(2),
     deadline: at(2),
-  }, [high, study]);
-  card(todo.id, 1, "Viết danh sách test case thủ công", {
+  }, [study]);
+  card(todo.id, 1, "Viết danh sách test case thủ công", { ...mid, 
     description: "Thêm / sửa / xoá / lọc / sắp xếp. Ghi kết quả pass/fail.",
     dueAt: at(4),
     deadline: at(4),
-  }, [mid, study]);
-  card(todo.id, 2, "Quay video demo 1–2 phút", { dueAt: at(6), deadline: at(6) }, [low]);
-  const api = card(doing.id, 0, "Dựng giao diện danh sách task", {
+  }, [study]);
+  card(todo.id, 2, "Quay video demo 1–2 phút", { ...low,  dueAt: at(6), deadline: at(6) }, []);
+  const api = card(doing.id, 0, "Dựng giao diện danh sách task", { ...high, 
     description: "Lọc theo trạng thái, sắp xếp theo deadline, trạng thái trống và lỗi.",
     startDate: at(-1, 8),
     dueAt: at(1),
     deadline: at(1),
     coverColor: "#579dff",
-  }, [high]);
-  card(doing.id, 1, "Viết nhật ký công việc hằng ngày", { dueAt: at(-1), deadline: at(-1) }, [mid]);
-  card(done.id, 0, "Chốt phạm vi MVP", { dueAt: at(-3), deadline: at(-3), dueComplete: true, completed: true }, [high]);
-  card(done.id, 1, "Tạo repo GitHub", { dueAt: at(-2), deadline: at(-2), dueComplete: true, completed: true }, [low]);
+  }, [work]);
+  card(doing.id, 1, "Viết nhật ký công việc hằng ngày", { ...mid,  dueAt: at(-1), deadline: at(-1) }, [work]);
+  card(done.id, 0, "Chốt phạm vi MVP", { ...high,  dueAt: at(-3), deadline: at(-3), dueComplete: true, completed: true }, []);
+  card(done.id, 1, "Tạo repo GitHub", { ...low,  dueAt: at(-2), deadline: at(-2), dueComplete: true, completed: true }, []);
 
   [
     ["Bảng users", true],
@@ -194,9 +197,9 @@ function seed(): MockDb {
   const pTodo = list(personal.id, "Todo", 0);
   const pDoing = list(personal.id, "Doing", 1);
   list(personal.id, "Done", 2);
-  card(pTodo.id, 0, "Đóng tiền điện tháng này", { dueAt: at(3, 20), deadline: at(3, 20) }, [mid]);
-  card(pTodo.id, 1, "Đặt lịch khám răng", {}, [low]);
-  card(pDoing.id, 0, "Ôn tập Cấu trúc dữ liệu", { dueAt: at(5, 9), deadline: at(5, 9) }, [study, high]);
+  card(pTodo.id, 0, "Đóng tiền điện tháng này", { ...mid,  dueAt: at(3, 20), deadline: at(3, 20) }, [home]);
+  card(pTodo.id, 1, "Đặt lịch khám răng", { ...low,  }, [home]);
+  card(pDoing.id, 0, "Ôn tập Cấu trúc dữ liệu", { ...high,  dueAt: at(5, 9), deadline: at(5, 9) }, [study]);
 
   // Mẫu board
   const tpl = (name: string, description: string, category: string, backgroundColor: string, lists: [string, string[]][]) => {
