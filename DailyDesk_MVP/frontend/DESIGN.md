@@ -171,12 +171,16 @@ Density is a working list, not a dashboard. Rows are short (12px vertical paddin
 
 The one moment of motion that matters is acknowledgement: a row that just changed stays washed in manila for a beat so the person notices it. The sign-in screen carries the same folder world in a warmer manila register.
 
+The people at this desk are Vietnamese students and office workers between classes or meetings. The system is judged by how little they have to think: every action is a visible click or a key, nothing depends on dragging, hovering, or right-clicking, and every element on screen earns its place. A screen should never feel like an empty form, and never like a spreadsheet of every field the data model holds. The rule of thumb is the paper form itself: one line per task, the facts needed to decide what to do next, and everything else one click away inside the folder.
+
 **Key Characteristics:**
 - Cool blue-grey paper ground, white sheets, navy ink; color reserved for status and priority.
 - Folder index tabs with a 3px colored lip, joined to a bordered drawer.
 - Ruled task rows divided by hairlines, grouped under sticky deadline headers.
 - Be Vietnam Pro throughout; tabular figures for every date, time, and count.
 - Gentle 8px corners, hairline borders, one soft drawer shadow.
+- Click-first operation: status, deadline, and placement change through a visible control; drag is only an accelerator.
+- Fixed information budget per row and per card; secondary detail lives in the dialog, not on the line.
 
 ## Colors
 
@@ -250,6 +254,24 @@ Spacing runs on a 4px base: 4, 8, 12, 16, 20, 24px, with 2px reserved for tab ga
 
 **The Deadline First Rule.** Lists default to nearest deadline and group under sticky deadline headers; other sorts flatten the groups.
 
+### Density budget
+
+Density is balanced, not maximal. These budgets are taken from the shipped "Việc của tôi" list, the reference surface; other surfaces conform to them.
+
+- **Page header:** H1, one status sentence of at most three facts (open count, overdue count as a link, today's date), and the one navy action. No stat tiles, no greeting, no second action row.
+- **Toolbar:** one search field plus at most three select pills (today: "Ưu tiên", "Board", "Sắp xếp") and a "Xoá bộ lọc" ghost button that appears only while a filter is active. A pill that would offer a single real choice is hidden (the Board pill already hides when there is one board).
+- **Task row:** status pill, title (one line at `lg`, two below), at most one line of description, then at most three metadata fields: board, priority, deadline. Overdue adds one "Trễ …" line under the deadline. One overflow "…" button. Nothing else belongs on a row: no labels, members, checklist progress, comment or attachment counts, cover images, or created dates.
+- **Board card (Kanban):** title (two lines max), one date line, one priority mark, optional cover. At most two metadata items under the title.
+- **Board tile (Board list):** board name plus the three Todo / Doing / Done counts, or "Chưa có task" when empty.
+- **Counts:** each number appears once per view. Folder tabs own the per-status counts; the header sentence owns open and overdue; group headers own their group size. Do not repeat a count in a footer, badge, or tooltip.
+- **Hints:** a keyboard hint appears once, next to the control it triggers (the "N" `kbd` on "Thêm task", the "/" `kbd` in search).
+
+**The Earned Element Rule.** Every element answers "what do I do next?" or "is this mine and when is it due?". If removing it would not slow the person down, it does not ship on the line; move it into the dialog.
+
+**The Not Empty, Not Crowded Rule.** The first viewport always holds the header, the filters, and real rows or a designed empty state; it never shows a lone form or a blank canvas. A row never exceeds the budget above, and a field that is unset shows a quiet placeholder ("—", "Không có hạn") rather than being dropped from a desktop column, so columns stay aligned.
+
+**The One Board Rule.** When the person has only one board, every board selector, filter, and board column is redundant and hides; the board name is still available inside the dialog.
+
 ## Elevation & Depth
 
 Mostly flat with tonal layering: paper ground, white sheet, tinted toolbar band. Shadows are soft, cool, and few; the drawer owns the only resting shadow on a page.
@@ -301,6 +323,37 @@ Quiet and competent; only one is loud.
 ### Task Row (signature)
 A ruled form line: status pill, title (15px medium, underline on hover, one line on desktop), one-line description in faded ink, then board, priority, and deadline columns. Overdue deadlines turn overdue red and medium weight with a "Trễ …" line underneath; done tasks strike through in faded ink. The row action button appears on hover/focus at `lg`. After any create, edit, or status change the row takes the manila flash (Doing soft at 70%) for 2.4s and fades over 1.6s on `cubic-bezier(0.16, 1, 0.3, 1)`.
 
+### Task Dialog
+The add/edit form ("Thêm task mới" / "Sửa task") is the single place where a task is filled in. Fields run in decision order: "Tiêu đề" (the only required field, stated in the description line "Chỉ tiêu đề là bắt buộc. Các ô khác có thể điền sau."), "Mô tả", "Hạn chót" (date button + time select, "Bỏ hạn" to clear), "Độ ưu tiên" and "Trạng thái" as segmented controls, then "Lưu vào board" only when there is more than one board. Footer: ghost destructive "Xoá task" at left; "Huỷ" outline and one navy submit at right. Errors appear under the field and focus moves to the first invalid one. The larger board card dialog follows the same order: status and priority first, then deadline and description, then labels, checklist, attachments, and cover.
+
+### Interaction model
+The person must be able to do everything with clicks and the keyboard alone.
+
+- **Change status:** one click on the status pill opens "Chuyển sang" with the three statuses; the dialog offers the same choice as a segmented control. Any surface that shows a task must offer one of these two.
+- **Change deadline:** through the "Hạn chót" field in the dialog (calendar popover plus time select). A calendar may also accept dragging an item to another day, but clicking the item must open that field.
+- **Move or reorder on a board:** a card's menu offers "Chuyển sang" with every list of the board; list order and card order have menu commands too. Drag is an accelerator on top, never the only path.
+- **Open:** clicking anywhere on a row or card opens it; Enter on the focused title does the same.
+- **Delete:** from the row or card menu or the dialog footer, then a confirm dialog ("Xoá task này?", "Giữ lại" / "Xoá task"), then a toast with "Hoàn tác".
+- **Feedback:** every mutation gets a toast in Vietnamese and, on lists, the manila row flash.
+- **Shortcuts:** N adds a task, / focuses search; both are disabled while typing or inside a dialog.
+- **Targets:** icon buttons are at least 32px (size-8) with an `aria-label`; primary actions are 40px.
+
+**The No Drag Required Rule.** Every change that dragging can make (status, list, order, date) has a visible click or keyboard path on the item or in its menu. Copy never tells the person to drag as the way to do something, and the default cursor on a working surface is never a grab hand.
+
+**The Visible Action Rule.** No action lives only behind hover or right-click. Hover may reveal a shortcut button (the row "…" at `lg`) only when the same action is reachable by opening the item; context menus may duplicate a visible menu but never replace it.
+
+**The One Status Rule.** A task has exactly one status, Todo / Doing / Done. A separate "done" checkbox that can disagree with the card's list is not allowed; ticking done means moving to Done.
+
+### Empty, loading and error states
+Each list region has four designed states, all inside the drawer so the page frame never collapses:
+
+- **Loading:** five skeleton rows shaped like real rows (pill, title bar, meta bar); never a bare "Đang tải…" line.
+- **Empty (no data yet):** 32px muted icon, a one-line headline ("Chưa có task nào"), one sentence that says what to do and why, and exactly one navy action ("Thêm task đầu tiên"). This repeats the header action where the eye already is, and is the only sanctioned exception to The One Navy Rule.
+- **Filtered empty:** search-off icon, a headline naming the cause ("Không có task nào khớp bộ lọc" or "Không có task nào ở trạng thái Doing"), the query quoted when there is one, and only outline reset actions ("Xoá bộ lọc", "Xem tất cả").
+- **Error:** destructive icon, "Không tải được …", the reason in faded ink, and an outline "Thử lại".
+
+Empty states are text and one icon, centered, 64px vertical padding. No illustrations, no marketing copy, no tips carousel.
+
 ## Do's and Don'ts
 
 ### Do:
@@ -310,6 +363,11 @@ A ruled form line: status pill, title (15px medium, underline on hover, one line
 - **Do** mark priority with the 10px square and status with dots or pills, colored only from the status and priority tokens.
 - **Do** flash a changed row in the manila wash so the change is noticed, and respect reduced motion for any added animation.
 - **Do** design every list state: skeleton rows, empty with a first action, filtered-empty with a reset, error with "Thử lại".
+- **Do** give every drag interaction a click path: a "Chuyển sang" menu for lists and status, menu commands for order, the "Hạn chót" field for dates.
+- **Do** keep a task row to status, title, one description line, and at most three metadata fields (board, priority, deadline).
+- **Do** hide a filter, column, or selector the moment it can only offer one real choice.
+- **Do** give every icon-only button an `aria-label` in Vietnamese and a 32px minimum target.
+- **Do** write all visible, toast, and screen-reader copy in Vietnamese with one spelling: "Xoá", "Huỷ", "task" (not "thẻ" or "card").
 
 ### Don't:
 - **Don't** lay tasks out as a grid of cards, or add hero metrics, gradients, or glass panels.
@@ -317,3 +375,28 @@ A ruled form line: status pill, title (15px medium, underline on hover, one line
 - **Don't** add a second resting shadow beside the drawer, or heavier shadows than the drawer's.
 - **Don't** introduce a second typeface or uppercase tracked labels.
 - **Don't** pull the manila sign-in palette into the signed-in app; it is scoped to sign-in.
+- **Don't** make any action drag-only, hover-only, or right-click-only, and don't write copy such as "Kéo … để …" that presents dragging as the way to do something.
+- **Don't** put labels, members, checklist progress, comment or attachment counts, or progress bars on task rows or board cards.
+- **Don't** repeat the same count or the same shortcut hint twice in one view.
+- **Don't** let a task carry a "done" checkbox that can disagree with its Todo / Doing / Done status.
+- **Don't** ship a bare "Đang tải…" line, an error with no "Thử lại", or an empty state with no next action.
+
+## Known Drift
+
+<!-- DRIFT LOG: recorded by /impeccable document on 2026-11-03 from the shipped code. These are violations of the rules above, not rules. Remove an item when the code is fixed. -->
+
+The reference surface ("Việc của tôi", `src/features/tasks/*`) and sign-in conform with minor exceptions. The board, board-list, calendar, and card-dialog surfaces predate this system and carry most of the drift. Ordered by impact on the person's ability to operate the app.
+
+1. **Lịch: the calendar is drag-only and mostly inert.** `src/pages/tasks.tsx` renders `EventCalendar` without `onEventSelect`, `onEventUpdate`, `onEventAdd`, or `onEventDelete`. In `src/components/event-calendar/event-calendar.tsx`, `handleEventSelect` returns early when no handler is given, so clicking a task opens nothing. Dragging shows a success toast but saves nothing, and "Thêm task" toasts without creating anything. The subtitle "Task có hạn chót của mọi board, xếp theo ngày. Kéo task sang ngày khác để đổi hạn." presents drag as the only way to change a deadline. Violates No Drag Required and Visible Action.
+2. **Board (Kanban): moving and reordering are drag-only.** Moving a card between lists, reordering cards, and reordering lists happen only through `handleDropOverColumn`, `handleDropOverListItem`, and `handleDropColumnOverColumn` in `src/pages/kanban/Kanban.tsx`. The card dialog's status control (`src/features/tasks/card-meta-controls.tsx`) reaches only lists named Todo / Doing / Done, so a custom list can only be reached by drag. The canvas uses `cursor-grab` drag-to-pan. Violates No Drag Required.
+3. **Board card: actions are right-click only.** `src/pages/kanban/KanbanCard.tsx` puts "Sửa" and "Gỡ" in a `ContextMenu` with no visible "…" button. "Gỡ" and the confirm copy "Xóa thẻ" / "Bạn có chắc chắn muốn xóa thẻ này?" break the "Xoá task" vocabulary, and there is no "Hoàn tác" toast. Violates Visible Action and the copy rule.
+4. **Board card: a second, conflicting status.** The round "Đánh dấu xong" checkbox in `KanbanCard.tsx` toggles `completed`/`dueComplete` without moving the card to Done, so a ticked card can sit in Todo. It is a `div role="checkbox" tabIndex={-1}`, so the keyboard cannot reach it. It is drawn in raw `bg-green-500` / `!text-green-600` instead of the Done token. Violates One Status and Three Tabs.
+5. **Board card and header: off-system color and material.** The "Mẫu" badge uses `bg-blue-500` / `bg-blue-100 text-blue-700`, borrowing Todo blue. Cover images use a `bg-gradient-to-t from-black/80` scrim (`KanbanCard.tsx`). The board header bar is glass (`bg-card/80 backdrop-blur-sm`) with an off-palette `bg-cyan-400` progress bar and the English tooltip "Board Progress: N%" (`src/pages/kanban/BoardHeaderBar.tsx`). "Thêm danh sách" is a `bg-black/40 backdrop-blur-md` glass button (`src/pages/kanban/AddListForm.tsx`). The floating Kanban/Lịch switcher is glass with `shadow-lg`, a second resting shadow (`Kanban.tsx`). The board color floods the whole canvas.
+6. **Board columns: clutter where it does not help, nothing where it would.** `src/pages/kanban/ColumnHeader.tsx` shows edit and delete icon buttons on every column at all times, without `aria-label`s, while the column's task count is commented out. Every column footer pairs "Thêm task" with an extra template icon button (`src/pages/kanban/AddCardForm.tsx`).
+7. **English copy in a Vietnamese UI.** Drag-and-drop screen-reader text in `src/components/kanban.tsx` ("To pick up a draggable item, press the space bar." and the `defaultAnnouncements`). Calendar toasts in `event-calendar.tsx` (`Event "…" updated/added/deleted`, `Card "…" from list "Unknown list" moved to …`). Event dialog strings in `src/components/event-calendar/event-dialog.tsx` ("Pick a start date or due date", "Due date cannot be before start date", "Edit the details of this card", "Add a new card to your calendar"). `createLabel="New card"` in `Kanban.tsx`. "Attach" and "Link name (optional)" in `src/components/card-edit-dialog/card-edit-dialog.tsx`. `AllBoardsDialog` titles "All My Boards (n)" / "All Invited Boards (n)" and raw role badges ("admin", "member") in `src/Home.tsx`.
+8. **Lịch: states not designed; status hues reused.** `src/pages/tasks.tsx` shows a bare "Đang tải task…" line, an error ("Không tải được task") with no "Thử lại", and an empty state ("Chưa có task nào có hạn chót") with no action. Events are colored `sky` / `amber` / `rose` / `emerald` by due state, so amber "sắp đến hạn" reads as Doing and the hues are raw Tailwind, not tokens.
+9. **Card dialog: secondary features before the core decision.** In `card-edit-dialog.tsx` the "Nhãn", "Ngày", "Đính kèm", and "Lưu làm mẫu" button row sits above "Trạng thái" / "Độ ưu tiên". The active "Mẫu" toggle becomes a second filled navy button. The cover and close icon buttons have no `aria-label`. The dialog is fixed at 1200 × 600px with a 500px minimum main column, which crowds small laptops and overflows phones.
+10. **Board list: the create action is not a button.** In `src/Home.tsx`, "Tạo board mới" is a clickable dashed `Card` div that the keyboard cannot reach, and the view has no navy primary action. "Mở gần đây" repeats boards already shown in "Board của tôi". A search that matches no owned board shows no "no match" message (only the invited section has one).
+11. **Việc của tôi: hand-formatted date.** The header date in `src/features/tasks/tasks-page.tsx` uses date-fns `"EEEE d/M"` ("Thứ Hai 2/11") instead of the shared helpers in `src/lib/date.ts`. Violates The Tabular Clock Rule.
+12. **Việc của tôi: redundant board column.** `TaskRow` and the column header in `tasks-page.tsx` always show the board, even when there is one board and the Board pill is already hidden. Violates The One Board Rule.
+13. **Việc của tôi: repeated hints (low).** The footer line "Hiển thị x/y task · Bấm vào một dòng để sửa · Phím tắt: N thêm task, / tìm kiếm" repeats the shortcut hints already shown as `kbd` on the "Thêm task" button and in the search field (`tasks-page.tsx`).

@@ -4,59 +4,347 @@
   "title": "Design System: DailyDesk",
   "extensions": {
     "colorMeta": {
-      "paper": { "role": "neutral", "displayName": "Office Paper", "canonical": "oklch(0.982 0.004 240)", "dark": "oklch(0.2 0.018 258)", "tonalRamp": ["oklch(0.2 0.01 240)", "oklch(0.32 0.01 240)", "oklch(0.45 0.01 240)", "oklch(0.58 0.008 240)", "oklch(0.7 0.007 240)", "oklch(0.82 0.006 240)", "oklch(0.92 0.005 240)", "oklch(0.982 0.004 240)"] },
-      "sheet": { "role": "neutral", "displayName": "White Sheet", "canonical": "oklch(1 0 0)", "dark": "oklch(0.24 0.02 258)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.3 0 0)", "oklch(0.45 0 0)", "oklch(0.6 0 0)", "oklch(0.75 0 0)", "oklch(0.87 0 0)", "oklch(0.95 0 0)", "oklch(1 0 0)"] },
-      "ink": { "role": "neutral", "displayName": "Navy Ink", "canonical": "oklch(0.25 0.03 258)", "dark": "oklch(0.94 0.01 245)", "tonalRamp": ["oklch(0.15 0.02 258)", "oklch(0.25 0.03 258)", "oklch(0.37 0.03 258)", "oklch(0.5 0.025 258)", "oklch(0.63 0.02 258)", "oklch(0.75 0.015 258)", "oklch(0.86 0.01 258)", "oklch(0.95 0.005 258)"] },
-      "ink-soft": { "role": "neutral", "displayName": "Faded Ink", "canonical": "oklch(0.49 0.025 258)", "dark": "oklch(0.74 0.02 250)", "tonalRamp": ["oklch(0.18 0.015 258)", "oklch(0.3 0.02 258)", "oklch(0.4 0.025 258)", "oklch(0.49 0.025 258)", "oklch(0.6 0.02 258)", "oklch(0.72 0.015 258)", "oklch(0.84 0.01 258)", "oklch(0.95 0.005 258)"] },
-      "navy": { "role": "primary", "displayName": "Folder Navy", "canonical": "oklch(0.38 0.1 258)", "dark": "oklch(0.8 0.09 250)", "tonalRamp": ["oklch(0.18 0.06 258)", "oklch(0.28 0.09 258)", "oklch(0.38 0.1 258)", "oklch(0.5 0.1 258)", "oklch(0.62 0.08 258)", "oklch(0.74 0.06 258)", "oklch(0.86 0.035 258)", "oklch(0.95 0.015 258)"] },
-      "navy-foreground": { "role": "neutral", "displayName": "On Navy", "canonical": "oklch(0.99 0 0)", "dark": "oklch(0.2 0.03 258)" },
-      "drawer-tint": { "role": "neutral", "displayName": "Drawer Tint", "canonical": "oklch(0.955 0.008 245)", "dark": "oklch(0.28 0.02 258)" },
-      "hover-wash": { "role": "neutral", "displayName": "Hover Wash", "canonical": "oklch(0.945 0.016 245)", "dark": "oklch(0.3 0.025 258)" },
-      "hairline": { "role": "neutral", "displayName": "Hairline", "canonical": "oklch(0.9 0.012 245)", "dark": "oklch(1 0 0 / 0.09)" },
-      "field-edge": { "role": "neutral", "displayName": "Field Edge", "canonical": "oklch(0.87 0.014 245)", "dark": "oklch(1 0 0 / 0.14)" },
-      "focus-blue": { "role": "neutral", "displayName": "Focus Blue", "canonical": "oklch(0.58 0.13 255)", "dark": "oklch(0.7 0.11 250)" },
-      "sidebar-paper": { "role": "neutral", "displayName": "Sidebar Paper", "canonical": "oklch(0.965 0.007 245)", "dark": "oklch(0.175 0.017 258)" },
-      "sidebar-active": { "role": "neutral", "displayName": "Sidebar Active", "canonical": "oklch(0.925 0.02 245)", "dark": "oklch(0.27 0.025 258)" },
-      "tab-todo": { "role": "secondary", "displayName": "Todo Blue", "canonical": "oklch(0.5 0.12 250)", "dark": "oklch(0.8 0.09 245)", "tonalRamp": ["oklch(0.2 0.06 250)", "oklch(0.32 0.09 250)", "oklch(0.42 0.11 250)", "oklch(0.5 0.12 250)", "oklch(0.62 0.1 250)", "oklch(0.74 0.07 250)", "oklch(0.86 0.045 250)", "oklch(0.94 0.035 245)"] },
-      "tab-todo-soft": { "role": "secondary", "displayName": "Todo Wash", "canonical": "oklch(0.94 0.035 245)", "dark": "oklch(0.32 0.05 250)" },
-      "tab-doing": { "role": "secondary", "displayName": "Manila Amber", "canonical": "oklch(0.52 0.12 62)", "dark": "oklch(0.84 0.12 82)", "tonalRamp": ["oklch(0.22 0.05 62)", "oklch(0.33 0.08 62)", "oklch(0.43 0.1 62)", "oklch(0.52 0.12 62)", "oklch(0.64 0.12 72)", "oklch(0.76 0.11 80)", "oklch(0.87 0.09 85)", "oklch(0.94 0.07 85)"] },
-      "tab-doing-soft": { "role": "secondary", "displayName": "Manila Wash", "canonical": "oklch(0.94 0.07 85)", "dark": "oklch(0.34 0.06 70)" },
-      "tab-done": { "role": "secondary", "displayName": "Ledger Green", "canonical": "oklch(0.48 0.1 155)", "dark": "oklch(0.8 0.1 155)", "tonalRamp": ["oklch(0.2 0.05 155)", "oklch(0.3 0.07 155)", "oklch(0.4 0.09 155)", "oklch(0.48 0.1 155)", "oklch(0.6 0.09 155)", "oklch(0.72 0.07 155)", "oklch(0.85 0.05 155)", "oklch(0.94 0.045 155)"] },
-      "tab-done-soft": { "role": "secondary", "displayName": "Ledger Wash", "canonical": "oklch(0.94 0.045 155)", "dark": "oklch(0.31 0.05 155)" },
-      "prio-high": { "role": "tertiary", "displayName": "Stamp Red", "canonical": "oklch(0.55 0.19 28)", "dark": "oklch(0.72 0.16 28)", "tonalRamp": ["oklch(0.22 0.08 28)", "oklch(0.33 0.12 28)", "oklch(0.44 0.16 28)", "oklch(0.55 0.19 28)", "oklch(0.66 0.15 28)", "oklch(0.77 0.1 28)", "oklch(0.87 0.06 28)", "oklch(0.95 0.025 28)"] },
-      "prio-medium": { "role": "tertiary", "displayName": "Ochre", "canonical": "oklch(0.62 0.14 70)", "dark": "oklch(0.8 0.13 78)" },
-      "prio-low": { "role": "tertiary", "displayName": "Slate", "canonical": "oklch(0.6 0.03 250)", "dark": "oklch(0.7 0.03 250)" },
-      "overdue": { "role": "tertiary", "displayName": "Overdue Red", "canonical": "oklch(0.53 0.19 27)", "dark": "oklch(0.72 0.16 27)" },
-      "destructive": { "role": "tertiary", "displayName": "Destructive Red", "canonical": "oklch(0.56 0.2 27)", "dark": "oklch(0.68 0.17 25)" },
-      "manila-panel": { "role": "neutral", "displayName": "Manila Cover (sign-in only)", "canonical": "oklch(0.94 0.065 90)", "dark": "oklch(0.255 0.03 80)" },
-      "manila-sheet": { "role": "neutral", "displayName": "Manila Sheet (sign-in only)", "canonical": "oklch(0.995 0.004 90)", "dark": "oklch(0.285 0.022 75)" },
-      "manila-ink": { "role": "neutral", "displayName": "Manila Ink (sign-in only)", "canonical": "oklch(0.27 0.035 60)", "dark": "oklch(0.96 0.015 90)" }
+      "paper": {
+        "role": "neutral",
+        "displayName": "Office Paper",
+        "canonical": "oklch(0.982 0.004 240)",
+        "dark": "oklch(0.2 0.018 258)",
+        "tonalRamp": [
+          "oklch(0.2 0.01 240)",
+          "oklch(0.32 0.01 240)",
+          "oklch(0.45 0.01 240)",
+          "oklch(0.58 0.008 240)",
+          "oklch(0.7 0.007 240)",
+          "oklch(0.82 0.006 240)",
+          "oklch(0.92 0.005 240)",
+          "oklch(0.982 0.004 240)"
+        ]
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "White Sheet",
+        "canonical": "oklch(1 0 0)",
+        "dark": "oklch(0.24 0.02 258)",
+        "tonalRamp": [
+          "oklch(0.15 0 0)",
+          "oklch(0.3 0 0)",
+          "oklch(0.45 0 0)",
+          "oklch(0.6 0 0)",
+          "oklch(0.75 0 0)",
+          "oklch(0.87 0 0)",
+          "oklch(0.95 0 0)",
+          "oklch(1 0 0)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Navy Ink",
+        "canonical": "oklch(0.25 0.03 258)",
+        "dark": "oklch(0.94 0.01 245)",
+        "tonalRamp": [
+          "oklch(0.15 0.02 258)",
+          "oklch(0.25 0.03 258)",
+          "oklch(0.37 0.03 258)",
+          "oklch(0.5 0.025 258)",
+          "oklch(0.63 0.02 258)",
+          "oklch(0.75 0.015 258)",
+          "oklch(0.86 0.01 258)",
+          "oklch(0.95 0.005 258)"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Faded Ink",
+        "canonical": "oklch(0.49 0.025 258)",
+        "dark": "oklch(0.74 0.02 250)",
+        "tonalRamp": [
+          "oklch(0.18 0.015 258)",
+          "oklch(0.3 0.02 258)",
+          "oklch(0.4 0.025 258)",
+          "oklch(0.49 0.025 258)",
+          "oklch(0.6 0.02 258)",
+          "oklch(0.72 0.015 258)",
+          "oklch(0.84 0.01 258)",
+          "oklch(0.95 0.005 258)"
+        ]
+      },
+      "navy": {
+        "role": "primary",
+        "displayName": "Folder Navy",
+        "canonical": "oklch(0.38 0.1 258)",
+        "dark": "oklch(0.8 0.09 250)",
+        "tonalRamp": [
+          "oklch(0.18 0.06 258)",
+          "oklch(0.28 0.09 258)",
+          "oklch(0.38 0.1 258)",
+          "oklch(0.5 0.1 258)",
+          "oklch(0.62 0.08 258)",
+          "oklch(0.74 0.06 258)",
+          "oklch(0.86 0.035 258)",
+          "oklch(0.95 0.015 258)"
+        ]
+      },
+      "navy-foreground": {
+        "role": "neutral",
+        "displayName": "On Navy",
+        "canonical": "oklch(0.99 0 0)",
+        "dark": "oklch(0.2 0.03 258)"
+      },
+      "drawer-tint": {
+        "role": "neutral",
+        "displayName": "Drawer Tint",
+        "canonical": "oklch(0.955 0.008 245)",
+        "dark": "oklch(0.28 0.02 258)"
+      },
+      "hover-wash": {
+        "role": "neutral",
+        "displayName": "Hover Wash",
+        "canonical": "oklch(0.945 0.016 245)",
+        "dark": "oklch(0.3 0.025 258)"
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(0.9 0.012 245)",
+        "dark": "oklch(1 0 0 / 0.09)"
+      },
+      "field-edge": {
+        "role": "neutral",
+        "displayName": "Field Edge",
+        "canonical": "oklch(0.87 0.014 245)",
+        "dark": "oklch(1 0 0 / 0.14)"
+      },
+      "focus-blue": {
+        "role": "neutral",
+        "displayName": "Focus Blue",
+        "canonical": "oklch(0.58 0.13 255)",
+        "dark": "oklch(0.7 0.11 250)"
+      },
+      "sidebar-paper": {
+        "role": "neutral",
+        "displayName": "Sidebar Paper",
+        "canonical": "oklch(0.965 0.007 245)",
+        "dark": "oklch(0.175 0.017 258)"
+      },
+      "sidebar-active": {
+        "role": "neutral",
+        "displayName": "Sidebar Active",
+        "canonical": "oklch(0.925 0.02 245)",
+        "dark": "oklch(0.27 0.025 258)"
+      },
+      "tab-todo": {
+        "role": "secondary",
+        "displayName": "Todo Blue",
+        "canonical": "oklch(0.5 0.12 250)",
+        "dark": "oklch(0.8 0.09 245)",
+        "tonalRamp": [
+          "oklch(0.2 0.06 250)",
+          "oklch(0.32 0.09 250)",
+          "oklch(0.42 0.11 250)",
+          "oklch(0.5 0.12 250)",
+          "oklch(0.62 0.1 250)",
+          "oklch(0.74 0.07 250)",
+          "oklch(0.86 0.045 250)",
+          "oklch(0.94 0.035 245)"
+        ]
+      },
+      "tab-todo-soft": {
+        "role": "secondary",
+        "displayName": "Todo Wash",
+        "canonical": "oklch(0.94 0.035 245)",
+        "dark": "oklch(0.32 0.05 250)"
+      },
+      "tab-doing": {
+        "role": "secondary",
+        "displayName": "Manila Amber",
+        "canonical": "oklch(0.52 0.12 62)",
+        "dark": "oklch(0.84 0.12 82)",
+        "tonalRamp": [
+          "oklch(0.22 0.05 62)",
+          "oklch(0.33 0.08 62)",
+          "oklch(0.43 0.1 62)",
+          "oklch(0.52 0.12 62)",
+          "oklch(0.64 0.12 72)",
+          "oklch(0.76 0.11 80)",
+          "oklch(0.87 0.09 85)",
+          "oklch(0.94 0.07 85)"
+        ]
+      },
+      "tab-doing-soft": {
+        "role": "secondary",
+        "displayName": "Manila Wash",
+        "canonical": "oklch(0.94 0.07 85)",
+        "dark": "oklch(0.34 0.06 70)"
+      },
+      "tab-done": {
+        "role": "secondary",
+        "displayName": "Ledger Green",
+        "canonical": "oklch(0.48 0.1 155)",
+        "dark": "oklch(0.8 0.1 155)",
+        "tonalRamp": [
+          "oklch(0.2 0.05 155)",
+          "oklch(0.3 0.07 155)",
+          "oklch(0.4 0.09 155)",
+          "oklch(0.48 0.1 155)",
+          "oklch(0.6 0.09 155)",
+          "oklch(0.72 0.07 155)",
+          "oklch(0.85 0.05 155)",
+          "oklch(0.94 0.045 155)"
+        ]
+      },
+      "tab-done-soft": {
+        "role": "secondary",
+        "displayName": "Ledger Wash",
+        "canonical": "oklch(0.94 0.045 155)",
+        "dark": "oklch(0.31 0.05 155)"
+      },
+      "prio-high": {
+        "role": "tertiary",
+        "displayName": "Stamp Red",
+        "canonical": "oklch(0.55 0.19 28)",
+        "dark": "oklch(0.72 0.16 28)",
+        "tonalRamp": [
+          "oklch(0.22 0.08 28)",
+          "oklch(0.33 0.12 28)",
+          "oklch(0.44 0.16 28)",
+          "oklch(0.55 0.19 28)",
+          "oklch(0.66 0.15 28)",
+          "oklch(0.77 0.1 28)",
+          "oklch(0.87 0.06 28)",
+          "oklch(0.95 0.025 28)"
+        ]
+      },
+      "prio-medium": {
+        "role": "tertiary",
+        "displayName": "Ochre",
+        "canonical": "oklch(0.62 0.14 70)",
+        "dark": "oklch(0.8 0.13 78)"
+      },
+      "prio-low": {
+        "role": "tertiary",
+        "displayName": "Slate",
+        "canonical": "oklch(0.6 0.03 250)",
+        "dark": "oklch(0.7 0.03 250)"
+      },
+      "overdue": {
+        "role": "tertiary",
+        "displayName": "Overdue Red",
+        "canonical": "oklch(0.53 0.19 27)",
+        "dark": "oklch(0.72 0.16 27)"
+      },
+      "destructive": {
+        "role": "tertiary",
+        "displayName": "Destructive Red",
+        "canonical": "oklch(0.56 0.2 27)",
+        "dark": "oklch(0.68 0.17 25)"
+      },
+      "manila-panel": {
+        "role": "neutral",
+        "displayName": "Manila Cover (sign-in only)",
+        "canonical": "oklch(0.94 0.065 90)",
+        "dark": "oklch(0.255 0.03 80)"
+      },
+      "manila-sheet": {
+        "role": "neutral",
+        "displayName": "Manila Sheet (sign-in only)",
+        "canonical": "oklch(0.995 0.004 90)",
+        "dark": "oklch(0.285 0.022 75)"
+      },
+      "manila-ink": {
+        "role": "neutral",
+        "displayName": "Manila Ink (sign-in only)",
+        "canonical": "oklch(0.27 0.035 60)",
+        "dark": "oklch(0.96 0.015 90)"
+      }
     },
     "typographyMeta": {
-      "headline": { "displayName": "Headline", "purpose": "Page H1 (\"Việc của tôi\"); 24px mobile, 28px desktop. Sign-in H1 30–36px at the same weight." },
-      "title": { "displayName": "Title", "purpose": "Dialog titles (\"Thêm task mới\", \"Sửa task\")." },
-      "body-strong": { "displayName": "Body strong", "purpose": "Task titles in rows, board card titles (600), input text." },
-      "body": { "displayName": "Body", "purpose": "Descriptions, filter pills, field labels (500), header status line." },
-      "meta": { "displayName": "Meta", "purpose": "Tabular row meta on narrow screens and board card counts." },
-      "label": { "displayName": "Label", "purpose": "Sentence-case deadline group headers; column headers at 500." }
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page H1 (\"Việc của tôi\"); 24px mobile, 28px desktop. Sign-in H1 30–36px at the same weight."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Dialog titles (\"Thêm task mới\", \"Sửa task\")."
+      },
+      "body-strong": {
+        "displayName": "Body strong",
+        "purpose": "Task titles in rows, board card titles (600), input text."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Descriptions, filter pills, field labels (500), header status line."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Tabular row meta on narrow screens and board card counts."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Sentence-case deadline group headers; column headers at 500."
+      }
     },
     "shadows": [
-      { "name": "drawer", "value": "0 1px 2px rgb(0 0 0/0.04), 0 8px 24px -12px rgb(15 23 42/0.12)", "purpose": "The task drawer under the folder tabs; the one resting shadow per view." },
-      { "name": "card-lift", "value": "0 6px 18px -10px rgb(15 23 42/0.25)", "purpose": "Board cards on hover only." },
-      { "name": "raised-option", "value": "0 1px 2px rgb(0 0 0/0.08)", "purpose": "Selected option in a segmented control." },
-      { "name": "field-inset", "value": "inset 0 1px 0 rgb(0 0 0/0.02)", "purpose": "Text inputs." },
-      { "name": "signin-sheet", "value": "0 18px 40px -18px oklch(0.55 0.11 70 / 0.45)", "purpose": "Preview sheet on the manila sign-in panel." }
+      {
+        "name": "drawer",
+        "value": "0 1px 2px rgb(0 0 0/0.04), 0 8px 24px -12px rgb(15 23 42/0.12)",
+        "purpose": "The task drawer under the folder tabs; the one resting shadow per view."
+      },
+      {
+        "name": "card-lift",
+        "value": "0 6px 18px -10px rgb(15 23 42/0.25)",
+        "purpose": "Board cards on hover only."
+      },
+      {
+        "name": "raised-option",
+        "value": "0 1px 2px rgb(0 0 0/0.08)",
+        "purpose": "Selected option in a segmented control."
+      },
+      {
+        "name": "field-inset",
+        "value": "inset 0 1px 0 rgb(0 0 0/0.02)",
+        "purpose": "Text inputs."
+      },
+      {
+        "name": "signin-sheet",
+        "value": "0 18px 40px -18px oklch(0.55 0.11 70 / 0.45)",
+        "purpose": "Preview sheet on the manila sign-in panel."
+      }
     ],
     "motion": [
-      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Acknowledgement motion: row flash fade, sign-in check and pill swap." },
-      { "name": "row-flash", "value": "hold 2400ms, fade background 1.6s ease-out-expo", "purpose": "A changed row keeps the manila wash (Doing soft at 70%) until noticed." },
-      { "name": "control-hover", "value": "150ms ease-out (Tailwind transition-colors default)", "purpose": "Hover and focus color shifts on tabs, pills, rows." },
-      { "name": "signin-moment", "value": "420ms check / 360ms pill swap, 1.4–1.55s delay, prefers-reduced-motion: no-preference only", "purpose": "The single sign-in moment: the Doing task is marked Done." }
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Acknowledgement motion: row flash fade, sign-in check and pill swap."
+      },
+      {
+        "name": "row-flash",
+        "value": "hold 2400ms, fade background 1.6s ease-out-expo",
+        "purpose": "A changed row keeps the manila wash (Doing soft at 70%) until noticed."
+      },
+      {
+        "name": "control-hover",
+        "value": "150ms ease-out (Tailwind transition-colors default)",
+        "purpose": "Hover and focus color shifts on tabs, pills, rows."
+      },
+      {
+        "name": "signin-moment",
+        "value": "420ms check / 360ms pill swap, 1.4–1.55s delay, prefers-reduced-motion: no-preference only",
+        "purpose": "The single sign-in moment: the Doing task is marked Done."
+      }
     ],
     "breakpoints": [
-      { "name": "sm", "value": "640px" },
-      { "name": "md", "value": "768px" },
-      { "name": "lg", "value": "1024px" }
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
     ]
   },
   "components": [
@@ -139,26 +427,94 @@
       "description": "Left sidebar with the three destinations; active item on a deeper paper tone.",
       "html": "<nav class=\"ds-nav\"><span class=\"ds-nav-brand\">DailyDesk</span><a class=\"ds-nav-item ds-nav-item--on\" href=\"#\">Việc của tôi</a><a class=\"ds-nav-item\" href=\"#\">Lịch</a><a class=\"ds-nav-item\" href=\"#\">Board</a></nav>",
       "css": ".ds-nav { display: flex; flex-direction: column; gap: 2px; width: 220px; padding: 16px 12px; background: var(--sidebar, oklch(0.965 0.007 245)); color: var(--sidebar-foreground, oklch(0.3 0.03 258)); font-family: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif; } .ds-nav-brand { padding: 4px 8px 12px; font-size: 15px; font-weight: 600; letter-spacing: -0.025em; } .ds-nav-item { display: flex; align-items: center; height: 36px; padding: 0 8px; border-radius: calc(var(--radius, 0.5rem) - 2px); color: inherit; text-decoration: none; font-size: 14px; font-weight: 500; transition: background-color 150ms ease-out; } .ds-nav-item:hover { background: var(--sidebar-accent, oklch(0.925 0.02 245)); } .ds-nav-item:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--sidebar-ring, oklch(0.58 0.13 255)); } .ds-nav-item--on { background: var(--sidebar-accent, oklch(0.925 0.02 245)); color: var(--sidebar-accent-foreground, oklch(0.25 0.06 258)); }"
+    },
+    {
+      "name": "Empty State",
+      "kind": "custom",
+      "refersTo": "drawer",
+      "description": "Designed empty list inside the drawer: 32px muted icon, one-line headline, one sentence of next step, exactly one action.",
+      "html": "<div class=\"ds-empty\"><svg class=\"ds-empty-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5\"/><path d=\"M16 2v4\"/><path d=\"M8 2v4\"/><path d=\"M3 10h5\"/><path d=\"M17.5 17.5 16 16.3V14\"/><circle cx=\"16\" cy=\"16\" r=\"6\"/></svg><p class=\"ds-empty-title\">Chưa có task nào</p><p class=\"ds-empty-body\">Thêm việc đầu tiên, đặt hạn chót và mức ưu tiên để biết nên làm gì trước.</p><button class=\"ds-empty-action\" type=\"button\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg>Thêm task đầu tiên</button></div>",
+      "css": ".ds-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 64px 24px; text-align: center; background: var(--card, oklch(1 0 0)); color: var(--foreground, oklch(0.25 0.03 258)); border: 1px solid var(--border, oklch(0.9 0.012 245)); border-radius: 12px; font-family: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif; } .ds-empty-icon { width: 32px; height: 32px; color: var(--muted-foreground, oklch(0.49 0.025 258)); } .ds-empty-title { margin: 0; font-weight: 500; font-size: 15px; } .ds-empty-body { margin: -8px 0 0; max-width: 24rem; font-size: 14px; color: var(--muted-foreground, oklch(0.49 0.025 258)); } .ds-empty-action { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; border: none; border-radius: 6px; background: var(--primary, oklch(0.38 0.1 258)); color: var(--primary-foreground, oklch(0.99 0 0)); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; transition: background-color 150ms ease-out; } .ds-empty-action:hover { background: color-mix(in oklch, var(--primary, oklch(0.38 0.1 258)) 90%, transparent); } .ds-empty-action:focus-visible { outline: 2px solid var(--ring, oklch(0.58 0.13 255)); outline-offset: 2px; }"
     }
   ],
   "narrative": {
     "northStar": "The Office File Folder",
-    "overview": "DailyDesk is a filing cabinet drawer on cool office paper. Status is a set of folder index tabs physically joined to the drawer below them; each task is one ruled line on a form inside that drawer. Text and the one primary action are written in navy ink. Everything else is paper, hairlines, and three tab hues that mean exactly one thing each: Todo, Doing, Done.\n\nDensity is a working list, not a dashboard. Rows are short (12px vertical padding), metadata sits in fixed columns on desktop and folds under the title on narrow screens, and deadline is the default order of everything. The system rejects card grids for tasks, hero metrics, gradients, and glass: depth comes from one soft drawer shadow and tonal paper steps.\n\nThe one moment of motion that matters is acknowledgement: a row that just changed stays washed in manila for a beat so the person notices it. The sign-in screen carries the same folder world in a warmer manila register.",
+    "overview": "DailyDesk is a filing cabinet drawer on cool office paper. Status is a set of folder index tabs physically joined to the drawer below them; each task is one ruled line on a form inside that drawer. Text and the one primary action are written in navy ink. Everything else is paper, hairlines, and three tab hues that mean exactly one thing each: Todo, Doing, Done.\n\nDensity is a working list, not a dashboard. Rows are short (12px vertical padding), metadata sits in fixed columns on desktop and folds under the title on narrow screens, and deadline is the default order of everything. The system rejects card grids for tasks, hero metrics, gradients, and glass: depth comes from one soft drawer shadow and tonal paper steps.\n\nThe one moment of motion that matters is acknowledgement: a row that just changed stays washed in manila for a beat so the person notices it. The sign-in screen carries the same folder world in a warmer manila register.\n\nThe people at this desk are Vietnamese students and office workers between classes or meetings. The system is judged by how little they have to think: every action is a visible click or a key, nothing depends on dragging, hovering, or right-clicking, and every element on screen earns its place. A screen should never feel like an empty form, and never like a spreadsheet of every field the data model holds. The rule of thumb is the paper form itself: one line per task, the facts needed to decide what to do next, and everything else one click away inside the folder.",
     "keyCharacteristics": [
       "Cool blue-grey paper ground, white sheets, navy ink; color reserved for status and priority.",
       "Folder index tabs with a 3px colored lip, joined to a bordered drawer.",
       "Ruled task rows divided by hairlines, grouped under sticky deadline headers.",
       "Be Vietnam Pro throughout; tabular figures for every date, time, and count.",
-      "Gentle 8px corners, hairline borders, one soft drawer shadow."
+      "Gentle 8px corners, hairline borders, one soft drawer shadow.",
+      "Click-first operation: status, deadline, and placement change through a visible control; drag is only an accelerator.",
+      "Fixed information budget per row and per card; secondary detail lives in the dialog, not on the line."
     ],
     "rules": [
-      { "name": "The Three Tabs Rule", "body": "Blue, amber, and green mean Todo, Doing, Done, and nothing else. A new feature may not borrow a status hue for decoration.", "section": "colors" },
-      { "name": "The One Navy Rule", "body": "Each view has one filled navy button. Secondary actions are outline or ghost.", "section": "colors" },
-      { "name": "The Square Means Priority Rule", "body": "Priority is a 10px rounded square (3px radius); status is a round dot or pill. The shapes never swap.", "section": "colors" },
-      { "name": "The Tabular Clock Rule", "body": "Every date, time, and count is set with tabular figures and the shared Vietnamese formats: \"Hôm nay\", \"Ngày mai\", \"T4, 4/11\", \"T4, 4/11, 17:00\", \"Tháng 11, 2026\". Do not hand-format dates in a component.", "section": "typography" },
-      { "name": "The No Small Caps Rule", "body": "Labels are sentence case at 12px; the system has no uppercase tracked micro-labels.", "section": "typography" },
-      { "name": "The Deadline First Rule", "body": "Lists default to nearest deadline and group under sticky deadline headers; other sorts flatten the groups.", "section": "layout" },
-      { "name": "The One Drawer Rule", "body": "One resting shadow per view, on the drawer. Everything else is flat until hovered or selected.", "section": "elevation" }
+      {
+        "name": "The Three Tabs Rule",
+        "body": "Blue, amber, and green mean Todo, Doing, Done, and nothing else. A new feature may not borrow a status hue for decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Navy Rule",
+        "body": "Each view has one filled navy button. Secondary actions are outline or ghost.",
+        "section": "colors"
+      },
+      {
+        "name": "The Square Means Priority Rule",
+        "body": "Priority is a 10px rounded square (3px radius); status is a round dot or pill. The shapes never swap.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Clock Rule",
+        "body": "Every date, time, and count is set with tabular figures and the shared Vietnamese formats: \"Hôm nay\", \"Ngày mai\", \"T4, 4/11\", \"T4, 4/11, 17:00\", \"Tháng 11, 2026\". Do not hand-format dates in a component.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Small Caps Rule",
+        "body": "Labels are sentence case at 12px; the system has no uppercase tracked micro-labels.",
+        "section": "typography"
+      },
+      {
+        "name": "The Deadline First Rule",
+        "body": "Lists default to nearest deadline and group under sticky deadline headers; other sorts flatten the groups.",
+        "section": "layout"
+      },
+      {
+        "name": "The Earned Element Rule",
+        "body": "Every element answers \"what do I do next?\" or \"is this mine and when is it due?\". If removing it would not slow the person down, it does not ship on the line; move it into the dialog.",
+        "section": "layout"
+      },
+      {
+        "name": "The Not Empty, Not Crowded Rule",
+        "body": "The first viewport always holds the header, the filters, and real rows or a designed empty state; it never shows a lone form or a blank canvas. A row never exceeds the budget above, and a field that is unset shows a quiet placeholder (\"—\", \"Không có hạn\") rather than being dropped from a desktop column, so columns stay aligned.",
+        "section": "layout"
+      },
+      {
+        "name": "The One Board Rule",
+        "body": "When the person has only one board, every board selector, filter, and board column is redundant and hides; the board name is still available inside the dialog.",
+        "section": "layout"
+      },
+      {
+        "name": "The One Drawer Rule",
+        "body": "One resting shadow per view, on the drawer. Everything else is flat until hovered or selected.",
+        "section": "elevation"
+      },
+      {
+        "name": "The No Drag Required Rule",
+        "body": "Every change that dragging can make (status, list, order, date) has a visible click or keyboard path on the item or in its menu. Copy never tells the person to drag as the way to do something, and the default cursor on a working surface is never a grab hand.",
+        "section": "components"
+      },
+      {
+        "name": "The Visible Action Rule",
+        "body": "No action lives only behind hover or right-click. Hover may reveal a shortcut button (the row \"…\" at `lg`) only when the same action is reachable by opening the item; context menus may duplicate a visible menu but never replace it.",
+        "section": "components"
+      },
+      {
+        "name": "The One Status Rule",
+        "body": "A task has exactly one status, Todo / Doing / Done. A separate \"done\" checkbox that can disagree with the card's list is not allowed; ticking done means moving to Done.",
+        "section": "components"
+      }
     ],
     "dos": [
       "Do join status tabs to the drawer with the -1px overlap and a 3px status lip on the active tab.",
@@ -166,14 +522,78 @@
       "Do keep one filled navy button per view and make everything else outline or ghost.",
       "Do mark priority with the 10px square and status with dots or pills, colored only from the status and priority tokens.",
       "Do flash a changed row in the manila wash so the change is noticed, and respect reduced motion for any added animation.",
-      "Do design every list state: skeleton rows, empty with a first action, filtered-empty with a reset, error with \"Thử lại\"."
+      "Do design every list state: skeleton rows, empty with a first action, filtered-empty with a reset, error with \"Thử lại\".",
+      "Do give every drag interaction a click path: a \"Chuyển sang\" menu for lists and status, menu commands for order, the \"Hạn chót\" field for dates.",
+      "Do keep a task row to status, title, one description line, and at most three metadata fields (board, priority, deadline).",
+      "Do hide a filter, column, or selector the moment it can only offer one real choice.",
+      "Do give every icon-only button an `aria-label` in Vietnamese and a 32px minimum target.",
+      "Do write all visible, toast, and screen-reader copy in Vietnamese with one spelling: \"Xoá\", \"Huỷ\", \"task\" (not \"thẻ\" or \"card\")."
     ],
     "donts": [
       "Don't lay tasks out as a grid of cards, or add hero metrics, gradients, or glass panels.",
       "Don't use a status hue (blue, amber, green) for anything that is not that status.",
       "Don't add a second resting shadow beside the drawer, or heavier shadows than the drawer's.",
       "Don't introduce a second typeface or uppercase tracked labels.",
-      "Don't pull the manila sign-in palette into the signed-in app; it is scoped to sign-in."
+      "Don't pull the manila sign-in palette into the signed-in app; it is scoped to sign-in.",
+      "Don't make any action drag-only, hover-only, or right-click-only, and don't write copy such as \"Kéo … để …\" that presents dragging as the way to do something.",
+      "Don't put labels, members, checklist progress, comment or attachment counts, or progress bars on task rows or board cards.",
+      "Don't repeat the same count or the same shortcut hint twice in one view.",
+      "Don't let a task carry a \"done\" checkbox that can disagree with its Todo / Doing / Done status.",
+      "Don't ship a bare \"Đang tải…\" line, an error with no \"Thử lại\", or an empty state with no next action."
+    ],
+    "knownDrift": [
+      {
+        "title": "Lịch: the calendar is drag-only and mostly inert",
+        "detail": "`src/pages/tasks.tsx` renders `EventCalendar` without `onEventSelect`, `onEventUpdate`, `onEventAdd`, or `onEventDelete`. In `src/components/event-calendar/event-calendar.tsx`, `handleEventSelect` returns early when no handler is given, so clicking a task opens nothing. Dragging shows a success toast but saves nothing, and \"Thêm task\" toasts without creating anything. The subtitle \"Task có hạn chót của mọi board, xếp theo ngày. Kéo task sang ngày khác để đổi hạn.\" presents drag as the only way to change a deadline. Violates No Drag Required and Visible Action."
+      },
+      {
+        "title": "Board (Kanban): moving and reordering are drag-only",
+        "detail": "Moving a card between lists, reordering cards, and reordering lists happen only through `handleDropOverColumn`, `handleDropOverListItem`, and `handleDropColumnOverColumn` in `src/pages/kanban/Kanban.tsx`. The card dialog's status control (`src/features/tasks/card-meta-controls.tsx`) reaches only lists named Todo / Doing / Done, so a custom list can only be reached by drag. The canvas uses `cursor-grab` drag-to-pan. Violates No Drag Required."
+      },
+      {
+        "title": "Board card: actions are right-click only",
+        "detail": "`src/pages/kanban/KanbanCard.tsx` puts \"Sửa\" and \"Gỡ\" in a `ContextMenu` with no visible \"…\" button. \"Gỡ\" and the confirm copy \"Xóa thẻ\" / \"Bạn có chắc chắn muốn xóa thẻ này?\" break the \"Xoá task\" vocabulary, and there is no \"Hoàn tác\" toast. Violates Visible Action and the copy rule."
+      },
+      {
+        "title": "Board card: a second, conflicting status",
+        "detail": "The round \"Đánh dấu xong\" checkbox in `KanbanCard.tsx` toggles `completed`/`dueComplete` without moving the card to Done, so a ticked card can sit in Todo. It is a `div role=\"checkbox\" tabIndex={-1}`, so the keyboard cannot reach it. It is drawn in raw `bg-green-500` / `!text-green-600` instead of the Done token. Violates One Status and Three Tabs."
+      },
+      {
+        "title": "Board card and header: off-system color and material",
+        "detail": "The \"Mẫu\" badge uses `bg-blue-500` / `bg-blue-100 text-blue-700`, borrowing Todo blue. Cover images use a `bg-gradient-to-t from-black/80` scrim (`KanbanCard.tsx`). The board header bar is glass (`bg-card/80 backdrop-blur-sm`) with an off-palette `bg-cyan-400` progress bar and the English tooltip \"Board Progress: N%\" (`src/pages/kanban/BoardHeaderBar.tsx`). \"Thêm danh sách\" is a `bg-black/40 backdrop-blur-md` glass button (`src/pages/kanban/AddListForm.tsx`). The floating Kanban/Lịch switcher is glass with `shadow-lg`, a second resting shadow (`Kanban.tsx`). The board color floods the whole canvas."
+      },
+      {
+        "title": "Board columns: clutter where it does not help, nothing where it would",
+        "detail": "`src/pages/kanban/ColumnHeader.tsx` shows edit and delete icon buttons on every column at all times, without `aria-label`s, while the column's task count is commented out. Every column footer pairs \"Thêm task\" with an extra template icon button (`src/pages/kanban/AddCardForm.tsx`)."
+      },
+      {
+        "title": "English copy in a Vietnamese UI",
+        "detail": "Drag-and-drop screen-reader text in `src/components/kanban.tsx` (\"To pick up a draggable item, press the space bar.\" and the `defaultAnnouncements`). Calendar toasts in `event-calendar.tsx` (`Event \"…\" updated/added/deleted`, `Card \"…\" from list \"Unknown list\" moved to …`). Event dialog strings in `src/components/event-calendar/event-dialog.tsx` (\"Pick a start date or due date\", \"Due date cannot be before start date\", \"Edit the details of this card\", \"Add a new card to your calendar\"). `createLabel=\"New card\"` in `Kanban.tsx`. \"Attach\" and \"Link name (optional)\" in `src/components/card-edit-dialog/card-edit-dialog.tsx`. `AllBoardsDialog` titles \"All My Boards (n)\" / \"All Invited Boards (n)\" and raw role badges (\"admin\", \"member\") in `src/Home.tsx`."
+      },
+      {
+        "title": "Lịch: states not designed; status hues reused",
+        "detail": "`src/pages/tasks.tsx` shows a bare \"Đang tải task…\" line, an error (\"Không tải được task\") with no \"Thử lại\", and an empty state (\"Chưa có task nào có hạn chót\") with no action. Events are colored `sky` / `amber` / `rose` / `emerald` by due state, so amber \"sắp đến hạn\" reads as Doing and the hues are raw Tailwind, not tokens."
+      },
+      {
+        "title": "Card dialog: secondary features before the core decision",
+        "detail": "In `card-edit-dialog.tsx` the \"Nhãn\", \"Ngày\", \"Đính kèm\", and \"Lưu làm mẫu\" button row sits above \"Trạng thái\" / \"Độ ưu tiên\". The active \"Mẫu\" toggle becomes a second filled navy button. The cover and close icon buttons have no `aria-label`. The dialog is fixed at 1200 × 600px with a 500px minimum main column, which crowds small laptops and overflows phones."
+      },
+      {
+        "title": "Board list: the create action is not a button",
+        "detail": "In `src/Home.tsx`, \"Tạo board mới\" is a clickable dashed `Card` div that the keyboard cannot reach, and the view has no navy primary action. \"Mở gần đây\" repeats boards already shown in \"Board của tôi\". A search that matches no owned board shows no \"no match\" message (only the invited section has one)."
+      },
+      {
+        "title": "Việc của tôi: hand-formatted date",
+        "detail": "The header date in `src/features/tasks/tasks-page.tsx` uses date-fns `\"EEEE d/M\"` (\"Thứ Hai 2/11\") instead of the shared helpers in `src/lib/date.ts`. Violates The Tabular Clock Rule."
+      },
+      {
+        "title": "Việc của tôi: redundant board column",
+        "detail": "`TaskRow` and the column header in `tasks-page.tsx` always show the board, even when there is one board and the Board pill is already hidden. Violates The One Board Rule."
+      },
+      {
+        "title": "Việc của tôi: repeated hints (low)",
+        "detail": "The footer line \"Hiển thị x/y task · Bấm vào một dòng để sửa · Phím tắt: N thêm task, / tìm kiếm\" repeats the shortcut hints already shown as `kbd` on the \"Thêm task\" button and in the search field (`tasks-page.tsx`)."
+      }
     ]
   }
 }
