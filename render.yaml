@@ -1,0 +1,27 @@
+# Render Blueprint: backend DailyDesk (Web Service miễn phí).
+# Dữ liệu nằm trên Turso; điền DATABASE_URL, DATABASE_AUTH_TOKEN, GOOGLE_CLIENT_ID, CORS_ORIGIN trên dashboard.
+services:
+  - type: web
+    name: dailydesk-api
+    runtime: node
+    plan: free
+    rootDir: DailyDesk_MVP/backend
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
+    startCommand: node dist/index.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_AUTH_TOKEN
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: AUTH_DEV_LOGIN
+        value: "true"

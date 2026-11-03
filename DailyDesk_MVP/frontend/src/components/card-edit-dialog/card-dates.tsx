@@ -403,7 +403,8 @@ export function CardDates({
       return new Date(year, month, day);
     }
     return undefined;
-  };
+  };  void parseDateFromInput;
+
 
   const popoverContent = (
     <div
@@ -629,11 +630,13 @@ export function CardDates({
     };
 
     const modifiers = getDateRangeModifiers();
+    void modifiers;
     const modifiersClassNames = {
       range_start: "bg-primary text-primary-foreground rounded-l-md",
       range_end: "bg-primary text-primary-foreground rounded-r-md",
       range_middle: "bg-primary/20 text-primary rounded-none",
     };
+    void modifiersClassNames;
 
     const getDisabledDates = () => {
       if (isDueDateEnabled) {

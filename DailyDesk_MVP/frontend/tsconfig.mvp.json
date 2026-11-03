@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.mvp.tsbuildinfo"
+  },
+  "include": ["src/features/**/*", "src/lib/**/*", "src/mocks/**/*", "src/pages/tasks.tsx", "src/vite-env.d.ts"]
+}

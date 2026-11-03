@@ -31,12 +31,12 @@
 
 **Purpose**: Khởi tạo backend và sửa những gì đang chặn CI ở frontend.
 
-- [ ] T001 Tạo thư mục `DailyDesk_MVP/backend/` với `package.json` (`"type": "module"`, `"packageManager": "pnpm@10.24.0"`, `engines.node: ">=22"`), scripts `dev` (`tsx watch src/index.ts`), `build` (`tsc -p tsconfig.json`), `start` (`node dist/index.js`), `test` (`vitest run`), `typecheck` (`tsc --noEmit`), `db:push` (`drizzle-kit push`); cài deps `hono @hono/node-server drizzle-orm @libsql/client zod jose uuidv7` và devDeps `typescript tsx vitest drizzle-kit @types/node`
-- [ ] T002 [P] Tạo `DailyDesk_MVP/backend/tsconfig.json` (target ES2022, module NodeNext, strict, outDir `dist`, rootDir `src`) và `DailyDesk_MVP/backend/vitest.config.ts` (environment node, include `tests/**/*.test.ts`)
-- [ ] T003 [P] Tạo `DailyDesk_MVP/backend/.env.example` với `PORT=3000`, `DATABASE_URL=file:./data/dailydesk.db`, `DATABASE_AUTH_TOKEN=`, `SESSION_SECRET=change-me-32-chars-min`, `GOOGLE_CLIENT_ID=`, `AUTH_DEV_LOGIN=true`, `CORS_ORIGIN=http://localhost:5173`, và `DailyDesk_MVP/backend/.gitignore` (`node_modules`, `dist`, `data`, `.env`)
-- [ ] T004 [P] Sửa `DailyDesk_MVP/frontend/package.json`: `"build": "vite build"` (bỏ `tsc -b` vì còn ~48 lỗi kiểu có sẵn từ code cũ), thêm `"typecheck:mvp": "tsc -p tsconfig.mvp.json"`, `"test": "vitest run"`; cài devDep `vitest`
-- [ ] T005 [P] Tạo `DailyDesk_MVP/frontend/tsconfig.mvp.json` kế thừa `tsconfig.app.json` nhưng `include` chỉ `src/features/**`, `src/lib/**`, `src/mocks/**`, `src/pages/tasks.tsx` (phần code mới viết, hiện sạch lỗi), để CI kiểm tra kiểu mà không bị chặn bởi lỗi cũ
-- [ ] T006 [P] Tạo `DailyDesk_MVP/frontend/.env.example` với `VITE_USE_MOCK=true`, `VITE_BACKEND_URL=http://localhost:3000`, `VITE_GOOGLE_CLIENT_ID=`
+- [X] T001 Tạo thư mục `DailyDesk_MVP/backend/` với `package.json` (`"type": "module"`, `"packageManager": "pnpm@10.24.0"`, `engines.node: ">=22"`), scripts `dev` (`tsx watch src/index.ts`), `build` (`tsc -p tsconfig.json`), `start` (`node dist/index.js`), `test` (`vitest run`), `typecheck` (`tsc --noEmit`), `db:push` (`drizzle-kit push`); cài deps `hono @hono/node-server drizzle-orm @libsql/client zod jose uuidv7` và devDeps `typescript tsx vitest drizzle-kit @types/node`
+- [X] T002 [P] Tạo `DailyDesk_MVP/backend/tsconfig.json` (target ES2022, module NodeNext, strict, outDir `dist`, rootDir `src`) và `DailyDesk_MVP/backend/vitest.config.ts` (environment node, include `tests/**/*.test.ts`)
+- [X] T003 [P] Tạo `DailyDesk_MVP/backend/.env.example` với `PORT=3000`, `DATABASE_URL=file:./data/dailydesk.db`, `DATABASE_AUTH_TOKEN=`, `SESSION_SECRET=change-me-32-chars-min`, `GOOGLE_CLIENT_ID=`, `AUTH_DEV_LOGIN=true`, `CORS_ORIGIN=http://localhost:5173`, và `DailyDesk_MVP/backend/.gitignore` (`node_modules`, `dist`, `data`, `.env`)
+- [X] T004 [P] Sửa `DailyDesk_MVP/frontend/package.json`: `"build": "vite build"` (bỏ `tsc -b` vì còn ~48 lỗi kiểu có sẵn từ code cũ), thêm `"typecheck:mvp": "tsc -p tsconfig.mvp.json"`, `"test": "vitest run"`; cài devDep `vitest`
+- [X] T005 [P] Tạo `DailyDesk_MVP/frontend/tsconfig.mvp.json` kế thừa `tsconfig.app.json` nhưng `include` chỉ `src/features/**`, `src/lib/**`, `src/mocks/**`, `src/pages/tasks.tsx` (phần code mới viết, hiện sạch lỗi), để CI kiểm tra kiểu mà không bị chặn bởi lỗi cũ
+- [X] T006 [P] Tạo `DailyDesk_MVP/frontend/.env.example` với `VITE_USE_MOCK=true`, `VITE_BACKEND_URL=http://localhost:3000`, `VITE_GOOGLE_CLIENT_ID=`
 
 ---
 
@@ -44,8 +44,8 @@
 
 **Purpose**: Hạ tầng dùng chung cho mọi story. **⚠️ Chưa xong phase này thì chưa làm story nào.**
 
-- [ ] T007 Viết `DailyDesk_MVP/backend/src/env.ts`: đọc biến môi trường bằng zod. `SESSION_SECRET` ≥ 32 ký tự; `AUTH_DEV_LOGIN` là boolean, mặc định `false`; `CORS_ORIGIN` là danh sách phân tách bằng dấu phẩy. Thiếu biến bắt buộc thì dừng với thông báo rõ ràng
-- [ ] T008 Viết `DailyDesk_MVP/backend/src/db/schema.ts` theo `data-model.md`:
+- [X] T007 Viết `DailyDesk_MVP/backend/src/env.ts`: đọc biến môi trường bằng zod. `SESSION_SECRET` ≥ 32 ký tự; `AUTH_DEV_LOGIN` là boolean, mặc định `false`; `CORS_ORIGIN` là danh sách phân tách bằng dấu phẩy. Thiếu biến bắt buộc thì dừng với thông báo rõ ràng
+- [X] T008 Viết `DailyDesk_MVP/backend/src/db/schema.ts` theo `data-model.md`:
   - `users`: `google_sub` unique not null, `email` not null, `name` not null, `avatar_url` null
   - `boards`: `user_id` FK cascade, `name` not null, `background_color` null, `background_url` null, `is_default` int 0/1
   - `lists`: `board_id` FK cascade, `name` not null, `order` int not null
@@ -53,8 +53,8 @@
   - `labels`, `card_labels` (PK kép), `checklist_items`, `comments`, `activities`
   - Thời gian `created_at`/`updated_at` dạng ISO text
   - Index: `boards(user_id)`, `lists(board_id)`, `cards(list_id)`, `cards(due_at)`
-- [ ] T009 [P] Viết `DailyDesk_MVP/backend/src/db/client.ts` (tạo libsql client từ `DATABASE_URL` + `DATABASE_AUTH_TOKEN`, export `createDb(url)` để test dùng `:memory:`) và `DailyDesk_MVP/backend/drizzle.config.ts`
-- [ ] T010 [P] Viết `DailyDesk_MVP/backend/src/validation.ts` (zod), thông báo tiếng Việt đúng câu chữ của frontend:
+- [X] T009 [P] Viết `DailyDesk_MVP/backend/src/db/client.ts` (tạo libsql client từ `DATABASE_URL` + `DATABASE_AUTH_TOKEN`, export `createDb(url)` để test dùng `:memory:`) và `DailyDesk_MVP/backend/drizzle.config.ts`
+- [X] T010 [P] Viết `DailyDesk_MVP/backend/src/validation.ts` (zod), thông báo tiếng Việt đúng câu chữ của frontend:
   - name: "tiêu đề cắt khoảng trắng còn 1–200 ký tự", lỗi `"Hãy nhập tiêu đề cho task."` hoặc `"Tiêu đề tối đa 200 ký tự."`
   - description: "≤ 2000 ký tự", lỗi `"Mô tả tối đa 2000 ký tự."`
   - priority: "∈ high / medium / low"
@@ -62,22 +62,22 @@
   - board/list name: "1–100 ký tự"
   - comment: "1–5000"
   - Helper `toFieldErrors(zodError)` trả về `{ message: "Dữ liệu chưa hợp lệ", fields }`
-- [ ] T011 [P] Viết `DailyDesk_MVP/backend/src/auth/session.ts`: ký/kiểm JWT HS256 bằng `jose`, payload `{ sub: userId }`, hạn 7 ngày
-- [ ] T012 Viết `DailyDesk_MVP/backend/src/auth/middleware.ts` `requireUser`: đọc `Authorization: Bearer`, kiểm token, `c.set("userId")`. Thiếu hoặc sai thì `401 { message: "Bạn cần đăng nhập" }` (phụ thuộc T011)
-- [ ] T013 Viết `DailyDesk_MVP/backend/src/app.ts` `createApp({ db, env })`:
+- [X] T011 [P] Viết `DailyDesk_MVP/backend/src/auth/session.ts`: ký/kiểm JWT HS256 bằng `jose`, payload `{ sub: userId }`, hạn 7 ngày
+- [X] T012 Viết `DailyDesk_MVP/backend/src/auth/middleware.ts` `requireUser`: đọc `Authorization: Bearer`, kiểm token, `c.set("userId")`. Thiếu hoặc sai thì `401 { message: "Bạn cần đăng nhập" }` (phụ thuộc T011)
+- [X] T013 Viết `DailyDesk_MVP/backend/src/app.ts` `createApp({ db, env })`:
   - CORS theo `CORS_ORIGIN`, logger
   - `GET /health` → `{ ok: true }`
   - `onError`: `HttpError` → status + `{ message }`; `ZodError` → 400 `fields`; còn lại → `500 { message: "Có lỗi xảy ra, vui lòng thử lại" }`, không lộ stack
   - Gắn router rỗng cho các nhóm route
-- [ ] T014 Viết `DailyDesk_MVP/backend/src/index.ts`: đọc env, tạo db, `serve(createApp(...), { port })`
-- [ ] T015 Viết `DailyDesk_MVP/backend/src/services/access.ts`:
+- [X] T014 Viết `DailyDesk_MVP/backend/src/index.ts`: đọc env, tạo db, `serve(createApp(...), { port })`
+- [X] T015 Viết `DailyDesk_MVP/backend/src/services/access.ts`:
   - `requireBoard(db, userId, boardId)`, `requireList(...)`, `requireCard(...)` lọc theo `boards.user_id = userId`
   - Không thuộc người gọi thì ném `HttpError(404, "Không tìm thấy …")`, **không dùng 403** (R6)
-- [ ] T016 Viết `DailyDesk_MVP/backend/tests/helpers.ts`:
+- [X] T016 Viết `DailyDesk_MVP/backend/tests/helpers.ts`:
   - `makeTestApp()` với SQLite `:memory:` + `migrate`/`push` schema
   - `loginAs(app, email)` gọi `POST /auth/dev` (bật `AUTH_DEV_LOGIN`) trả token
   - `authed(token)` tạo header
-- [ ] T017 [P] Viết `DailyDesk_MVP/backend/tests/health.test.ts`: `GET /health` → 200 `{ ok: true }`; route cần auth không có token → 401
+- [X] T017 [P] Viết `DailyDesk_MVP/backend/tests/health.test.ts`: `GET /health` → 200 `{ ok: true }`; route cần auth không có token → 401
 
 **Checkpoint**: `pnpm --dir DailyDesk_MVP/backend test` xanh; `pnpm --dir DailyDesk_MVP/backend dev` trả `/health`.
 
@@ -89,12 +89,12 @@
 
 **Independent Test**: Mở link Vercel thấy màn đăng nhập rồi vào được "Việc của tôi" (mock). `curl https://<render>/health` → `{"ok":true}`. Push một commit lên `main` thì tab Actions xanh và cả Vercel lẫn Render tự deploy bản mới.
 
-- [ ] T018 Tạo `.github/workflows/ci.yml` ở gốc repo. Trigger: `push` và `pull_request` vào `main`. Hai job dùng `pnpm/action-setup@v4` (pnpm 10.24.0) + `actions/setup-node@v4` (node 22, cache pnpm):
+- [X] T018 Tạo `.github/workflows/ci.yml` ở gốc repo. Trigger: `push` và `pull_request` vào `main`. Hai job dùng `pnpm/action-setup@v4` (pnpm 10.24.0) + `actions/setup-node@v4` (node 22, cache pnpm):
   - `backend` (working-directory `DailyDesk_MVP/backend`): `pnpm install --frozen-lockfile`, `pnpm typecheck`, `pnpm test`, `pnpm build`
   - `frontend` (working-directory `DailyDesk_MVP/frontend`): `pnpm install --frozen-lockfile`, `pnpm typecheck:mvp`, `pnpm test --passWithNoTests`, `pnpm build`
-- [ ] T019 [P] Thêm `DailyDesk_MVP/frontend/vercel.json`: rewrite mọi đường dẫn về `/index.html` để React Router chạy được khi tải lại trang (`/lich`, `/board/:id`)
-- [ ] T020 [P] Thêm `render.yaml` ở gốc repo (Blueprint): một Web Service `dailydesk-api`
-  - `rootDir: DailyDesk_MVP/backend`, `buildCommand: pnpm install --frozen-lockfile && pnpm build && pnpm db:push`, `startCommand: pnpm start`
+- [X] T019 [P] Thêm `DailyDesk_MVP/frontend/vercel.json`: rewrite mọi đường dẫn về `/index.html` để React Router chạy được khi tải lại trang (`/lich`, `/board/:id`)
+- [X] T020 [P] Thêm `render.yaml` ở gốc repo (Blueprint): một Web Service `dailydesk-api`
+  - `rootDir: DailyDesk_MVP/backend`, `buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build` (bảng được tạo tự động khi server khởi động, xem `src/db/client.ts`, nên không cần `db:push`), `startCommand: pnpm start`
   - `healthCheckPath: /health`, `autoDeploy: true`, plan free
   - envVars `DATABASE_URL`, `DATABASE_AUTH_TOKEN`, `SESSION_SECRET` (generateValue), `GOOGLE_CLIENT_ID`, `CORS_ORIGIN`, `AUTH_DEV_LOGIN` để `sync: false`
 - [ ] T021 Tạo database trên Turso (`turso db create dailydesk`), lấy URL `libsql://…` và token. Điền vào Render, **không commit**
@@ -115,19 +115,19 @@
 
 ### Tests for User Story 1
 
-- [ ] T026 [P] [US1] `DailyDesk_MVP/backend/tests/auth.test.ts`:
+- [X] T026 [P] [US1] `DailyDesk_MVP/backend/tests/auth.test.ts`:
   - `POST /auth/dev` lần đầu tạo user + board mặc định "Việc của tôi" có 3 list `Todo`(0)/`Doing`(1)/`Done`(2)
   - Lần 2 không tạo trùng
   - `GET /auth/me` trả user
   - `POST /auth/google` với token sai → 401
   - `/auth/dev` khi `AUTH_DEV_LOGIN=false` → 404
-- [ ] T027 [P] [US1] `DailyDesk_MVP/backend/tests/isolation.test.ts`: user B gọi `GET/PUT/DELETE /boards/{boardA}`, `GET /boards/{boardA}/cards/{cardA}`, `PUT …/cards/{cardA}` → đều 404; `GET /boards/cards/all` của B không chứa card của A
+- [X] T027 [P] [US1] `DailyDesk_MVP/backend/tests/isolation.test.ts`: user B gọi `GET/PUT/DELETE /boards/{boardA}`, `GET /boards/{boardA}/cards/{cardA}`, `PUT …/cards/{cardA}` → đều 404; `GET /boards/cards/all` của B không chứa card của A
 
 ### Implementation for User Story 1
 
-- [ ] T028 [P] [US1] `DailyDesk_MVP/backend/src/auth/google.ts`: `verifyGoogleIdToken(credential)` bằng `createRemoteJWKSet("https://www.googleapis.com/oauth2/v3/certs")`, kiểm `iss` ∈ {`accounts.google.com`, `https://accounts.google.com`}, `aud = GOOGLE_CLIENT_ID`, `email_verified = true`
-- [ ] T029 [US1] `DailyDesk_MVP/backend/src/services/users.ts`: `upsertUser({ googleSub, email, name, avatarUrl })`; khi tạo mới thì tạo board `is_default=1` tên "Việc của tôi" + list `Todo`/`Doing`/`Done`, trong một transaction
-- [ ] T030 [US1] `DailyDesk_MVP/backend/src/routes/auth.ts`:
+- [X] T028 [P] [US1] `DailyDesk_MVP/backend/src/auth/google.ts`: `verifyGoogleIdToken(credential)` bằng `createRemoteJWKSet("https://www.googleapis.com/oauth2/v3/certs")`, kiểm `iss` ∈ {`accounts.google.com`, `https://accounts.google.com`}, `aud = GOOGLE_CLIENT_ID`, `email_verified = true`
+- [X] T029 [US1] `DailyDesk_MVP/backend/src/services/users.ts`: `upsertUser({ googleSub, email, name, avatarUrl })`; khi tạo mới thì tạo board `is_default=1` tên "Việc của tôi" + list `Todo`/`Doing`/`Done`, trong một transaction
+- [X] T030 [US1] `DailyDesk_MVP/backend/src/routes/auth.ts`:
   - `POST /auth/google` `{ credential }` → `{ token, user: { id, name, email, picture } }`
   - `POST /auth/dev` `{ email, name }` (chỉ khi `AUTH_DEV_LOGIN`, `googleSub = "dev|" + email`)
   - `GET /auth/me`
@@ -152,7 +152,7 @@
 
 ### Tests for User Story 2
 
-- [ ] T034 [P] [US2] `DailyDesk_MVP/backend/tests/cards.test.ts` (phần tạo):
+- [X] T034 [P] [US2] `DailyDesk_MVP/backend/tests/cards.test.ts` (phần tạo):
   - Tạo task chỉ có `name` → 201, `priority = "medium"`, nằm trong list Todo
   - `name = "   "` → 400 `fields.name = "Hãy nhập tiêu đề cho task."`
   - name 201 ký tự → 400
@@ -160,7 +160,7 @@
   - `priority = "urgent"` → 400
   - `dueAt` quá khứ → 400 `fields.dueAt = "Hạn chót phải từ bây giờ trở đi."`
   - `listId` của board khác → 400 hoặc 404
-- [ ] T035 [P] [US2] `DailyDesk_MVP/backend/tests/boards-lists.test.ts`:
+- [X] T035 [P] [US2] `DailyDesk_MVP/backend/tests/boards-lists.test.ts`:
   - `GET /boards` trả `{ ownedBoards, invitedBoards: [] }` có `lists[].cards[]` sắp theo `order`
   - CRUD list
   - `DELETE` board mặc định → 403
@@ -168,14 +168,14 @@
 
 ### Implementation for User Story 2
 
-- [ ] T036 [P] [US2] `DailyDesk_MVP/backend/src/services/serialize.ts`: `toCardJson(row, labels)` trả đúng kiểu Card trong `contracts/api.md` (camelCase, `deadline` = `dueAt`, `members: []`, `attachments: []`, boolean thật cho `completed`/`dueComplete`/`isTemplate`)
-- [ ] T037 [US2] `DailyDesk_MVP/backend/src/services/boards.ts`: `listBoards`, `getBoardWithLists`, `createBoard` (chấp nhận `id` client gửi nếu là UUID hợp lệ và chưa tồn tại), `updateBoard`, `deleteBoard` (chặn board mặc định bằng `HttpError(403)`)
-- [ ] T038 [P] [US2] `DailyDesk_MVP/backend/src/services/lists.ts`: `createList`, `getList`, `updateList` (`name` 1–100, `order` ≥ 0), `deleteList` (cascade)
-- [ ] T039 [US2] `DailyDesk_MVP/backend/src/services/cards.ts`:
+- [X] T036 [P] [US2] `DailyDesk_MVP/backend/src/services/serialize.ts`: `toCardJson(row, labels)` trả đúng kiểu Card trong `contracts/api.md` (camelCase, `deadline` = `dueAt`, `members: []`, `attachments: []`, boolean thật cho `completed`/`dueComplete`/`isTemplate`)
+- [X] T037 [US2] `DailyDesk_MVP/backend/src/services/boards.ts`: `listBoards`, `getBoardWithLists`, `createBoard` (chấp nhận `id` client gửi nếu là UUID hợp lệ và chưa tồn tại), `updateBoard`, `deleteBoard` (chặn board mặc định bằng `HttpError(403)`)
+- [X] T038 [P] [US2] `DailyDesk_MVP/backend/src/services/lists.ts`: `createList`, `getList`, `updateList` (`name` 1–100, `order` ≥ 0), `deleteList` (cascade)
+- [X] T039 [US2] `DailyDesk_MVP/backend/src/services/cards.ts`:
   - `createCard`: validate theo T010, mặc định `priority = "medium"`, `order` = max+1 nếu không gửi; nếu list đích là Done thì `completed = 1`; ghi activity `card.created`
   - `getCard`
   - `listAllCardsForUser`: join lists/boards, `WHERE boards.user_id = :me`
-- [ ] T040 [US2] `DailyDesk_MVP/backend/src/routes/boards.ts` + `routes/lists.ts` + `routes/cards.ts` (phần GET/POST) theo nhóm A của `contracts/api.md`; **khai báo `GET /boards/cards/all` trước `GET /boards/:id`**; tất cả đi qua `requireUser`
+- [X] T040 [US2] `DailyDesk_MVP/backend/src/routes/boards.ts` + `routes/lists.ts` + `routes/cards.ts` (phần GET/POST) theo nhóm A của `contracts/api.md`; **khai báo `GET /boards/cards/all` trước `GET /boards/:id`**; tất cả đi qua `requireUser`
 - [ ] T041 [US2] Bật dữ liệu thật ở máy: `DailyDesk_MVP/frontend/.env.local` với `VITE_USE_MOCK=false`; chạy luồng thêm task ở màn "Việc của tôi" (`src/features/tasks/tasks-page.tsx`) và trang Board. Sửa chỗ lệch hình dạng JSON ở backend (không sửa frontend) cho tới khi khớp
 
 **Checkpoint**: T034, T035 xanh; thêm/xem task chạy với backend thật.
@@ -188,8 +188,8 @@
 
 **Independent Test**: Chuyển một task Todo → Doing → Done → Todo. Số đếm từng tab đúng, `completed` đúng, tải lại vẫn giữ.
 
-- [ ] T042 [P] [US3] Thêm vào `DailyDesk_MVP/backend/tests/cards.test.ts`: `PUT …/cards/{id}` `{ listId: doneListId }` → `completed = true`, `dueComplete = true`; chuyển về Todo → `false`; `listId` thuộc board khác → 400/404
-- [ ] T043 [US3] Trong `DailyDesk_MVP/backend/src/services/cards.ts` viết `moveCard`/phần `listId` của `updateCard`: kiểm list cùng board; đặt `completed`/`due_complete` theo `statusFromList(list.name)` (todo mặc định; doing: `doing`/`đang làm`/`in progress`; done: `done`/`xong`/`đã xong`/`hoàn thành`); ghi activity `card.moved`
+- [X] T042 [P] [US3] Thêm vào `DailyDesk_MVP/backend/tests/cards.test.ts`: `PUT …/cards/{id}` `{ listId: doneListId }` → `completed = true`, `dueComplete = true`; chuyển về Todo → `false`; `listId` thuộc board khác → 400/404
+- [X] T043 [US3] Trong `DailyDesk_MVP/backend/src/services/cards.ts` viết `moveCard`/phần `listId` của `updateCard`: kiểm list cùng board; đặt `completed`/`due_complete` theo `statusFromList(list.name)` (todo mặc định; doing: `doing`/`đang làm`/`in progress`; done: `done`/`xong`/`đã xong`/`hoàn thành`); ghi activity `card.moved`
 - [ ] T044 [US3] `PUT /boards/:boardId/cards/:id` trong `DailyDesk_MVP/backend/src/routes/cards.ts` gọi `updateCard`; kiểm thủ công menu trạng thái ở "Việc của tôi", ô đánh dấu xong và menu "Chuyển sang …" trên Board với backend thật
 - [ ] T045 [US3] Deploy bản có US1–US3: trên Vercel đặt `VITE_USE_MOCK=false`, `VITE_BACKEND_URL=https://<render>`; chạy bước 1–3 của `quickstart.md` trên link thật
 
@@ -203,17 +203,17 @@
 
 **Independent Test**: Sửa tiêu đề task quá hạn mà không đổi hạn → 200; xoá rồi hoàn tác thì task trở lại; tải lại vẫn đúng.
 
-- [ ] T046 [P] [US4] Thêm vào `DailyDesk_MVP/backend/tests/cards.test.ts`:
+- [X] T046 [P] [US4] Thêm vào `DailyDesk_MVP/backend/tests/cards.test.ts`:
   - Sửa `name` của task có `dueAt` quá khứ mà không gửi `dueAt` → 200
   - Gửi `dueAt` quá khứ **mới** → 400
   - `DELETE` → 200, `GET` lại → 404, checklist/comments/card_labels cũng bị xoá
-- [ ] T047 [US4] Hoàn thiện `updateCard` trong `DailyDesk_MVP/backend/src/services/cards.ts`:
+- [X] T047 [US4] Hoàn thiện `updateCard` trong `DailyDesk_MVP/backend/src/services/cards.ts`:
   - Áp quy tắc "hạn quá khứ chỉ bị từ chối khi giá trị hạn **thay đổi**"
   - `deadline` là bí danh của `dueAt`
   - `labels: {id}[]` thay toàn bộ `card_labels` (label phải cùng chủ)
   - Cập nhật `updated_at`
   - Ghi activity `card.renamed` / `deadline.changed`
-- [ ] T048 [US4] `DELETE /boards/:boardId/cards/:id` trong `DailyDesk_MVP/backend/src/routes/cards.ts` (cascade theo FK). Kiểm "Hoàn tác" trên giao diện tạo lại task qua `POST` với ID mới
+- [X] T048 [US4] `DELETE /boards/:boardId/cards/:id` trong `DailyDesk_MVP/backend/src/routes/cards.ts` (cascade theo FK). Kiểm "Hoàn tác" trên giao diện tạo lại task qua `POST` với ID mới
 
 **Checkpoint**: T046 xanh; sửa/xoá/hoàn tác chạy trên backend thật.
 
@@ -225,14 +225,14 @@
 
 **Independent Test**: `pnpm --dir DailyDesk_MVP/frontend test` xanh với các trường hợp của FR-015 – FR-017.
 
-- [ ] T049 [P] [US5] `DailyDesk_MVP/frontend/src/features/tasks/logic.test.ts` cho `src/features/tasks/logic.ts`:
+- [X] T049 [P] [US5] `DailyDesk_MVP/frontend/src/features/tasks/logic.test.ts` cho `src/features/tasks/logic.ts`:
   - `compare("deadline")` và `compare("deadline-desc")` đều để task không hạn cuối
   - Task Done luôn sau task chưa xong
   - `compare("priority")` thứ tự high > medium > low > null
   - `matches` tìm "bao cao" khớp "Nộp báo cáo"
   - `groupOf` phân Quá hạn / Hôm nay / 7 ngày tới / Sau đó / Không có hạn / Đã xong với `now` cố định
   - `validateTask`: tiêu đề trống, 201 ký tự, mô tả 2001 ký tự, hạn quá khứ khi `isNew`, hạn quá khứ khi sửa không đổi hạn
-- [ ] T050 [P] [US5] `DailyDesk_MVP/frontend/src/lib/date.test.ts` cho `formatShort`/`formatDue`/`formatWeekdayDate` (Hôm nay, Ngày mai, `T4, 4/11`, khác năm thêm `/yyyy`, giờ 24h)
+- [X] T050 [P] [US5] `DailyDesk_MVP/frontend/src/lib/date.test.ts` cho `formatShort`/`formatDue`/`formatWeekdayDate` (Hôm nay, Ngày mai, `T4, 4/11`, khác năm thêm `/yyyy`, giờ 24h)
 
 **Checkpoint**: Test frontend chạy trong CI (job `frontend` của T018).
 

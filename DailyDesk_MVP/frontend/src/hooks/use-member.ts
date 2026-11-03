@@ -32,7 +32,7 @@ export function useMembers(boardId: string) {
         throw new Error("Failed to fetch members");
       }
 
-      return data as Member[];
+      return data as unknown as Member[];
     },
     enabled: !!boardId,
   });

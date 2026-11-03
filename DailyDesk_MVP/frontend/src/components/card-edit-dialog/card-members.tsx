@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { User, Plus, Check, X } from "lucide-react";
+import { Plus, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Avatar,

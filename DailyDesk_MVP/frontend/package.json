@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "pnpm run build && vite preview",
     "deploy": "pnpm run build && wrangler deploy",
     "cf-typegen": "wrangler types",
-    "openapi": "curl localhost:3000/doc > schema.json && pnpm exec openapi-typescript schema.json -o src/lib/generated/api-schema.ts"
+    "openapi": "curl localhost:3000/doc > schema.json && pnpm exec openapi-typescript schema.json -o src/lib/generated/api-schema.ts",
+    "typecheck:mvp": "tsc -p tsconfig.mvp.json",
+    "test": "vitest run"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.11.0",
@@ -98,6 +100,7 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.52.0",
     "vite": "^7.3.1",
+    "vitest": "^5.0.5",
     "wrangler": "^4.58.0"
   }
 }

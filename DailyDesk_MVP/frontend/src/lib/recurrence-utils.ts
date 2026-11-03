@@ -1,5 +1,5 @@
 import type { RecurrenceType } from "@/types/card";
-import { addDays, addWeeks, addMonths, getDay, setDate, nextDay } from "date-fns";
+import { addDays, addWeeks, addMonths, getDay, setDate } from "date-fns";
 
 /**
  * Calculate the next due date based on recurrence pattern
