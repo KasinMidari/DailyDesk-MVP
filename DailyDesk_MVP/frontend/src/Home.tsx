@@ -1,4 +1,4 @@
-import { Plus, Search, Clipboard, Users, Clock, ChevronRight } from "lucide-react";
+import { Plus, Search, Users, Clock, ChevronRight } from "lucide-react";
 import { Suspense, useState, useEffect } from "react";
 import CreateBoardDialog from "@/components/create-board-dialog";
 import { BoardCard } from "@/components/board-card";
@@ -193,7 +193,7 @@ export default function Home() {
         {/* Header with Search */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-[1.75rem]">
+            <h1 className="font-planner text-[2rem] leading-tight font-semibold text-foreground sm:text-[2.25rem]">
               Board
             </h1>
             <p className="mt-1 text-muted-foreground">
@@ -262,13 +262,10 @@ export default function Home() {
         <section>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Clipboard className="w-5 h-5 text-muted-foreground" />
-              <h2 className="text-base font-semibold text-foreground">
+              <h2 className="font-planner text-lg font-semibold text-foreground">
                 Board của tôi
               </h2>
-              <Badge variant="secondary" className="ml-1">
-                {filteredOwnedBoards.length}
-              </Badge>
+              <span className="text-xs text-muted-foreground tabular">{filteredOwnedBoards.length}</span>
             </div>
             {filteredOwnedBoards.length > MAX_DISPLAYED_BOARDS && (
               <Button

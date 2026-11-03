@@ -97,7 +97,7 @@ export default function ProfilePage() {
       <div className="container max-w-5xl mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Hồ sơ cá nhân</h1>
+            <h1 className="font-planner text-[2rem] leading-tight font-semibold sm:text-[2.25rem]">Hồ sơ cá nhân</h1>
             <p className="text-muted-foreground">
               Quản lý thông tin cá nhân và cài đặt của bạn
             </p>

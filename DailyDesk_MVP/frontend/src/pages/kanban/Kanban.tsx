@@ -614,16 +614,10 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
     <BoardEventsProvider boardId={boardId || ""}>
       <KanbanBoardProvider>
       <div
-        className={`relative w-full h-screen flex-1 flex flex-col overflow-hidden ${isCalendarView ? "" : "p-4"}`}
+        className={`relative w-full h-full flex-1 flex flex-col overflow-hidden bg-background ${isCalendarView ? "" : "p-4 pt-5"}`}
           style={{
-            backgroundImage: board.backgroundUrl
-              ? `url(${board.backgroundUrl})`
-              : undefined,
-            backgroundColor: board.backgroundColor ?? undefined,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            backgroundAttachment: "fixed",
+            // Màu của board chỉ còn là mép bìa sổ ở trên cùng; nền luôn là trang giấy.
+            boxShadow: `inset 0 6px 0 ${board.backgroundColor || "var(--ink)"}`,
           }}
         >
           {!isCalendarView && (

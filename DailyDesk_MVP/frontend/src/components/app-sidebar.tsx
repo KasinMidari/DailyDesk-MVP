@@ -1,4 +1,4 @@
-import { CalendarDays, Kanban, LayoutTemplate, ListChecks, UserRound } from "lucide-react";
+import { LogOut, Moon, Search, Sun } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { useState } from "react";
 
@@ -6,81 +6,131 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import TemplateGalleryDialog from "@/components/template-gallery-dialog";
+import { GlobalSearch } from "@/components/global-search";
+import { useTheme } from "@/components/theme-provider";
+import { useAuth0 } from "@/lib/auth";
 
 const main = [
-  { title: "Việc của tôi", url: "/", icon: ListChecks, match: (p: string) => p === "/" },
-  { title: "Lịch", url: "/lich", icon: CalendarDays, match: (p: string) => p.startsWith("/lich") },
-  {
-    title: "Board",
-    url: "/boards",
-    icon: Kanban,
-    match: (p: string) => p.startsWith("/boards") || p.startsWith("/board/"),
-  },
+  { title: "Việc của tôi", url: "/", match: (p: string) => p === "/" },
+  { title: "Lịch", url: "/lich", match: (p: string) => p.startsWith("/lich") },
+  { title: "Board", url: "/boards", match: (p: string) => p.startsWith("/boards") || p.startsWith("/board/") },
 ];
 
+const itemClass =
+  "h-9 rounded-md px-3 text-[14px] font-medium text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-semibold";
+
+/** Bìa sổ: điều hướng, tìm kiếm, tài khoản và đổi giao diện nằm trên bìa. */
 export function AppSidebar() {
   const [isTemplateGalleryOpen, setIsTemplateGalleryOpen] = useState(false);
   const { pathname } = useLocation();
+  const { user, logout } = useAuth0();
+  const { theme, toggleTheme } = useTheme();
+  const { setOpenMobile } = useSidebar();
+  const isDark =
+    theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const close = () => setOpenMobile(false);
 
   return (
     <Sidebar>
-      <SidebarHeader className="px-3 pt-4 pb-2">
-        <Link to="/" className="flex items-center gap-2.5 rounded-md px-1 py-1 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring">
-          <img src="/logo-dailydesk.png" alt="" className="size-9 rounded-md bg-white object-contain" />
-          <span className="text-[15px] font-semibold tracking-tight">DailyDesk</span>
+      <SidebarHeader className="px-4 pt-5 pb-3">
+        {/* Nhãn vở dán trên bìa */}
+        <Link
+          to="/"
+          onClick={close}
+          className="block rounded-md bg-sidebar-primary px-3 py-2.5 text-sidebar-primary-foreground shadow-[0_1px_0_oklch(0_0_0/0.15)] outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+        >
+          <span className="flex items-center gap-2">
+            <img src="/logo-dailydesk.png" alt="" className="size-7 rounded-sm object-contain" />
+            <span className="font-planner text-[17px] font-semibold leading-none">DailyDesk</span>
+          </span>
+          {user?.name && (
+            <span className="mt-2 block truncate border-t border-dashed border-current/25 pt-1.5 text-xs opacity-80">
+              Sổ của {user.name}
+            </span>
+          )}
         </Link>
       </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {main.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={item.match(pathname)} className="h-9 font-medium">
-                    <Link to={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Khác</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => setIsTemplateGalleryOpen(true)}>
-                  <LayoutTemplate />
-                  <span>Mẫu board</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter>
-        <SidebarMenu>
+
+      <SidebarContent className="px-2">
+        <SidebarMenu className="gap-0.5 px-2">
+          {main.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild isActive={item.match(pathname)} className={itemClass}>
+                <Link to={item.url} onClick={close}>
+                  {item.title}
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={pathname.startsWith("/profile")}>
-              <Link to="/profile">
-                <UserRound />
-                <span>Hồ sơ</span>
-              </Link>
+            <SidebarMenuButton className={itemClass} onClick={() => setIsTemplateGalleryOpen(true)}>
+              Mẫu board
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+
+        <div className="mx-2 mt-4 border-t border-sidebar-border pt-4">
+          <GlobalSearch
+            trigger={(open) => (
+              <button
+                type="button"
+                onClick={open}
+                title="Tìm nhanh (Ctrl + K)"
+                className="flex h-9 w-full items-center gap-2 rounded-md border border-sidebar-border px-3 text-left text-[13px] text-sidebar-foreground/75 outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+              >
+                <Search className="size-4" aria-hidden="true" />
+                Tìm trong sổ…
+              </button>
+            )}
+          />
+        </div>
+      </SidebarContent>
+
+      <SidebarFooter className="gap-1 border-t border-sidebar-border px-4 py-3">
+        <Link
+          to="/profile"
+          onClick={close}
+          data-active={pathname.startsWith("/profile")}
+          className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[active=true]:bg-sidebar-accent"
+        >
+          {user?.picture ? (
+            <img src={user.picture} alt="" className="size-7 rounded-full object-cover" />
+          ) : (
+            <span className="grid size-7 place-items-center rounded-full bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground">
+              {user?.name?.charAt(0).toUpperCase() ?? "?"}
+            </span>
+          )}
+          <span className="min-w-0">
+            <span className="block truncate font-medium text-sidebar-accent-foreground">{user?.name ?? "Hồ sơ"}</span>
+            <span className="block text-xs text-sidebar-foreground/70">Hồ sơ</span>
+          </span>
+        </Link>
+        <div className="flex gap-1">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="flex h-8 flex-1 items-center gap-2 rounded-md px-2 text-[13px] text-sidebar-foreground/80 outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+          >
+            {isDark ? <Sun className="size-4" aria-hidden="true" /> : <Moon className="size-4" aria-hidden="true" />}
+            {isDark ? "Nền sáng" : "Nền tối"}
+          </button>
+          <button
+            type="button"
+            onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+            aria-label="Đăng xuất"
+            title="Đăng xuất"
+            className="grid size-8 place-items-center rounded-md text-sidebar-foreground/80 outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+          >
+            <LogOut className="size-4" aria-hidden="true" />
+          </button>
+        </div>
       </SidebarFooter>
 
       <TemplateGalleryDialog open={isTemplateGalleryOpen} onOpenChange={setIsTemplateGalleryOpen} />

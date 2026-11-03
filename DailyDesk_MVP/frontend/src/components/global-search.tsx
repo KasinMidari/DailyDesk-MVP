@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, type ReactNode } from "react";
 import { useGroupedSearch } from "@/hooks/use-search";
 import { useDebounce } from "use-debounce"
 import {
@@ -14,7 +14,7 @@ import { useNavigate } from "react-router";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-export function GlobalSearch() {
+export function GlobalSearch({ trigger }: { trigger?: (open: () => void) => ReactNode } = {}) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery] = useDebounce(searchQuery, 300);
@@ -63,22 +63,18 @@ export function GlobalSearch() {
 
   return (
     <>
-      {/* Search trigger button */}
-      <button
-        onClick={() => setOpen(true)}
-        aria-label="Tìm kiếm"
-        className="relative h-9 min-w-0 flex-1 max-w-xl rounded-md border border-input bg-card px-3 text-left text-sm transition-colors hover:bg-accent outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        <div className="flex items-center gap-2">
-          <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
-          <span className="truncate text-muted-foreground">
-            Tìm board, task, danh sách…
-          </span>
-          <kbd className="ml-auto pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-            Ctrl K
-          </kbd>
-        </div>
-      </button>
+      {trigger ? (
+        trigger(() => setOpen(true))
+      ) : (
+        <button
+          onClick={() => setOpen(true)}
+          aria-label="Tìm kiếm"
+          className="flex h-9 min-w-0 items-center gap-2 rounded-md border border-input bg-card px-3 text-left text-sm text-muted-foreground outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <Search className="size-4 shrink-0" />
+          <span className="truncate">Tìm trong sổ…</span>
+        </button>
+      )}
 
       {/* Command Dialog */}
       <CommandDialog

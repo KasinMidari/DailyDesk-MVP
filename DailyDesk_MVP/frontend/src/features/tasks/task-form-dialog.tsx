@@ -99,18 +99,21 @@ export function Segmented<T extends string>({
   value,
   options,
   onChange,
-  tone,
 }: {
   name: string;
   value: T;
   options: { value: T; label: string }[];
   onChange: (v: T) => void;
-  tone: (v: T) => string;
+  /** Giữ để tương thích; ký hiệu được vẽ theo giá trị (ô trạng thái hoặc bút dạ quang). */
+  tone?: (v: T) => string;
 }) {
   return (
-    <div role="radiogroup" aria-label={name} className="grid auto-cols-fr grid-flow-col gap-1 rounded-lg bg-muted p-1">
+    <div role="radiogroup" aria-label={name} className="grid auto-cols-fr grid-flow-col gap-1 rounded-md border border-input bg-muted p-1">
       {options.map((o) => {
         const active = o.value === value;
+        const v = o.value as string;
+        const isStatus = v === "todo" || v === "doing" || v === "done";
+        const hl = v === "high" ? "hl hl-high" : v === "medium" ? "hl hl-medium" : "";
         return (
           <button
             key={o.value}
@@ -119,12 +122,20 @@ export function Segmented<T extends string>({
             aria-checked={active}
             onClick={() => onChange(o.value)}
             className={cn(
-              "flex h-8 items-center justify-center gap-1.5 rounded-md text-sm font-medium text-muted-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              active ? "bg-card text-foreground shadow-[0_1px_2px_rgb(0_0_0/0.08)]" : "hover:text-foreground",
+              "flex h-8 items-center justify-center gap-2 rounded text-sm font-medium text-muted-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              active ? "bg-card text-foreground shadow-[0_1px_2px_oklch(0.3_0.04_80/0.15)] ring-1 ring-ink/40" : "hover:text-foreground",
             )}
           >
-            <span className={cn("size-2 rounded-full", tone(o.value))} aria-hidden="true" />
-            {o.label}
+            {isStatus && (
+              <span className="status-box scale-[0.8]" data-status={v} aria-hidden="true">
+                {v === "done" && (
+                  <svg viewBox="0 0 16 16" className="size-3" fill="none">
+                    <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+              </span>
+            )}
+            <span className={cn(active && hl)}>{o.label}</span>
           </button>
         );
       })}

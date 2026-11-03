@@ -137,7 +137,7 @@ export default function CalendarPage() {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 pt-6 pb-16 sm:px-6 lg:px-8">
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-[1.75rem]">Lịch</h1>
+        <h1 className="font-planner text-[2rem] leading-tight font-semibold sm:text-[2.25rem]">Lịch</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Bấm vào task để sửa hoặc đổi hạn, bấm vào ô ngày để thêm task.
           {undated > 0 && (

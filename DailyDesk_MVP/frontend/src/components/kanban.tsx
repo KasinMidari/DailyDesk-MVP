@@ -429,7 +429,7 @@ export function KanbanBoard({
     <div
       className={cn(
         "flex h-full flex-grow gap-x-2 overflow-x-auto py-1",
-        "[&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-white/30 ",
+        "[&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-muted-foreground/30 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-muted-foreground/45 ",
         className
       )}
       ref={ref}
@@ -467,7 +467,7 @@ export type KanbanBoardColumnProps = {
 };
 
 export const kanbanBoardColumnClassNames =
-  "w-64 flex-shrink-0 rounded-lg border flex flex-col border-border bg-sidebar py-2 h-full min-h-0 transition-colors";
+  "w-64 flex-shrink-0 rounded-lg border flex flex-col border-border bg-muted/70 py-2 h-full min-h-0 transition-colors";
 
 export function KanbanBoardColumn({
   className,
@@ -721,7 +721,7 @@ export function KanbanBoardColumnButton({
   return (
     <Button
       className={cn(
-        "bg-sidebar text-primary hover:text-primary/80 w-full justify-start",
+        "bg-transparent text-ink hover:bg-accent w-full justify-start",
         className
       )}
       variant="outline"

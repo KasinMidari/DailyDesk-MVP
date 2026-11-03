@@ -27,55 +27,62 @@ function GoogleMark() {
   );
 }
 
-const PREVIEW_TASKS = [
-  { title: "Nộp báo cáo đồ án", due: "Hôm nay, 17:00", priority: "Cao", status: "doing" as const },
-  { title: "Ôn tập Cấu trúc dữ liệu", due: "Thứ Sáu", priority: "Vừa", status: "todo" as const },
-  { title: "Đóng tiền điện", due: "Đã xong hôm qua", priority: "Thấp", status: "done" as const },
+type PreviewStatus = "todo" | "doing" | "done";
+const PREVIEW: { day: string; tasks: { title: string; time: string; prio?: "high" | "medium"; status: PreviewStatus; stampIn?: boolean }[] }[] = [
+  {
+    day: "Hôm nay",
+    tasks: [
+      { title: "Nộp báo cáo đồ án", time: "17:00", prio: "high", status: "doing", stampIn: true },
+      { title: "Đóng tiền điện", time: "20:00", status: "done" },
+    ],
+  },
+  {
+    day: "Thứ Sáu",
+    tasks: [{ title: "Ôn tập Cấu trúc dữ liệu", time: "09:00", prio: "medium", status: "todo" }],
+  },
 ];
 
-const STATUS_LABEL = { todo: "Todo", doing: "Doing", done: "Done" };
-
-/** Bản xem trước tĩnh: chỉ minh hoạ những gì app thật sự làm được. */
-function TaskPreview() {
+function Check() {
   return (
-    <div aria-hidden="true" className="signin-preview w-full max-w-sm">
-      <div className="mb-3 flex items-baseline justify-between px-1">
-        <span className="text-sm font-semibold text-(--signin-ink)">Việc của tôi</span>
-        <span className="text-xs tabular-nums text-(--signin-ink-soft)">3 task</span>
-      </div>
-      <ul className="divide-y divide-(--signin-line) overflow-hidden rounded-xl bg-(--signin-sheet) shadow-[0_18px_40px_-18px_var(--signin-shadow)] ring-1 ring-(--signin-line)">
-        {PREVIEW_TASKS.map((task) => (
-          <li
-            key={task.title}
-            data-status={task.status}
-            className="signin-task flex items-center gap-3 px-4 py-3.5"
-          >
-            <span className="signin-check grid size-5 shrink-0 place-items-center rounded-full border-2">
-              <svg viewBox="0 0 16 16" className="size-3" fill="none">
-                <path
-                  d="M3.5 8.5l3 3 6-7"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="signin-title block truncate text-sm font-medium text-(--signin-ink)">
-                {task.title}
-              </span>
-              <span className="block text-xs text-(--signin-ink-soft)">
-                {task.due} · Ưu tiên {task.priority.toLowerCase()}
-              </span>
-            </span>
-            <span className="signin-pill rounded-full px-2 py-0.5 text-[11px] font-semibold">
-              <span className="signin-pill-from">{STATUS_LABEL[task.status]}</span>
-              <span className="signin-pill-to">Done</span>
-            </span>
-          </li>
-        ))}
-      </ul>
+    <svg viewBox="0 0 16 16" className="size-3" fill="none" aria-hidden="true">
+      <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Bản xem trước tĩnh của một trang sổ: chỉ minh hoạ những gì app làm được. */
+function PlannerPreview() {
+  return (
+    <div aria-hidden="true" className="planner-page signin-preview w-full max-w-sm rounded-md py-4 shadow-[0_24px_50px_-24px_oklch(0.1_0.05_292/0.7)]">
+      {PREVIEW.map((g) => (
+        <div key={g.day} className="mb-2 last:mb-0">
+          <p className="font-planner pr-5 pb-1 pl-16 text-[15px] font-semibold">{g.day}</p>
+          <ul className="border-t">
+            {g.tasks.map((t) => (
+              <li key={t.title} data-status={t.status} className="signin-row flex h-11 items-center gap-3 border-b pr-4 pl-4">
+                <span className="status-box signin-box" data-status={t.status}>
+                  {t.status === "done" && <Check />}
+                  {t.stampIn && <span className="signin-box-check"><Check /></span>}
+                </span>
+                <span className="ml-5 min-w-0 flex-1 truncate text-sm">
+                  <span className={t.status === "done" ? "text-muted-foreground line-through" : "signin-title"}>{t.title}</span>
+                </span>
+                {t.status === "done" ? (
+                  <span className="stamp">XONG</span>
+                ) : t.stampIn ? (
+                  <span className="stamp signin-stamp">XONG</span>
+                ) : null}
+                {t.prio && !t.stampIn && (
+                  <span className={`hl text-xs font-medium ${t.prio === "high" ? "hl-high" : "hl-medium"}`}>
+                    {t.prio === "high" ? "Cao" : "Vừa"}
+                  </span>
+                )}
+                <span className="w-10 text-right text-xs tabular text-muted-foreground">{t.time}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }
@@ -97,34 +104,30 @@ export default function SignInScreen() {
   }
 
   return (
-    <div className="signin grid min-h-svh w-full bg-background text-foreground md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-      <section className="relative flex flex-col px-6 py-6 sm:px-10 lg:px-16">
+    <div className="grid min-h-svh w-full bg-background text-foreground md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <section className="flex flex-col px-6 py-6 sm:px-10 lg:px-16">
         <header className="flex items-center justify-between">
-          <span className="text-base font-semibold tracking-tight">DailyDesk</span>
+          <span className="flex items-center gap-2">
+            <img src="/logo-dailydesk.png" alt="" className="size-8 object-contain" />
+            <span className="font-planner text-lg font-semibold">DailyDesk</span>
+          </span>
           <ThemeToggle />
         </header>
 
         <div className="flex flex-1 items-center py-12">
           <div className="w-full max-w-sm">
-            <img
-              src="/logo-dailydesk.png"
-              alt="DailyDesk"
-              width={112}
-              height={112}
-              className="-ml-2 mb-6 size-28 rounded-2xl object-contain"
-            />
-            <h1 className="text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
-              Đăng nhập để xem việc của bạn
+            <h1 className="font-planner text-balance text-[2.25rem] leading-[1.15] font-semibold sm:text-[2.6rem]">
+              Mở sổ, xem hôm nay cần làm gì.
             </h1>
-            <p className="mt-3 text-pretty text-[15px] leading-relaxed text-muted-foreground">
-              Ghi lại task, đặt hạn và mức ưu tiên, rồi chuyển dần từ Todo sang Done.
+            <p className="mt-4 text-pretty text-[15px] leading-relaxed text-muted-foreground">
+              Ghi việc, đặt hạn và mức ưu tiên, rồi tick dần từ Todo sang Done.
             </p>
 
             <button
               type="button"
               onClick={signIn}
               disabled={pending}
-              className="mt-8 flex h-12 w-full items-center justify-center gap-3 rounded-lg border border-input bg-card px-4 text-[15px] font-medium text-card-foreground shadow-[0_1px_2px_rgb(0_0_0/0.06)] transition-[background-color,box-shadow,transform] duration-150 ease-out hover:bg-accent hover:shadow-[0_4px_12px_-4px_rgb(0_0_0/0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-px disabled:cursor-wait disabled:opacity-80"
+              className="mt-8 flex h-12 w-full items-center justify-center gap-3 rounded-md border border-input bg-card px-4 text-[15px] font-medium text-card-foreground shadow-[0_1px_2px_oklch(0.3_0.05_80/0.12)] transition-[background-color,transform] duration-150 ease-out hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-px disabled:cursor-wait disabled:opacity-80"
             >
               {pending ? (
                 <Loader2 className="size-5 animate-spin text-muted-foreground" aria-hidden="true" />
@@ -135,35 +138,33 @@ export default function SignInScreen() {
             </button>
 
             {failed && (
-              <p
-                role="alert"
-                className="mt-4 flex items-start gap-2 rounded-lg bg-destructive/10 px-3 py-2.5 text-sm text-destructive"
-              >
+              <p role="alert" className="mt-4 flex items-start gap-2 rounded-md bg-destructive/10 px-3 py-2.5 text-sm text-destructive">
                 <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
                 Không đăng nhập được. Kiểm tra kết nối mạng rồi bấm lại nút ở trên.
               </p>
             )}
 
             <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-              Lần đầu dùng? Tài khoản được tạo tự động khi bạn đăng nhập. Mỗi tài khoản chỉ thấy task của chính mình.
+              Lần đầu dùng? Tài khoản được tạo tự động khi bạn đăng nhập. Mỗi tài khoản chỉ thấy việc của chính mình.
             </p>
 
             {USE_MOCK && (
               <p className="mt-8 border-t pt-4 text-xs leading-relaxed text-muted-foreground">
-                Bản demo: chưa kết nối backend, nút trên đăng nhập bằng một tài khoản thử nghiệm và dữ liệu
-                được lưu trong trình duyệt này.
+                Bản demo: chưa kết nối backend, nút trên đăng nhập bằng một tài khoản thử nghiệm và dữ liệu được lưu
+                trong trình duyệt này.
               </p>
             )}
           </div>
         </div>
       </section>
 
-      <aside className="signin-panel relative hidden items-center justify-center overflow-hidden px-10 py-16 md:flex">
-        <div className="relative flex w-full flex-col items-center gap-10">
-          <p className="max-w-sm text-balance text-center text-2xl font-semibold leading-snug tracking-tight text-(--signin-ink)">
-            Biết ngay việc nào cần làm trước.
+      {/* Bìa sổ mực tím, kẹp một trang xem trước */}
+      <aside className="hidden items-center justify-center bg-sidebar px-10 py-16 md:flex">
+        <div className="flex w-full max-w-sm flex-col gap-8">
+          <p className="font-planner text-balance text-2xl leading-snug font-semibold text-sidebar-accent-foreground">
+            Việc trễ hiện trước, việc xong được đóng dấu.
           </p>
-          <TaskPreview />
+          <PlannerPreview />
         </div>
       </aside>
     </div>

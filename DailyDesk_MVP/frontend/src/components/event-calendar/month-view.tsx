@@ -208,7 +208,7 @@ export function MonthView({
                         <Popover modal>
                           <PopoverTrigger asChild>
                             <button
-                              className="flex overflow-hidden items-center px-1 w-full text-left transition outline-none select-none sm:px-2 sm:text-xs mt-(--event-gap) h-(--event-height) text-[10px] text-muted-foreground backdrop-blur-md hover:bg-muted/50 hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                              className="flex overflow-hidden items-center px-1 w-full text-left transition outline-none select-none sm:px-2 sm:text-xs mt-(--event-gap) h-(--event-height) text-[10px] text-muted-foreground hover:bg-muted/50 hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
                               onClick={(e) => e.stopPropagation()}
                               type="button"
                             >

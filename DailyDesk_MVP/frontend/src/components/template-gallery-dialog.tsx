@@ -92,16 +92,16 @@ export default function TemplateGalleryDialog({
                 <button
                   key={template.id}
                   type="button"
-                  className="group block text-left outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl"
+                  className="group block text-left outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
                   onClick={() => setSelectedTemplateId(template.id)}
                 >
                   <span
                     aria-hidden="true"
-                    className="ml-4 block h-2.5 w-16 rounded-t-md"
+                    className="block h-2 rounded-t-md"
                     style={{ backgroundColor: template.backgroundColor || "var(--primary)" }}
                   />
-                  <span className="flex min-h-32 flex-col rounded-xl border bg-card px-4 py-3.5 transition-[border-color,box-shadow] group-hover:border-ring/60 group-hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]">
-                    <span className="text-[15px] font-semibold leading-snug">{template.name}</span>
+                  <span className="flex min-h-32 flex-col rounded-b-md border border-t-0 bg-card px-4 py-3.5 transition-[border-color,box-shadow] group-hover:border-ring/50 group-hover:shadow-[0_10px_22px_-14px_oklch(0.3_0.05_80/0.45)]">
+                    <span className="font-planner text-base font-semibold leading-snug">{template.name}</span>
                     <span className="mt-1 line-clamp-2 text-sm text-muted-foreground">
                       {template.description || "Chưa có mô tả"}
                     </span>

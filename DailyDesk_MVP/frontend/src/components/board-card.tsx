@@ -48,12 +48,12 @@ export function BoardCard({
   return (
     <Link
       to={`/board/${id}`}
-      className="group block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="group block rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
-      {/* Tab của bìa hồ sơ */}
+      {/* Mép bìa sổ mang màu của board */}
       <span
         aria-hidden="true"
-        className="ml-4 block h-2.5 w-16 rounded-t-md"
+        className="block h-2 rounded-t-md"
         style={
           backgroundUrl
             ? { backgroundImage: `url(${backgroundUrl})`, backgroundSize: "cover", backgroundPosition: "center" }
@@ -62,12 +62,12 @@ export function BoardCard({
       />
       <div
         className={cn(
-          "relative flex flex-col justify-between rounded-xl border bg-card px-4 py-3.5 transition-[border-color,box-shadow] group-hover:border-ring/60 group-hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]",
+          "relative flex flex-col justify-between rounded-b-md border border-t-0 bg-card px-4 py-3.5 transition-[border-color,box-shadow] group-hover:border-ring/50 group-hover:shadow-[0_10px_22px_-14px_oklch(0.3_0.05_80/0.45)]",
           compact ? "min-h-20" : "min-h-28",
         )}
       >
         <div className="flex items-start justify-between gap-2">
-          <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug">{title}</h3>
+          <h3 className="font-planner line-clamp-2 text-base font-semibold leading-snug">{title}</h3>
           {(onEdit || onDelete) && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild onClick={stop}>

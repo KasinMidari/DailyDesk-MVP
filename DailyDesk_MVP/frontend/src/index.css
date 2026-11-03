@@ -5,6 +5,12 @@
 
 @theme inline {
   --font-sans: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Literata", ui-serif, Georgia, serif;
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-red-ink: var(--red-ink);
+  --color-paper: var(--paper);
+  --color-rule: var(--rule);
   --color-status-todo: var(--status-todo);
   --color-status-todo-soft: var(--status-todo-soft);
   --color-status-doing: var(--status-doing);
@@ -284,252 +290,296 @@ h6 {
   animation: due-renew-spin 2s ease-out;
 }
 
-/* ---------- Màn đăng nhập ---------- */
-.signin {
-  --signin-panel: oklch(0.94 0.065 90);
-  --signin-sheet: oklch(0.995 0.004 90);
-  --signin-ink: oklch(0.27 0.035 60);
-  --signin-ink-soft: oklch(0.46 0.045 65);
-  --signin-line: oklch(0.9 0.03 85);
-  --signin-shadow: oklch(0.55 0.11 70 / 0.45);
-  --signin-todo-bg: oklch(0.93 0.045 230);
-  --signin-todo-fg: oklch(0.42 0.1 240);
-  --signin-doing-bg: oklch(0.91 0.1 88);
-  --signin-doing-fg: oklch(0.43 0.09 65);
-  --signin-done-bg: oklch(0.92 0.06 150);
-  --signin-done-fg: oklch(0.4 0.09 150);
-  --signin-done-mark: oklch(0.62 0.15 150);
-}
 
-.dark .signin {
-  --signin-panel: oklch(0.255 0.03 80);
-  --signin-sheet: oklch(0.285 0.022 75);
-  --signin-ink: oklch(0.96 0.015 90);
-  --signin-ink-soft: oklch(0.78 0.03 85);
-  --signin-line: oklch(1 0 0 / 0.08);
-  --signin-shadow: oklch(0 0 0 / 0.6);
-  --signin-todo-bg: oklch(0.35 0.06 235);
-  --signin-todo-fg: oklch(0.88 0.06 230);
-  --signin-doing-bg: oklch(0.38 0.07 75);
-  --signin-doing-fg: oklch(0.92 0.09 88);
-  --signin-done-bg: oklch(0.34 0.06 150);
-  --signin-done-fg: oklch(0.88 0.08 150);
-  --signin-done-mark: oklch(0.7 0.14 150);
-}
-
-.signin-panel {
-  background: var(--signin-panel);
-}
-
-.signin-check {
-  border-color: var(--signin-ink-soft);
-  color: transparent;
-}
-
-.signin-pill {
-  display: inline-grid;
-}
-.signin-pill > * {
-  grid-area: 1 / 1;
-  text-align: center;
-}
-.signin-pill-to {
-  visibility: hidden;
-}
-
-.signin-task[data-status="todo"] .signin-pill {
-  background: var(--signin-todo-bg);
-  color: var(--signin-todo-fg);
-}
-.signin-task[data-status="doing"] .signin-pill {
-  background: var(--signin-doing-bg);
-  color: var(--signin-doing-fg);
-}
-.signin-task[data-status="done"] .signin-pill {
-  background: var(--signin-done-bg);
-  color: var(--signin-done-fg);
-}
-.signin-task[data-status="done"] .signin-check {
-  background: var(--signin-done-mark);
-  border-color: var(--signin-done-mark);
-  color: white;
-}
-.signin-task[data-status="done"] .signin-title {
-  color: var(--signin-ink-soft);
-  text-decoration: line-through;
-  text-decoration-color: color-mix(in oklch, var(--signin-ink-soft) 60%, transparent);
-}
-
-/* Khoảnh khắc duy nhất: task "Doing" được đánh dấu xong. */
-@media (prefers-reduced-motion: no-preference) {
-  .signin-task[data-status="doing"] .signin-check {
-    animation: signin-check 420ms cubic-bezier(0.16, 1, 0.3, 1) 1.4s both;
-  }
-  .signin-task[data-status="doing"] .signin-pill {
-    animation: signin-pill 360ms cubic-bezier(0.16, 1, 0.3, 1) 1.5s both;
-  }
-  .signin-task[data-status="doing"] .signin-pill-to {
-    animation: signin-swap-in 360ms cubic-bezier(0.16, 1, 0.3, 1) 1.5s both;
-  }
-  .signin-task[data-status="doing"] .signin-pill-from {
-    animation: signin-swap-out 240ms ease-out 1.5s both;
-  }
-  .signin-task[data-status="doing"] .signin-title {
-    animation: signin-strike 360ms ease-out 1.55s both;
-  }
-}
-
-@keyframes signin-check {
-  0% {
-    transform: scale(1);
-  }
-  45% {
-    transform: scale(0.82);
-  }
-  100% {
-    transform: scale(1);
-    background: var(--signin-done-mark);
-    border-color: var(--signin-done-mark);
-    color: white;
-  }
-}
-@keyframes signin-pill {
-  to {
-    background: var(--signin-done-bg);
-    color: var(--signin-done-fg);
-  }
-}
-@keyframes signin-swap-in {
-  from {
-    visibility: visible;
-    opacity: 0;
-    transform: translateY(4px);
-    filter: blur(2px);
-  }
-  to {
-    visibility: visible;
-    opacity: 1;
-    transform: none;
-    filter: none;
-  }
-}
-@keyframes signin-swap-out {
-  to {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-}
-@keyframes signin-strike {
-  to {
-    color: var(--signin-ink-soft);
-    text-decoration: line-through;
-    text-decoration-color: color-mix(in oklch, var(--signin-ink-soft) 60%, transparent);
-  }
-}
-
-/* ===== DailyDesk: hệ màu "bìa hồ sơ" =====
-   Nền giấy văn phòng hơi xanh, mực xanh than cho chữ và nút chính,
-   ba màu tab hồ sơ cho Todo / Doing / Done. */
+/* ===== DailyDesk: "Sổ kế hoạch giấy" =====
+   Bìa sổ mực tím giữ điều hướng, trang giấy ấm, chữ than chì,
+   mực đỏ cho việc quá hạn và con dấu XONG, bút dạ quang cho ưu tiên. */
 :root {
-  --radius: 0.5rem;
-  --background: oklch(0.982 0.004 240);
-  --foreground: oklch(0.25 0.03 258);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.25 0.03 258);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.25 0.03 258);
-  --primary: oklch(0.38 0.1 258);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.955 0.008 245);
-  --secondary-foreground: oklch(0.3 0.04 258);
-  --muted: oklch(0.955 0.008 245);
-  --muted-foreground: oklch(0.49 0.025 258);
-  --accent: oklch(0.945 0.016 245);
-  --accent-foreground: oklch(0.3 0.06 258);
-  --destructive: oklch(0.56 0.2 27);
-  --border: oklch(0.9 0.012 245);
-  --input: oklch(0.87 0.014 245);
-  --ring: oklch(0.58 0.13 255);
-  --sidebar: oklch(0.965 0.007 245);
-  --sidebar-foreground: oklch(0.3 0.03 258);
-  --sidebar-primary: oklch(0.38 0.1 258);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.925 0.02 245);
-  --sidebar-accent-foreground: oklch(0.25 0.06 258);
-  --sidebar-border: oklch(0.9 0.012 245);
-  --sidebar-ring: oklch(0.58 0.13 255);
+  --radius: 0.375rem;
+  --paper: oklch(0.978 0.01 85);
+  --rule: oklch(0.9 0.018 80);
+  --ink: oklch(0.38 0.13 292);
+  --ink-soft: oklch(0.93 0.03 292);
+  --red-ink: oklch(0.54 0.18 25);
+  --margin-rule: oklch(0.72 0.12 20 / 0.55);
+  --hl-high: oklch(0.86 0.1 15 / 0.75);
+  --hl-medium: oklch(0.92 0.14 98 / 0.85);
 
-  --status-todo: oklch(0.5 0.12 250);
-  --status-todo-soft: oklch(0.94 0.035 245);
-  --status-doing: oklch(0.52 0.12 62);
-  --status-doing-soft: oklch(0.94 0.07 85);
-  --status-done: oklch(0.48 0.1 155);
-  --status-done-soft: oklch(0.94 0.045 155);
-  --prio-high: oklch(0.55 0.19 28);
-  --prio-medium: oklch(0.62 0.14 70);
-  --prio-low: oklch(0.6 0.03 250);
-  --overdue: oklch(0.53 0.19 27);
+  --background: var(--paper);
+  --foreground: oklch(0.24 0.012 285);
+  --card: oklch(0.993 0.005 85);
+  --card-foreground: oklch(0.24 0.012 285);
+  --popover: oklch(0.995 0.004 85);
+  --popover-foreground: oklch(0.24 0.012 285);
+  --primary: var(--ink);
+  --primary-foreground: oklch(0.99 0.005 85);
+  --secondary: oklch(0.95 0.014 82);
+  --secondary-foreground: oklch(0.28 0.02 285);
+  --muted: oklch(0.95 0.014 82);
+  --muted-foreground: oklch(0.47 0.02 285);
+  --accent: oklch(0.945 0.02 292);
+  --accent-foreground: oklch(0.3 0.09 292);
+  --destructive: var(--red-ink);
+  --border: var(--rule);
+  --input: oklch(0.86 0.02 80);
+  --ring: oklch(0.55 0.15 292);
+
+  /* Bìa sổ */
+  --sidebar: oklch(0.31 0.095 292);
+  --sidebar-foreground: oklch(0.93 0.025 292);
+  --sidebar-primary: oklch(0.98 0.01 85);
+  --sidebar-primary-foreground: oklch(0.31 0.095 292);
+  --sidebar-accent: oklch(0.38 0.1 292);
+  --sidebar-accent-foreground: oklch(0.99 0.005 85);
+  --sidebar-border: oklch(0.38 0.08 292);
+  --sidebar-ring: oklch(0.8 0.1 292);
+
+  --status-todo: oklch(0.45 0.03 285);
+  --status-todo-soft: oklch(0.95 0.012 82);
+  --status-doing: oklch(0.5 0.12 75);
+  --status-doing-soft: oklch(0.93 0.11 95);
+  --status-done: var(--ink);
+  --status-done-soft: var(--ink-soft);
+  --prio-high: oklch(0.56 0.17 15);
+  --prio-medium: oklch(0.68 0.14 90);
+  --prio-low: oklch(0.62 0.02 285);
+  --overdue: var(--red-ink);
 }
 
 .dark {
-  --background: oklch(0.2 0.018 258);
-  --foreground: oklch(0.94 0.01 245);
-  --card: oklch(0.24 0.02 258);
-  --card-foreground: oklch(0.94 0.01 245);
-  --popover: oklch(0.255 0.02 258);
-  --popover-foreground: oklch(0.94 0.01 245);
-  --primary: oklch(0.8 0.09 250);
-  --primary-foreground: oklch(0.2 0.03 258);
-  --secondary: oklch(0.29 0.02 258);
-  --secondary-foreground: oklch(0.92 0.01 245);
-  --muted: oklch(0.28 0.02 258);
-  --muted-foreground: oklch(0.74 0.02 250);
-  --accent: oklch(0.3 0.025 258);
-  --accent-foreground: oklch(0.95 0.01 245);
-  --destructive: oklch(0.68 0.17 25);
-  --border: oklch(1 0 0 / 0.09);
-  --input: oklch(1 0 0 / 0.14);
-  --ring: oklch(0.7 0.11 250);
-  --sidebar: oklch(0.175 0.017 258);
-  --sidebar-foreground: oklch(0.9 0.01 245);
-  --sidebar-primary: oklch(0.8 0.09 250);
-  --sidebar-primary-foreground: oklch(0.2 0.03 258);
-  --sidebar-accent: oklch(0.27 0.025 258);
-  --sidebar-accent-foreground: oklch(0.96 0.01 245);
-  --sidebar-border: oklch(1 0 0 / 0.08);
-  --sidebar-ring: oklch(0.7 0.11 250);
+  --paper: oklch(0.22 0.015 290);
+  --rule: oklch(0.32 0.02 290);
+  --ink: oklch(0.8 0.1 292);
+  --ink-soft: oklch(0.32 0.05 292);
+  --red-ink: oklch(0.72 0.15 25);
+  --margin-rule: oklch(0.6 0.12 20 / 0.45);
+  --hl-high: oklch(0.45 0.12 15 / 0.7);
+  --hl-medium: oklch(0.5 0.1 95 / 0.6);
 
-  --status-todo: oklch(0.8 0.09 245);
-  --status-todo-soft: oklch(0.32 0.05 250);
-  --status-doing: oklch(0.84 0.12 82);
-  --status-doing-soft: oklch(0.34 0.06 70);
-  --status-done: oklch(0.8 0.1 155);
-  --status-done-soft: oklch(0.31 0.05 155);
-  --prio-high: oklch(0.72 0.16 28);
-  --prio-medium: oklch(0.8 0.13 78);
-  --prio-low: oklch(0.7 0.03 250);
-  --overdue: oklch(0.72 0.16 27);
+  --background: var(--paper);
+  --foreground: oklch(0.93 0.01 85);
+  --card: oklch(0.25 0.017 290);
+  --card-foreground: oklch(0.93 0.01 85);
+  --popover: oklch(0.27 0.018 290);
+  --popover-foreground: oklch(0.93 0.01 85);
+  --primary: var(--ink);
+  --primary-foreground: oklch(0.2 0.03 292);
+  --secondary: oklch(0.29 0.02 290);
+  --secondary-foreground: oklch(0.92 0.01 85);
+  --muted: oklch(0.28 0.02 290);
+  --muted-foreground: oklch(0.74 0.02 290);
+  --accent: oklch(0.31 0.04 292);
+  --accent-foreground: oklch(0.95 0.01 85);
+  --destructive: var(--red-ink);
+  --border: var(--rule);
+  --input: oklch(0.36 0.02 290);
+  --ring: oklch(0.72 0.12 292);
+  --sidebar: oklch(0.19 0.04 292);
+  --sidebar-foreground: oklch(0.88 0.03 292);
+  --sidebar-primary: oklch(0.85 0.08 292);
+  --sidebar-primary-foreground: oklch(0.2 0.04 292);
+  --sidebar-accent: oklch(0.27 0.06 292);
+  --sidebar-accent-foreground: oklch(0.97 0.01 85);
+  --sidebar-border: oklch(0.27 0.04 292);
+  --sidebar-ring: oklch(0.7 0.12 292);
+
+  --status-todo: oklch(0.78 0.02 285);
+  --status-todo-soft: oklch(0.3 0.02 290);
+  --status-doing: oklch(0.85 0.13 95);
+  --status-doing-soft: oklch(0.36 0.07 90);
+  --status-done: var(--ink);
+  --status-done-soft: var(--ink-soft);
+  --prio-high: oklch(0.74 0.14 15);
+  --prio-medium: oklch(0.82 0.13 92);
+  --prio-low: oklch(0.7 0.02 285);
+  --overdue: var(--red-ink);
 }
 
 html {
   font-family: var(--font-sans);
-  font-feature-settings: "cv11", "ss01";
   -webkit-font-smoothing: antialiased;
 }
+body {
+  caret-color: var(--ink);
+}
 ::selection {
-  background: color-mix(in oklch, var(--status-doing-soft) 85%, var(--status-doing));
+  background: var(--hl-medium);
   color: var(--foreground);
 }
 * {
   scrollbar-width: thin;
-  scrollbar-color: color-mix(in oklch, var(--muted-foreground) 45%, transparent) transparent;
+  scrollbar-color: color-mix(in oklch, var(--muted-foreground) 40%, transparent) transparent;
+}
+a {
+  text-underline-offset: 3px;
 }
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
-/* Dòng vừa đổi giữ màu nhấn một nhịp để người dùng kịp nhận ra. */
+/* Tiêu đề trang và tiêu đề nhóm ngày: chữ có chân như tiêu đề trong sổ. */
+.font-planner {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  letter-spacing: -0.01em;
+}
+
+/* Trang sổ: một đường lề đỏ mảnh bên trái danh sách. */
+.planner-page {
+  position: relative;
+  background: var(--card);
+}
+.planner-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 3rem;
+  width: 1px;
+  background: var(--margin-rule);
+  pointer-events: none;
+  z-index: 2;
+}
+@media (min-width: 640px) {
+  .planner-page::before {
+    left: 3.5rem;
+  }
+}
+
+/* Bút dạ quang cho mức ưu tiên. */
+.hl {
+  padding: 0.05em 0.35em;
+  margin: 0 -0.1em;
+  border-radius: 0.2em 0.5em 0.3em 0.45em;
+  box-decoration-break: clone;
+}
+.hl-high {
+  background: var(--hl-high);
+}
+.hl-medium {
+  background: var(--hl-medium);
+}
+
+/* Ô trạng thái: trống = Todo, nửa ô = Doing, đã tick = Done. */
+.status-box {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1.5px solid color-mix(in oklch, var(--foreground) 50%, transparent);
+  border-radius: 4px;
+  background: var(--card);
+  color: var(--primary-foreground);
+  transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1), border-color 160ms;
+}
+/* Doing: một nét gạch chéo như đánh dấu "đang làm dở" trong sổ. */
+.status-box[data-status="doing"] {
+  border-color: var(--status-doing);
+  background: var(--status-doing-soft);
+}
+.status-box[data-status="doing"]::after {
+  content: "";
+  position: absolute;
+  width: 140%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--status-doing);
+  transform: rotate(-45deg);
+}
+.status-box[data-status="done"] {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+/* Con dấu XONG: khoảnh khắc duy nhất khi hoàn thành một việc. */
+.stamp {
+  display: inline-grid;
+  place-items: center;
+  height: 1.375rem;
+  padding: 0 0.45rem;
+  border: 1.5px solid var(--red-ink);
+  border-radius: 999px;
+  color: var(--red-ink);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  transform: rotate(-6deg);
+  opacity: 0.85;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .stamp-press {
+    animation: stamp-press 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+@keyframes stamp-press {
+  from {
+    transform: rotate(-6deg) scale(1.7);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(-6deg) scale(1);
+    opacity: 0.85;
+  }
+}
+
+/* Dòng vừa đổi giữ màu dạ quang một nhịp để người dùng kịp nhận ra. */
 .task-row-flash {
-  background: color-mix(in oklch, var(--status-doing-soft) 70%, transparent);
+  background: color-mix(in oklch, var(--hl-medium) 45%, transparent);
   transition: background-color 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Tab chữ của trang sổ: tab đang mở được gạch chân bằng mực tím. */
+.planner-tab[aria-selected="true"] {
+  color: var(--foreground);
+  box-shadow: inset 0 -2px 0 var(--ink);
+}
+
+/* Màn đăng nhập: việc "Doing" được tick xong và đóng dấu, một lần. */
+.signin-box-check {
+  display: none;
+}
+.signin-stamp {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .signin-row[data-status="doing"] .signin-box {
+    animation: signin-box 200ms ease-out 1.4s both;
+  }
+  .signin-row[data-status="doing"] .signin-box-check {
+    display: grid;
+    opacity: 0;
+    animation: signin-fade 160ms ease-out 1.45s both;
+  }
+  .signin-row[data-status="doing"] .signin-title {
+    animation: signin-strike 300ms ease-out 1.5s both;
+  }
+  .signin-stamp {
+    animation: stamp-press 240ms cubic-bezier(0.16, 1, 0.3, 1) 1.6s both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .signin-stamp {
+    opacity: 0.85;
+  }
+}
+@keyframes signin-box {
+  to {
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+}
+@keyframes signin-fade {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes signin-strike {
+  to {
+    color: var(--muted-foreground);
+    text-decoration: line-through;
+  }
 }

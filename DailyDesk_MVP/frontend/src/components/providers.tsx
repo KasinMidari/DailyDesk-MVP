@@ -9,7 +9,7 @@ import { queryClient } from "@/lib/query-client";
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <JotaiProvider store={store}>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <ThemeProvider defaultTheme="light" storageKey="dailydesk-theme">
         <AuthProvider>
           <QueryClientProvider client={queryClient}>
             <AccessTokenProvider>{children}</AccessTokenProvider>

@@ -221,12 +221,10 @@ export function KanbanCard({
   const priority = (card as { priority?: "high" | "medium" | "low" | null }).priority ?? null;
   const PriorityMark = ({ className = "" }: { className?: string }) =>
     priority ? (
-      <span className={`inline-flex items-center gap-1 rounded-sm px-1 py-0.5 text-xs ${className}`}>
-        <span
-          aria-hidden="true"
-          className={`inline-block size-2 rounded-[2px] ${priority === "high" ? "bg-prio-high" : priority === "medium" ? "bg-prio-medium" : "bg-prio-low"}`}
-        />
-        {priority === "high" ? "Cao" : priority === "medium" ? "Vừa" : "Thấp"}
+      <span className={`inline-flex items-center px-1 py-0.5 text-xs ${className}`}>
+        <span className={priority === "high" ? "hl hl-high text-foreground" : priority === "medium" ? "hl hl-medium text-foreground" : ""}>
+          {priority === "high" ? "Cao" : priority === "medium" ? "Vừa" : "Thấp"}
+        </span>
       </span>
     ) : null;
 
@@ -287,7 +285,7 @@ export function KanbanCard({
                               if (e.key === "Enter" || e.key === " ") handleToggleComplete(e);
                             }}
                           >
-                            <div className={`h-5 w-5 shrink-0 rounded-full border-2 ${
+                            <div className={`h-5 w-5 shrink-0 rounded-[4px] border-[1.5px] ${
                               isDone
                                 ? 'bg-status-done border-status-done flex items-center justify-center'
                                 : 'border-white/70 hover:border-white'
@@ -339,10 +337,10 @@ export function KanbanCard({
                               if (e.key === "Enter" || e.key === " ") handleToggleComplete(e);
                             }}
                           >
-                            <div className={`h-5 w-5 shrink-0 rounded-full border-2 ${
+                            <div className={`h-5 w-5 shrink-0 rounded-[4px] border-[1.5px] ${
                               isDone
                                 ? 'bg-status-done border-status-done flex items-center justify-center'
-                                : 'border-muted-foreground/60 hover:border-foreground'
+                                : 'border-foreground/50 bg-card hover:border-ink'
                             }`}>
                               {isDone && (
                                 <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -389,10 +387,10 @@ export function KanbanCard({
                             if (e.key === "Enter" || e.key === " ") handleToggleComplete(e);
                           }}
                         >
-                          <div className={`h-5 w-5 shrink-0 rounded-full border-2 ring-offset-background ${
+                          <div className={`h-5 w-5 shrink-0 rounded-[4px] border-[1.5px] ring-offset-background ${
                             isDone
                               ? 'bg-status-done border-status-done flex items-center justify-center'
-                              : 'border-primary/50 hover:border-primary'
+                              : 'border-foreground/50 bg-card hover:border-ink'
                           }`}>
                             {isDone && (
                               <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -411,6 +409,7 @@ export function KanbanCard({
                     {normalizedCard.title}
                   </KanbanBoardCardTitle>
                 </div>
+                {isDone && <span className="stamp absolute right-2.5 bottom-2.5">XONG</span>}
                 <div className="flex flex-wrap items-center gap-1">{shouldShowDateRow && <DateRow className="text-muted-foreground px-6" />}<PriorityMark className="text-muted-foreground px-6" /></div>
               </div>
             )}

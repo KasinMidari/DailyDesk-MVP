@@ -5,14 +5,15 @@ primary_target: "src/features/tasks/tasks-page.tsx"
 related_targets: ["src/components/sign-in-screen.tsx"]
 ---
 
-Scope: whole signed-in app (Việc của tôi, Lịch, Board, card dialog) plus sign-in. Mode: Operate.
+Scope: whole signed-in app (Việc của tôi, Lịch, Board, card dialog, Hồ sơ, Mẫu board) plus sign-in. Mode: Operate.
 Audience: Vietnamese students and office workers managing their own tasks; graders of a one-week MVP.
 Task: capture tasks, set deadline and priority, move Todo → Doing → Done, filter and sort.
+Constraint: user pinned the world "Sổ kế hoạch giấy" (warm paper, serif headings, ruled day groups, tick boxes and stamps). Light is the default theme; dark stays as an option.
 
 ## Direction contract
-THESIS: The app is an office file folder. Status tabs are folder index tabs joined to the drawer below; each task is a ruled form line. Refuses the category default of card grids, hero metrics, gradients and glass.
-OWN-WORLD: Cool office-paper ground (oklch 0.982 0.004 240), navy ink for text and the one primary action, three tab hues (blue Todo, manila amber Doing, green Done) and three priority marks (red, amber, slate square). Be Vietnam Pro, tabular figures for dates. 0.5rem radius, hairline borders, one soft drawer shadow.
-STORY: The visitor sees what is overdue and what is next, changes status in one click, and adds a task with only a title required.
-FIRST VIEWPORT: Left sidebar (Việc của tôi / Lịch / Board). Header: date line, H1 "Việc của tôi", open/overdue counts, navy "Thêm task" button with N shortcut at right. Below: folder tabs, then the drawer with search, priority/board/sort pills, column header, deadline groups.
-FORM: Office file folder with ruled rows; grounded candidate 6 of 7; raise from the gate-board challenger: a changed row stays lit until noticed and deadline orders everything. seed:2a03c2b8115956ea
+THESIS: The app is a Vietnamese school/office planner: a notebook cover holds the navigation, pages are warm paper, tasks are lines grouped by day, and finishing a task stamps it. Refuses the shadcn dashboard default: dark slate ground, Ctrl K pill, kbd chips on buttons, pill status badges, grey icon sidebar.
+OWN-WORLD: Warm paper ground (oklch 0.978 0.01 85) with a faint red margin rule on the list; mực tím ink (oklch 0.36 0.13 292) for the cover rail, primary action and links; graphite text; red-ink (oklch 0.55 0.18 25) for overdue and the XONG stamp; highlighter marks for priority (Cao pink-red swipe, Vừa yellow swipe, Thấp plain). Literata for page and group headings, Be Vietnam Pro for everything else, tabular dates. 6px radius, hairline rules, no glass, no gradients.
+STORY: The visitor opens to today's page, sees what is late and what is due, ticks a box to move Todo → Doing → Done, and adds a task with only a title required.
+FIRST VIEWPORT: Left violet cover rail (DailyDesk, Việc của tôi / Lịch / Board / Mẫu board, Hồ sơ at the foot). Page header: Literata H1 "Việc của tôi", date line "Thứ Tư, 4 tháng 11", counts, ink "Ghi việc mới" button at right. Text tabs Tất cả · Cần làm · Đang làm · Đã xong with counts, a plain search field and filter selects, then the day-grouped ruled list with the margin rule.
+FORM: Planner page; status box cycles empty → half-filled (Doing) → ticked (Done) with a red round XONG stamp pressed onto the row (signature move, 200ms press). seed: none (direction pinned by user; no roll)
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
