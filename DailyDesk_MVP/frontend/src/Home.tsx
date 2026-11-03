@@ -1,4 +1,3 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Search, Clipboard, Users, Clock, ChevronRight } from "lucide-react";
 import { Suspense, useState, useEffect } from "react";
 import CreateBoardDialog from "@/components/create-board-dialog";
@@ -201,14 +200,21 @@ export default function Home() {
               Sắp xếp việc học, việc làm và việc nhà
             </p>
           </div>
-          <div className="relative w-full md:w-72">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Tìm board…"
-              className="pl-8"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          <div className="flex w-full items-center gap-2 md:w-auto">
+            <div className="relative flex-1 md:w-64">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+              <Input
+                placeholder="Tìm board…"
+                aria-label="Tìm board"
+                className="pl-8"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <Button className="h-9 shrink-0 gap-1.5" onClick={() => setIsCreateDialogOpen(true)}>
+              <Plus className="size-4" aria-hidden="true" />
+              Tạo board
+            </Button>
           </div>
         </header>
 
@@ -277,18 +283,28 @@ export default function Home() {
             )}
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {/* Create New Board Card - Always visible */}
-            <Card
-              className="mt-2.5 flex min-h-28 w-full cursor-pointer flex-col items-start justify-center rounded-xl border-2 border-dashed border-border bg-transparent shadow-none transition-colors hover:border-ring hover:bg-accent"
-              onClick={() => setIsCreateDialogOpen(true)}
-            >
-              <CardContent className="w-full flex flex-col items-center gap-2">
-                <Plus className="size-5 text-muted-foreground" />
-                <p className="text-sm font-medium text-foreground">
-                  Tạo board mới
+            {filteredOwnedBoards.length === 0 && (
+              <div className="col-span-full rounded-xl border bg-card px-6 py-10 text-center">
+                <p className="font-medium">
+                  {searchTerm ? `Không có board nào tên "${searchTerm}"` : "Chưa có board nào"}
                 </p>
-              </CardContent>
-            </Card>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {searchTerm
+                    ? "Thử từ khoá khác hoặc xoá ô tìm kiếm."
+                    : "Board giúp gom task theo môn học hoặc dự án."}
+                </p>
+                {searchTerm ? (
+                  <Button variant="outline" className="mt-4" onClick={() => setSearchTerm("")}>
+                    Xoá tìm kiếm
+                  </Button>
+                ) : (
+                  <Button className="mt-4 gap-1.5" onClick={() => setIsCreateDialogOpen(true)}>
+                    <Plus className="size-4" aria-hidden="true" />
+                    Tạo board đầu tiên
+                  </Button>
+                )}
+              </div>
+            )}
 
             {filteredOwnedBoards.slice(0, MAX_DISPLAYED_BOARDS).map((board) => (
               <div key={board.id} onClick={() => handleBoardClick(board.id)}>
@@ -371,9 +387,9 @@ export default function Home() {
                   />
                   {/* Role Badge */}
                   <Badge
-                    className={`absolute top-2 right-2 text-xs capitalize ${getRoleBadgeColor(board.role)}`}
+                    className={`absolute top-2 right-2 text-xs ${getRoleBadgeColor(board.role)}`}
                   >
-                    {board.role}
+                    {board.role === "admin" ? "Quản trị" : "Thành viên"}
                   </Badge>
                 </div>
               ))}
@@ -422,7 +438,7 @@ export default function Home() {
           open={isAllOwnedBoardsOpen}
           onOpenChange={setIsAllOwnedBoardsOpen}
           boards={ownedBoards}
-          title={`All My Boards (${ownedBoards.length})`}
+          title={`Tất cả board của tôi (${ownedBoards.length})`}
           onBoardClick={handleBoardClick}
           onEdit={(board) =>
             setBoardToEdit({
@@ -446,7 +462,7 @@ export default function Home() {
           open={isAllInvitedBoardsOpen}
           onOpenChange={setIsAllInvitedBoardsOpen}
           boards={invitedBoards}
-          title={`All Invited Boards (${invitedBoards.length})`}
+          title={`Tất cả board được mời (${invitedBoards.length})`}
           onBoardClick={handleBoardClick}
         />
       </div>

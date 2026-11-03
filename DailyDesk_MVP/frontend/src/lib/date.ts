@@ -40,3 +40,10 @@ export function weekdayShort(input: Date) {
 export function monthCaption(input: Date) {
   return `Tháng ${input.getMonth() + 1}, ${input.getFullYear()}`;
 }
+
+const WEEKDAY_LONG = ["Chủ nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+
+/** Ngày đầy đủ cho tiêu đề: "Thứ Ba, 3/11". */
+export function formatWeekdayDate(input: Date) {
+  return `${WEEKDAY_LONG[input.getDay()]}, ${input.getDate()}/${input.getMonth() + 1}`;
+}

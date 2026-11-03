@@ -133,9 +133,10 @@ export function useDndEvents() {
 }
 
 export const defaultScreenReaderInstructions = `
-To pick up a draggable item, press the space bar.
-While dragging, use the arrow keys to move the item.
-Press space again to drop the item in its new position, or press escape to cancel.
+Để nhấc một mục, nhấn phím cách.
+Trong lúc kéo, dùng phím mũi tên để di chuyển.
+Nhấn phím cách lần nữa để thả, hoặc Esc để huỷ.
+Bạn cũng có thể dùng nút "…" trên mỗi task để chuyển hoặc sắp xếp mà không cần kéo.
 `;
 
 export type KanbanBoardAnnouncements = {
@@ -148,24 +149,24 @@ export type KanbanBoardAnnouncements = {
 
 export const defaultAnnouncements: KanbanBoardAnnouncements = {
   onDragStart(activeId) {
-    return `Picked up draggable item ${activeId}.`;
+    return `Đã nhấc mục ${activeId}.`;
   },
   onDragOver(activeId, overId) {
     if (overId) {
-      return `Draggable item ${activeId} was moved over droppable area ${overId}.`;
+      return `Mục ${activeId} đang ở trên vùng ${overId}.`;
     }
 
-    return `Draggable item ${activeId} is no longer over a droppable area.`;
+    return `Mục ${activeId} không còn ở trên vùng thả nào.`;
   },
   onDragEnd(activeId, overId) {
     if (overId) {
-      return `Draggable item ${activeId} was dropped over droppable area ${overId}`;
+      return `Đã thả mục ${activeId} vào vùng ${overId}.`;
     }
 
-    return `Draggable item ${activeId} was dropped.`;
+    return `Đã thả mục ${activeId}.`;
   },
   onDragCancel(activeId) {
-    return `Dragging was cancelled. Draggable item ${activeId} was dropped.`;
+    return `Đã huỷ kéo. Mục ${activeId} trở về chỗ cũ.`;
   },
 };
 

@@ -18,12 +18,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Clock, Repeat } from "lucide-react";
+import { Clock, MoreHorizontal, Repeat } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { Card as CardType, Label, Member, Attachment, Comment, ActivityLog, CardCoverMode, RepeatFrequency } from "@/types/card";
 import { useAtom } from "jotai";
 import { isCardDialogOpenAtom, selectedCardAtom } from "./atoms";
-import { useUpdateDue } from "@/hooks/use-due";
-import { useUpdateCard } from "@/hooks/use-card";
 import { LayoutTemplate } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
@@ -68,6 +73,14 @@ interface KanbanCardProps {
   };
   columnId: string;
   boardId: string;
+  otherLists: { id: string; name: string }[];
+  canMoveUp: boolean;
+  canMoveDown: boolean;
+  /** Thẻ đang nằm trong danh sách Done. */
+  isDone: boolean;
+  onMoveTo: (listId: string) => void;
+  onMoveBy: (delta: -1 | 1) => void;
+  onToggleDone: () => void;
   onDropOverListItem: (
     data: string,
     direction: KanbanBoardDropDirection
@@ -78,14 +91,18 @@ interface KanbanCardProps {
 export function KanbanCard({
   card,
   columnId,
-  boardId,
   onDropOverListItem,
   onDelete,
+  otherLists,
+  canMoveUp,
+  canMoveDown,
+  isDone: inDoneList,
+  onMoveTo,
+  onMoveBy,
+  onToggleDone,
 }: KanbanCardProps) {
   const [, setSelectedCard] = useAtom(selectedCardAtom);
   const [, setIsCardDialogOpen] = useAtom(isCardDialogOpenAtom);
-  const updateDueMutation = useUpdateDue();
-  const updateCardMutation = useUpdateCard();
 
   const normalizedCard: NormalizedCard = {
     id: card.id,
@@ -125,10 +142,10 @@ export function KanbanCard({
 
   const handleDelete = async () => {
     const confirmed = await confirm({
-      title: "Xóa thẻ",
-      description: "Bạn có chắc chắn muốn xóa thẻ này?",
-      confirmText: "Xóa",
-      cancelText: "Hủy",
+      title: "Xoá task này?",
+      description: `"${normalizedCard.title}" sẽ bị xoá. Bạn có thể hoàn tác ngay sau khi xoá.`,
+      confirmText: "Xoá task",
+      cancelText: "Giữ lại",
       variant: "destructive"
     });
     if (confirmed) {
@@ -136,27 +153,13 @@ export function KanbanCard({
     }
   };
 
-  const handleToggleComplete = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent opening the card dialog
-    e.preventDefault(); // Prevent default button behavior
-    if (normalizedCard.dueAt) {
-      updateDueMutation.mutate({
-        boardId,
-        cardId: normalizedCard.id,
-        dueComplete: !normalizedCard.dueComplete,
-      });
-      return;
-    }
-    updateCardMutation.mutate({
-      boardId,
-      cardId: normalizedCard.id,
-      completed: !normalizedCard.completed,
-    });
+  const handleToggleComplete = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.stopPropagation(); // Không mở hộp thoại chi tiết
+    e.preventDefault();
+    onToggleDone();
   };
 
-  const isDone = normalizedCard.dueAt
-    ? !!normalizedCard.dueComplete
-    : !!normalizedCard.completed;
+  const isDone = inDoneList;
 
   const [displayDueAt, setDisplayDueAt] = useState<Date | string | null>(
     normalizedCard.dueAt ?? null
@@ -230,7 +233,7 @@ export function KanbanCard({
   const DateRow = ({ className }: { className: string }) => (
     <div
       className={`relative flex items-center gap-1 text-xs rounded-sm px-1 py-0.5 ${className} ${
-        isDone && !normalizedCard.repeatFrequency ? "bg-green-500/20" : ""
+        isDone && !normalizedCard.repeatFrequency ? "bg-status-done-soft" : ""
       }`}
     >
       {isRenewing && <span className="absolute inset-0 renew-flash rounded-sm" />}
@@ -253,12 +256,12 @@ export function KanbanCard({
           <KanbanBoardCard 
             data={normalizedCard} 
             onClick={openCardDialog}
-            className={(normalizedCard.coverUrl || normalizedCard.coverColor) ? "!p-0 overflow-hidden relative group" : "relative group"}
+            className={(normalizedCard.coverUrl || normalizedCard.coverColor) ? "!p-0 overflow-hidden relative group" : "relative group pr-9"}
           >
             {normalizedCard.coverUrl ? (
               <div className="relative w-full rounded-md hidden-cover-fix">
                 {normalizedCard.isTemplate && (
-                  <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-blue-500 text-[10px] font-medium text-white shadow-sm">
+                  <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-card/90 text-[10px] font-medium text-foreground">
                     <LayoutTemplate className="h-3 w-3" />
                     Mẫu
                   </div>
@@ -278,11 +281,15 @@ export function KanbanCard({
                             className={`flex-shrink-0 cursor-pointer transition-opacity ${isDone ? "opacity-100" : "opacity-60 group-hover:opacity-100"}`}
                             role="checkbox"
                             aria-checked={isDone}
-                            tabIndex={-1}
+                            aria-label={isDone ? "Chuyển về Todo" : "Đánh dấu xong (chuyển sang Done)"}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") handleToggleComplete(e);
+                            }}
                           >
                             <div className={`h-5 w-5 shrink-0 rounded-full border-2 ${
                               isDone
-                                ? 'bg-green-500 border-green-500 flex items-center justify-center'
+                                ? 'bg-status-done border-status-done flex items-center justify-center'
                                 : 'border-white/70 hover:border-white'
                             }`}>
                               {isDone && (
@@ -294,7 +301,7 @@ export function KanbanCard({
                           </div>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>{isDone ? "Bỏ đánh dấu xong" : "Đánh dấu xong"}</p>
+                          <p>{isDone ? "Chuyển về Todo" : "Đánh dấu xong"}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -326,11 +333,15 @@ export function KanbanCard({
                             className={`flex-shrink-0 cursor-pointer transition-opacity ${isDone ? "opacity-100" : "opacity-60 group-hover:opacity-100"}`}
                             role="checkbox"
                             aria-checked={isDone}
-                            tabIndex={-1}
+                            aria-label={isDone ? "Chuyển về Todo" : "Đánh dấu xong (chuyển sang Done)"}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") handleToggleComplete(e);
+                            }}
                           >
                             <div className={`h-5 w-5 shrink-0 rounded-full border-2 ${
                               isDone
-                                ? 'bg-green-500 border-green-500 flex items-center justify-center'
+                                ? 'bg-status-done border-status-done flex items-center justify-center'
                                 : 'border-muted-foreground/60 hover:border-foreground'
                             }`}>
                               {isDone && (
@@ -342,7 +353,7 @@ export function KanbanCard({
                           </div>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>{isDone ? "Bỏ đánh dấu xong" : "Đánh dấu xong"}</p>
+                          <p>{isDone ? "Chuyển về Todo" : "Đánh dấu xong"}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -358,7 +369,7 @@ export function KanbanCard({
             ) : (
               <div className="flex flex-col gap-1 pt-1">
                  {normalizedCard.isTemplate && (
-                  <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 text-[10px] font-medium max-w-fit mb-0.5">
+                  <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-muted text-muted-foreground text-[10px] font-medium max-w-fit mb-0.5">
                     <LayoutTemplate className="h-3 w-3" />
                     Mẫu
                   </div>
@@ -372,11 +383,15 @@ export function KanbanCard({
                           className={`flex-shrink-0 cursor-pointer transition-opacity ${isDone ? "opacity-100" : "opacity-60 group-hover:opacity-100"}`}
                           role="checkbox"
                           aria-checked={isDone}
-                          tabIndex={-1}
+                          aria-label={isDone ? "Chuyển về Todo" : "Đánh dấu xong (chuyển sang Done)"}
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") handleToggleComplete(e);
+                          }}
                         >
                           <div className={`h-5 w-5 shrink-0 rounded-full border-2 ring-offset-background ${
                             isDone
-                              ? 'bg-green-500 border-green-500 flex items-center justify-center'
+                              ? 'bg-status-done border-status-done flex items-center justify-center'
                               : 'border-primary/50 hover:border-primary'
                           }`}>
                             {isDone && (
@@ -388,22 +403,56 @@ export function KanbanCard({
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>{isDone ? "Bỏ đánh dấu xong" : "Đánh dấu xong"}</p>
+                        <p>{isDone ? "Chuyển về Todo" : "Đánh dấu xong"}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-                  <KanbanBoardCardTitle className={`line-clamp-2 ${isDone ? "!text-green-600" : ""}`}>
+                  <KanbanBoardCardTitle className={`line-clamp-2 ${isDone ? "!text-muted-foreground line-through" : ""}`}>
                     {normalizedCard.title}
                   </KanbanBoardCardTitle>
                 </div>
                 <div className="flex flex-wrap items-center gap-1">{shouldShowDateRow && <DateRow className="text-muted-foreground px-6" />}<PriorityMark className="text-muted-foreground px-6" /></div>
               </div>
             )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={`Thao tác với task ${normalizedCard.title}`}
+                  onClick={(e) => e.stopPropagation()}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  className="absolute top-1.5 right-1.5 z-20 grid size-7 place-items-center rounded-md bg-card/80 text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <MoreHorizontal className="size-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+                <DropdownMenuItem onSelect={openCardDialog}>Mở chi tiết</DropdownMenuItem>
+                {otherLists.length > 0 && <DropdownMenuSeparator />}
+                {otherLists.map((l) => (
+                  <DropdownMenuItem key={l.id} onSelect={() => onMoveTo(l.id)}>
+                    Chuyển sang {l.name}
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem disabled={!canMoveUp} onSelect={() => onMoveBy(-1)}>Lên trên</DropdownMenuItem>
+                <DropdownMenuItem disabled={!canMoveDown} onSelect={() => onMoveBy(1)}>Xuống dưới</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive" onSelect={handleDelete}>Xoá task</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </KanbanBoardCard>
         </ContextMenuTrigger>
         <ContextMenuContent>
-          <ContextMenuItem onClick={openCardDialog}>Sửa</ContextMenuItem>
-          <ContextMenuItem onClick={handleDelete}>Gỡ</ContextMenuItem>
+          <ContextMenuItem onClick={openCardDialog}>Mở chi tiết</ContextMenuItem>
+          {otherLists.map((l) => (
+            <ContextMenuItem key={l.id} onClick={() => onMoveTo(l.id)}>
+              Chuyển sang {l.name}
+            </ContextMenuItem>
+          ))}
+          <ContextMenuItem disabled={!canMoveUp} onClick={() => onMoveBy(-1)}>Lên trên</ContextMenuItem>
+          <ContextMenuItem disabled={!canMoveDown} onClick={() => onMoveBy(1)}>Xuống dưới</ContextMenuItem>
+          <ContextMenuItem variant="destructive" onClick={handleDelete}>Xoá task</ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
       <ConfirmDialog />

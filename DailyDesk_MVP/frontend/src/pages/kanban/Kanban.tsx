@@ -32,6 +32,9 @@ import { useAuth0 } from "@/lib/auth";
 import { toast } from "sonner";
 import { useSearchParams, useParams } from "react-router";
 import { BoardEventsProvider } from "@/components/board-events-provider";
+import { useQueryClient } from "@tanstack/react-query";
+import { uuidv7 } from "uuidv7";
+import { request, statusFromList, STATUS_LABEL, type Status } from "@/features/tasks/api";
 
 interface KanbanProps {
   boardId?: string;
@@ -491,6 +494,71 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
     return true;
   };
 
+  const queryClient = useQueryClient();
+
+  const sortedCardsOf = (listId: string) =>
+    [...(lists.find((l) => l.id === listId)?.cards ?? [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+  /** Chuyển thẻ sang danh sách khác bằng menu (không cần kéo-thả). */
+  const handleMoveCardTo = (cardId: string, toListId: string) => {
+    if (!boardId) return;
+    const target = lists.find((l) => l.id === toListId);
+    if (!target) return;
+    const maxOrder = target.cards.reduce((m, c) => Math.max(m, c.order ?? 0), -1);
+    updateCard(
+      { boardId, cardId, listId: toListId, order: maxOrder + 1 },
+      {
+        onSuccess: () => toast.success(`Đã chuyển sang ${target.name}`, { position: "bottom-left" }),
+        onError: () => toast.error("Không chuyển được task", { position: "bottom-left" }),
+      },
+    );
+  };
+
+  /** Đổi chỗ thẻ với thẻ ngay trên/dưới trong cùng danh sách. */
+  const handleMoveCardBy = (cardId: string, listId: string, delta: -1 | 1) => {
+    if (!boardId) return;
+    const cards = sortedCardsOf(listId);
+    const i = cards.findIndex((c) => c.id === cardId);
+    const j = i + delta;
+    if (i < 0 || j < 0 || j >= cards.length) return;
+    const a = cards[i];
+    const b = cards[j];
+    const ao = a.order ?? i;
+    let bo = b.order ?? j;
+    if (ao === bo) bo = ao + delta;
+    updateCard({ boardId, cardId: a.id, order: bo });
+    updateCard({ boardId, cardId: b.id, order: ao });
+  };
+
+  /** Ô "đánh dấu xong" = chuyển sang danh sách Done (bỏ đánh dấu = về Todo). */
+  const handleSetCardStatus = (cardId: string, status: Status) => {
+    const target = [...lists]
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+      .find((l) => statusFromList(l.name) === status);
+    if (!target) {
+      toast.error(`Board này chưa có danh sách ${STATUS_LABEL[status]}`, { position: "bottom-left" });
+      return;
+    }
+    handleMoveCardTo(cardId, target.id);
+  };
+
+  /** Đổi chỗ danh sách với danh sách bên trái/phải. */
+  const handleMoveColumnBy = async (columnId: string, delta: -1 | 1) => {
+    const sorted = [...lists].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    const i = sorted.findIndex((l) => l.id === columnId);
+    const j = i + delta;
+    if (i < 0 || j < 0 || j >= sorted.length) return;
+    const ao = sorted[i].order ?? i;
+    let bo = sorted[j].order ?? j;
+    if (ao === bo) bo = ao + delta;
+    try {
+      await updateList(sorted[i].id, { order: bo });
+      await updateList(sorted[j].id, { order: ao });
+    } catch {
+      toast.error("Không sắp xếp lại được danh sách", { position: "bottom-left" });
+    }
+  };
+
   const handleDeleteCard = (cardId: string) => {
     if (!boardId) return;
     
@@ -498,9 +566,34 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
       { boardId, cardId },
       {
         onSuccess: () => {
-          toast.success("Đã xoá task", { position: "bottom-left" });
           setIsCardDialogOpen(false);
           setSelectedCard(null);
+          const snapshot = lists.flatMap((l) => l.cards).find((c) => c.id === cardId) as
+            | (Record<string, unknown> & { name: string; listId: string })
+            | undefined;
+          toast("Đã xoá task", {
+            position: "bottom-left",
+            description: snapshot?.name,
+            action: snapshot
+              ? {
+                  label: "Hoàn tác",
+                  onClick: async () => {
+                    try {
+                      await request("POST", `/boards/${boardId}/cards`, {
+                        ...snapshot,
+                        id: uuidv7(),
+                        labels: (snapshot.labels as unknown[] | undefined) ?? [],
+                        members: [],
+                      });
+                      queryClient.invalidateQueries({ queryKey: ["board", boardId] });
+                      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+                    } catch {
+                      toast.error("Không khôi phục được task", { position: "bottom-left" });
+                    }
+                  },
+                }
+              : undefined,
+          });
         },
         onError: () => {
           toast.error("Không xoá được task", { position: "bottom-left" });
@@ -551,7 +644,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
             />
           )}
           <div className="fixed bottom-4 left-1/2 z-30 -translate-x-1/2">
-            <div className="inline-flex items-center gap-1 rounded-xl border border-border bg-background/80 p-1 shadow-lg backdrop-blur">
+            <div role="group" aria-label="Chế độ xem" className="inline-flex items-center gap-1 rounded-lg border bg-card p-1 shadow-[0_1px_2px_rgb(0_0_0/0.06)]">
               <Button
                 variant={viewMode === "kanban" ? "default" : "ghost"}
                 size="sm"
@@ -581,14 +674,14 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
                   onEventAdd={handleEventAdd}
                   onEventUpdate={handleEventUpdate}
                   onEventDelete={handleEventDelete}
-                  createLabel="New card"
+                  createLabel="Thêm task"
                   onCreateClick={handleOpenCalendarCreate}
                   onEventSelect={handleCalendarEventSelect}
                 />
               </div>
             </div>
           ) : (
-            <KanbanBoard ref={scrollRef} {...dragEvents} className=" cursor-grab active:cursor-grabbing pb-24 flex-1 overflow-x-auto overflow-y-auto items-start">
+            <KanbanBoard ref={scrollRef} {...dragEvents} className="pb-24 flex-1 overflow-x-auto overflow-y-auto items-start">
               {filteredLists.map((column, index) => (
                 <KanbanColumn
                   key={column.id}
@@ -602,6 +695,13 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
                   onDeleteColumn={handleDeleteColumn}
                   onDeleteCard={handleDeleteCard}
                   index={index}
+                  allLists={[...lists]
+                    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+                    .map((l) => ({ id: l.id, name: l.name }))}
+                  onMoveCardTo={handleMoveCardTo}
+                  onMoveCardBy={(cardId, delta) => handleMoveCardBy(cardId, column.id, delta)}
+                  onSetCardStatus={handleSetCardStatus}
+                  onMoveColumnBy={(delta) => handleMoveColumnBy(column.id, delta)}
                 />
               ))}
 

@@ -210,7 +210,7 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
         <div className="space-y-2">
           {labels.length === 0 && (
             <p className="text-sm text-muted-foreground text-center py-4">
-              No labels yet. {isViewingOwnLabels ? "Create one to get started!" : `${selectedUser?.name} hasn't created any labels yet.`}
+              Chưa có nhãn nào. {isViewingOwnLabels ? "Tạo nhãn đầu tiên để phân loại task." : `${selectedUser?.name} chưa tạo nhãn nào.`}
             </p>
           )}
           {labels.map((label) => (

@@ -33,6 +33,8 @@ type Props = {
   boards: BoardSummary[];
   defaultStatus?: Status;
   defaultBoardId?: string;
+  /** Hạn chót gợi ý khi thêm task mới (ví dụ ngày được bấm trên lịch). */
+  defaultDueAt?: string | null;
   saving: boolean;
   onSubmit: (input: TaskInput) => Promise<void>;
   onDelete?: () => void;
@@ -148,6 +150,7 @@ export default function TaskFormDialog({
   boards,
   defaultStatus = "todo",
   defaultBoardId,
+  defaultDueAt,
   saving,
   onSubmit,
   onDelete,
@@ -169,7 +172,7 @@ export default function TaskFormDialog({
 
   useEffect(() => {
     if (!open) return;
-    const parts = toLocalParts(task?.dueAt ?? null);
+    const parts = toLocalParts(task ? task.dueAt : defaultDueAt ?? null);
     setName(task?.name ?? "");
     setDescription(task?.description ?? "");
     setDate(parts.date);
@@ -179,7 +182,7 @@ export default function TaskFormDialog({
     setBoardId(task?.boardId ?? defaultBoardId ?? boards[0]?.id ?? "");
     setErrors({});
     setSubmitError("");
-  }, [open, task, defaultStatus, defaultBoardId, boards]);
+  }, [open, task, defaultStatus, defaultBoardId, defaultDueAt, boards]);
 
   function dueIso() {
     if (!date) return null;

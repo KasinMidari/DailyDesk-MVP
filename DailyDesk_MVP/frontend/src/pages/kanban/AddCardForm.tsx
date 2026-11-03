@@ -1,3 +1,4 @@
+import { SHOW_CARD_TEMPLATES } from "@/lib/features";
 import {
   KanbanBoardColumnButton,
   KanbanBoardColumnFooter,
@@ -107,6 +108,7 @@ export function AddCardForm({ columnId, cardsCount }: AddCardFormProps) {
           Thêm task
         </KanbanBoardColumnButton>
         
+        {SHOW_CARD_TEMPLATES && (
         <Popover>
             <PopoverTrigger asChild>
               <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0" disabled={isCreatingFromTemplate}>
@@ -160,6 +162,7 @@ export function AddCardForm({ columnId, cardsCount }: AddCardFormProps) {
               </div>
             </PopoverContent>
           </Popover>
+        )}
       </KanbanBoardColumnFooter>
 
       {boardId && (

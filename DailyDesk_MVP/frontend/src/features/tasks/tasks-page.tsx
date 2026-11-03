@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { format, formatDistanceToNowStrict } from "date-fns";
-import { formatDue } from "@/lib/date";
+import { formatDistanceToNowStrict } from "date-fns";
+import { formatDue, formatWeekdayDate } from "@/lib/date";
 import { vi } from "date-fns/locale";
 import { toast } from "sonner";
 import {
@@ -254,19 +254,23 @@ function TaskRow({
   onOpen,
   onStatus,
   onDelete,
+  showBoard,
 }: {
   task: Task;
   flash: boolean;
   onOpen: () => void;
   onStatus: (s: Status) => void;
   onDelete: () => void;
+  /** Chỉ hiện tên board khi người dùng có nhiều hơn một board. */
+  showBoard: boolean;
 }) {
   const overdue = isOverdue(task);
   const done = task.status === "done";
   return (
     <li
       className={cn(
-        "task-row group grid cursor-pointer grid-cols-[auto_1fr_auto] items-start gap-x-3 gap-y-1 px-4 py-3 transition-colors hover:bg-accent/50 sm:px-5 lg:grid-cols-[auto_minmax(0,1fr)_9rem_6rem_10.5rem_auto] lg:items-center",
+        "task-row group grid cursor-pointer grid-cols-[auto_1fr_auto] items-start gap-x-3 gap-y-1 px-4 py-3 transition-colors hover:bg-accent/50 sm:px-5 lg:items-center",
+        showBoard ? "lg:grid-cols-[auto_minmax(0,1fr)_9rem_6rem_10.5rem_auto]" : "lg:grid-cols-[auto_minmax(0,1fr)_6rem_10.5rem_auto]",
         flash && "task-row-flash",
       )}
       onClick={onOpen}
@@ -298,13 +302,15 @@ function TaskRow({
           {task.dueAt && (
             <span className={cn("tabular", overdue && "font-medium text-overdue")}>{dueText(task.dueAt)}</span>
           )}
-          <span>{task.boardName}</span>
+          {showBoard && <span>{task.boardName}</span>}
         </div>
       </div>
 
-      <span className="hidden truncate text-sm text-muted-foreground lg:block" title={task.boardName}>
-        {task.boardName}
-      </span>
+      {showBoard && (
+        <span className="hidden truncate text-sm text-muted-foreground lg:block" title={task.boardName}>
+          {task.boardName}
+        </span>
+      )}
       <span className="hidden lg:block">
         <PriorityTag priority={task.priority} />
       </span>
@@ -425,6 +431,7 @@ export default function TasksPage() {
   const groups = sort === "deadline" ? groupTasks(visible) : [{ key: null, tasks: visible }];
   const overdueCount = tasks.filter((t) => isOverdue(t)).length;
   const openCount = tasks.filter((t) => t.status !== "done").length;
+  const showBoard = boards.length > 1;
   const hasFilters = !!filters.q || filters.priority !== "all" || filters.boardId !== "all";
 
   function openNew() {
@@ -481,7 +488,7 @@ export default function TasksPage() {
     }
   }
 
-  const today = format(new Date(), "EEEE d/M", { locale: vi });
+  const today = formatWeekdayDate(new Date());
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 pt-6 pb-16 sm:px-6 lg:px-8">
@@ -509,7 +516,7 @@ export default function TasksPage() {
                 </>
               )}
               {" · "}
-              <span className="inline-block first-letter:uppercase">{today}</span>
+              <span>{today}</span>
             </p>
           )}
         </div>
@@ -587,10 +594,17 @@ export default function TasksPage() {
             </div>
           </div>
 
-          <div className="hidden grid-cols-[5.5rem_minmax(0,1fr)_9rem_6rem_10.5rem_2rem] gap-x-3 border-b px-5 py-2 text-xs font-medium text-muted-foreground lg:grid">
+          <div
+            className={cn(
+              "hidden gap-x-3 border-b px-5 py-2 text-xs font-medium text-muted-foreground lg:grid",
+              showBoard
+                ? "grid-cols-[5.5rem_minmax(0,1fr)_9rem_6rem_10.5rem_2rem]"
+                : "grid-cols-[5.5rem_minmax(0,1fr)_6rem_10.5rem_2rem]",
+            )}
+          >
             <span>Trạng thái</span>
             <span>Task</span>
-            <span>Board</span>
+            {showBoard && <span>Board</span>}
             <span>Ưu tiên</span>
             <span>Hạn chót</span>
             <span />
@@ -676,6 +690,7 @@ export default function TasksPage() {
                         }}
                         onStatus={(s) => changeStatus(task, s)}
                         onDelete={() => setToDelete(task)}
+                        showBoard={showBoard}
                       />
                     ))}
                   </ul>
@@ -686,8 +701,7 @@ export default function TasksPage() {
         </div>
         {tasksQuery.isSuccess && visible.length > 0 && (
           <p className="mt-3 px-1 text-xs text-muted-foreground">
-            Hiển thị {visible.length}/{tasks.length} task · Bấm vào một dòng để sửa · Phím tắt: <kbd className="font-sans">N</kbd> thêm
-            task, <kbd className="font-sans">/</kbd> tìm kiếm
+            Hiển thị {visible.length}/{tasks.length} task · Bấm vào một dòng để sửa
           </p>
         )}
       </section>

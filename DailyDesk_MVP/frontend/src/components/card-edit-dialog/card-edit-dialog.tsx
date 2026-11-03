@@ -1,3 +1,4 @@
+import { SHOW_CARD_TEMPLATES } from "@/lib/features";
 import { formatDue } from "@/lib/date";
 import CardMetaControls from "@/features/tasks/card-meta-controls";
 import { SHOW_COLLABORATION } from "@/lib/features";
@@ -686,9 +687,8 @@ function InnerDialog({
         className="!flex !flex-col !p-0 !gap-0"
         style={{
           maxWidth: isVertical ? '920px' : '1200px',
-          width: isVertical ? '92vw' : '90vw',
-          height: isVertical ? '85vh' : '600px',
-          minHeight: isVertical ? '600px' : '600px'
+          width: 'calc(100vw - 2rem)',
+          height: isVertical ? 'min(85svh, 760px)' : 'min(640px, 90svh)',
         }}
         showCloseButton={false}
       >
@@ -714,13 +714,15 @@ function InnerDialog({
           <Button
             variant="ghost"
             size="icon"
+            aria-label="Đổi ảnh bìa"
+            title="Đổi ảnh bìa"
             onClick={() => setIsCoverPickerOpen(true)}
           >
             <Wallpaper className="h-4 w-4" />
           </Button>
 
           {/* Close button */}
-          <Button variant="ghost" size="icon" onClick={handleClose}>
+          <Button variant="ghost" size="icon" aria-label="Đóng" title="Đóng" onClick={handleClose}>
             <X className="h-4 w-4" />
           </Button>
         </div>
@@ -745,7 +747,7 @@ function InnerDialog({
           <div
             className="flex-1 space-y-6 p-6 overflow-y-auto max-h-full overscroll-contain"
             style={{
-              minWidth: isVertical ? "auto" : "500px",
+              minWidth: isVertical ? "auto" : "min(500px, 100%)",
               touchAction: 'auto',
               WebkitOverflowScrolling: 'touch'
             } as React.CSSProperties}
@@ -755,6 +757,15 @@ function InnerDialog({
           >
             {/* Header with title */}
             <CardHeader card={localCard} onUpdate={handleUpdate} />
+
+            {!isCreateMode && localCard.id && boardId && (
+              <CardMetaControls
+                boardId={boardId}
+                cardId={localCard.id}
+                listId={localCard.listId}
+                priority={(card as { priority?: "high" | "medium" | "low" | null } | undefined)?.priority}
+              />
+            )}
 
             {/* Action buttons row */}
             <div className="flex flex-wrap gap-2">
@@ -853,7 +864,7 @@ function InnerDialog({
                           }}
                         />
                         <Input
-                          placeholder="Link name (optional)"
+                          placeholder="Tên link (không bắt buộc)"
                           value={linkName}
                           onChange={(e) => setLinkName(e.target.value)}
                           onKeyDown={(e) => {
@@ -883,7 +894,7 @@ function InnerDialog({
                                 Đang đính kèm…
                               </>
                             ) : (
-                              "Attach"
+                              "Đính kèm"
                             )}
                           </Button>
                         </div>
@@ -894,27 +905,22 @@ function InnerDialog({
               </Popover>
 
               {/* Template Toggle */}
-              <Button
-                variant={localCard.isTemplate ? "default" : "outline"}
-                size="sm"
-                className="h-8"
-                onClick={() => handleUpdate({ isTemplate: !localCard.isTemplate })}
-              >
-                <LayoutTemplate className="h-4 w-4 mr-1" />
-                {localCard.isTemplate ? "Mẫu" : "Lưu làm mẫu"}
-              </Button>
+              {SHOW_CARD_TEMPLATES && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  aria-pressed={!!localCard.isTemplate}
+                  className={`h-8 ${localCard.isTemplate ? "bg-accent" : ""}`}
+                  onClick={() => handleUpdate({ isTemplate: !localCard.isTemplate })}
+                >
+                  <LayoutTemplate className="h-4 w-4 mr-1" />
+                  {localCard.isTemplate ? "Đang là mẫu" : "Lưu làm mẫu"}
+                </Button>
+              )}
             </div>
 
            
 
-            {!isCreateMode && localCard.id && boardId && (
-              <CardMetaControls
-                boardId={boardId}
-                cardId={localCard.id}
-                listId={localCard.listId}
-                priority={(card as { priority?: "high" | "medium" | "low" | null } | undefined)?.priority}
-              />
-            )}
 
             {/* Labels display - only show if has labels */}
             {localCard.labels && localCard.labels.length > 0 && (

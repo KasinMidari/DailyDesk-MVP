@@ -171,7 +171,7 @@ export function BoardHeaderBar({
 
   return (
     <>
-      <div className="sticky top-1 z-10 mb-4 flex items-center justify-between bg-card/80 dark:bg-black/30 backdrop-blur-sm rounded-lg px-4 py-2 border border-border/50">
+      <div className="sticky top-1 z-10 mb-4 flex items-center justify-between rounded-lg border bg-card px-4 py-2 shadow-[0_1px_2px_rgb(0_0_0/0.06)]">
         {/* Left Section - Board Name */}
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-semibold tracking-tight text-foreground">{boardName}</h2>
@@ -244,15 +244,22 @@ export function BoardHeaderBar({
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <div className="ml-1 h-1 w-12 bg-muted rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-cyan-400 rounded-full transition-all duration-500 ease-out" 
-                            style={{ width: `${progress}%` }} 
+                        <div
+                          role="progressbar"
+                          aria-label="Tỉ lệ task đã xong"
+                          aria-valuenow={Math.round(progress)}
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          className="ml-1 h-1.5 w-14 overflow-hidden rounded-full bg-muted"
+                        >
+                          <div
+                            className="h-full rounded-full bg-status-done transition-[width] duration-500 ease-out"
+                            style={{ width: `${progress}%` }}
                           />
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Board Progress: {Math.round(progress)}%</p>
+                        <p>Đã xong {Math.round(progress)}% task</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

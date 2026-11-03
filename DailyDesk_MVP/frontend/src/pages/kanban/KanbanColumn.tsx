@@ -8,6 +8,7 @@ import {
 import { AddCardForm } from "./AddCardForm";
 import { ColumnHeader } from "./ColumnHeader";
 import { KanbanCard } from "./KanbanCard";
+import { statusFromList, type Status } from "@/features/tasks/api";
 
 // Backend card structure
 interface BackendCard {
@@ -36,6 +37,11 @@ interface KanbanColumnProps {
   onDeleteColumn: (columnId: string) => void;
   onDeleteCard: (cardId: string) => void;
   index: number;
+  allLists: { id: string; name: string }[];
+  onMoveCardTo: (cardId: string, listId: string) => void;
+  onMoveCardBy: (cardId: string, delta: -1 | 1) => void;
+  onSetCardStatus: (cardId: string, status: Status) => void;
+  onMoveColumnBy: (delta: -1 | 1) => void;
 }
 
 export function KanbanColumn({
@@ -47,7 +53,15 @@ export function KanbanColumn({
   onDeleteColumn,
   onDeleteCard,
   index,
+  allLists,
+  onMoveCardTo,
+  onMoveCardBy,
+  onSetCardStatus,
+  onMoveColumnBy,
 }: KanbanColumnProps) {
+  const position = allLists.findIndex((l) => l.id === column.id);
+  const isDoneList = statusFromList(column.name) === "done";
+  const sortedIds = [...column.cards].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).map((c) => c.id);
   const listRef = useRef<HTMLUListElement>(null);
   const prevCardCount = useRef(column.cards.length);
 
@@ -78,6 +92,10 @@ export function KanbanColumn({
           columnName={column.name}
           onSave={onSaveColumnEdit}
           onDelete={onDeleteColumn}
+          cardCount={column.cards.length}
+          canMoveLeft={position > 0}
+          canMoveRight={position >= 0 && position < allLists.length - 1}
+          onMoveBy={onMoveColumnBy}
         />
       </KanbanBoardColumnHeader>
 
@@ -92,6 +110,13 @@ export function KanbanColumn({
               onDropOverListItem(card.id, data, direction)
             }
             onDelete={onDeleteCard}
+            otherLists={allLists.filter((l) => l.id !== column.id)}
+            canMoveUp={sortedIds.indexOf(card.id) > 0}
+            canMoveDown={sortedIds.indexOf(card.id) < sortedIds.length - 1}
+            isDone={isDoneList}
+            onMoveTo={(listId) => onMoveCardTo(card.id, listId)}
+            onMoveBy={(delta) => onMoveCardBy(card.id, delta)}
+            onToggleDone={() => onSetCardStatus(card.id, isDoneList ? "todo" : "done")}
           />
         ))}
       </KanbanBoardColumnList>

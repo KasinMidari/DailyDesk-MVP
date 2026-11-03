@@ -142,8 +142,7 @@ export function EventCalendar({
   };
 
   const handleEventSelect = (event: CalendarEvent) => {
-    console.log("Event selected:", event); // Debug log
-    const handled = onEventSelect?.(event);
+        const handled = onEventSelect?.(event);
     if (handled !== false) {
       return;
     }
@@ -152,8 +151,7 @@ export function EventCalendar({
   };
 
   const handleEventCreate = (startTime: Date) => {
-    console.log("Creating new event at:", startTime); // Debug log
-
+    
     if (onCreateClick) {
       onCreateClick(startTime);
       return;
@@ -189,7 +187,7 @@ export function EventCalendar({
     if (event.id) {
       onEventUpdate?.(event);
       // Show toast notification when an event is updated
-      toast(`Event "${event.title}" updated`, {
+      toast(`Đã cập nhật "${event.title}"`, {
         description: format(new Date(event.start), "d/M/yyyy"),
         position: "bottom-left",
       });
@@ -199,7 +197,7 @@ export function EventCalendar({
         id: Math.random().toString(36).substring(2, 11),
       });
       // Show toast notification when an event is added
-      toast(`Event "${event.title}" added`, {
+      toast(`Đã thêm "${event.title}"`, {
         description: format(new Date(event.start), "d/M/yyyy"),
         position: "bottom-left",
       });
@@ -216,7 +214,7 @@ export function EventCalendar({
 
     // Show toast notification when an event is deleted
     if (deletedEvent) {
-      toast(`Event "${deletedEvent.title}" deleted`, {
+      toast(`Đã xoá "${deletedEvent.title}"`, {
         description: format(new Date(deletedEvent.start), "d/M/yyyy"),
         position: "bottom-left",
       });
@@ -230,9 +228,9 @@ export function EventCalendar({
     }
 
     // Show toast notification when an event is updated via drag and drop
-    const listLabel = updatedEvent.location || "Unknown list";
+    const listLabel = updatedEvent.location || "danh sách";
     toast(
-      `Card "${updatedEvent.title}" from list "${listLabel}" moved to ${format(
+      `Đã dời "${updatedEvent.title}" (${listLabel}) sang ${format(
         new Date(updatedEvent.start),
         "d/M/yyyy",
       )}`,

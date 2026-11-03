@@ -110,12 +110,12 @@ export function EventDialog({
 
   const handleSave = () => {
     if (!startDate && !dueAt) {
-      setError("Pick a start date or due date");
+      setError("Hãy chọn ngày bắt đầu hoặc hạn chót");
       return;
     }
 
     if (startDate && dueAt && isBefore(dueAt, startDate)) {
-      setError("Due date cannot be before start date");
+      setError("Hạn chót không được trước ngày bắt đầu");
       return;
     }
 
@@ -218,8 +218,8 @@ export function EventDialog({
           <DialogTitle>{event?.id ? "Sửa task" : "Tạo task"}</DialogTitle>
           <DialogDescription className="sr-only">
             {event?.id
-              ? "Edit the details of this card"
-              : "Add a new card to your calendar"}
+              ? "Sửa thông tin của task này"
+              : "Thêm task mới vào lịch"}
           </DialogDescription>
         </DialogHeader>
         {error && (

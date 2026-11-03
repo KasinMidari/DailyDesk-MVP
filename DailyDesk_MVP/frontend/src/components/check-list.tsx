@@ -334,7 +334,7 @@ export default function CheckList({
         )}
 
         {items.length === 0 && !isLoading ? (
-          <div className="text-sm text-muted-foreground">No checklist items yet. Click "Add item" to create one.</div>
+          <div className="text-sm text-muted-foreground">Chưa có việc con. Bấm "Thêm mục" để chia task thành các bước nhỏ.</div>
         ) : (
           items.map((item) => <ChecklistRow key={item.id} item={item} />)
         )}

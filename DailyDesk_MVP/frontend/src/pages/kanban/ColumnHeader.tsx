@@ -3,7 +3,14 @@ import {
   KanbanBoardColumnTitle,
 } from "@/components/kanban";
 import { Input } from "@/components/ui/input";
-import { CheckIcon, Edit2Icon, Trash2Icon, XIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckIcon, MoreHorizontal, Pencil, Trash2, XIcon } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useAtom } from "jotai";
 import { editingListIdAtom, editingListTitleAtom } from "./atoms";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
@@ -13,6 +20,10 @@ interface ColumnHeaderProps {
   columnName: string;
   onSave: (columnId: string, newName: string) => void;
   onDelete: (columnId: string) => void;
+  cardCount: number;
+  canMoveLeft: boolean;
+  canMoveRight: boolean;
+  onMoveBy: (delta: -1 | 1) => void;
 }
 
 export function ColumnHeader({
@@ -20,6 +31,10 @@ export function ColumnHeader({
   columnName,
   onSave,
   onDelete,
+  cardCount,
+  canMoveLeft,
+  canMoveRight,
+  onMoveBy,
 }: ColumnHeaderProps) {
   const [editingListId, setEditingListId] = useAtom(editingListIdAtom);
   const [editingListTitle, setEditingListTitle] = useAtom(editingListTitleAtom);
@@ -46,10 +61,10 @@ export function ColumnHeader({
 
   const handleDelete = async () => {
     const confirmed = await confirm({
-      title: "Xóa danh sách",
-      description: `Xóa danh sách "${columnName}" và tất cả thẻ trong đó?`,
-      confirmText: "Xóa",
-      cancelText: "Hủy",
+      title: "Xoá danh sách này?",
+      description: `Danh sách "${columnName}" và ${cardCount} task trong đó sẽ bị xoá.`,
+      confirmText: "Xoá danh sách",
+      cancelText: "Giữ lại",
       variant: "destructive"
     });
     if (confirmed) {
@@ -73,10 +88,11 @@ export function ColumnHeader({
         <KanbanBoardColumnIconButton
           onClick={handleSave}
           disabled={!editingListTitle.trim()}
+          aria-label="Lưu tên danh sách"
         >
           <CheckIcon className="size-3.5" />
         </KanbanBoardColumnIconButton>
-        <KanbanBoardColumnIconButton onClick={cancelEdit}>
+        <KanbanBoardColumnIconButton onClick={cancelEdit} aria-label="Huỷ đổi tên">
           <XIcon className="size-3.5" />
         </KanbanBoardColumnIconButton>
       </div>
@@ -87,18 +103,38 @@ export function ColumnHeader({
     <>
       <KanbanBoardColumnTitle columnId={columnId}>
         {columnName}
-        <span className="ml-2 text-muted-foreground">
-          {/* {column.cards.length} */}
-        </span>
+        <span className="ml-2 text-xs font-normal text-muted-foreground tabular">{cardCount}</span>
       </KanbanBoardColumnTitle>
-      <div className="flex gap-1">
-        <KanbanBoardColumnIconButton onClick={startEditing}>
-          <Edit2Icon className="size-3.5" />
-        </KanbanBoardColumnIconButton>
-        <KanbanBoardColumnIconButton onClick={handleDelete}>
-          <Trash2Icon className="size-3.5" />
-        </KanbanBoardColumnIconButton>
-      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            aria-label={`Thao tác với danh sách ${columnName}`}
+            className="grid size-8 place-items-center rounded-md text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <MoreHorizontal className="size-4" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onSelect={startEditing}>
+            <Pencil className="size-4" />
+            Đổi tên
+          </DropdownMenuItem>
+          <DropdownMenuItem disabled={!canMoveLeft} onSelect={() => onMoveBy(-1)}>
+            <ArrowLeft className="size-4" />
+            Chuyển sang trái
+          </DropdownMenuItem>
+          <DropdownMenuItem disabled={!canMoveRight} onSelect={() => onMoveBy(1)}>
+            <ArrowRight className="size-4" />
+            Chuyển sang phải
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem variant="destructive" onSelect={handleDelete}>
+            <Trash2 className="size-4" />
+            Xoá danh sách
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <ConfirmDialog />
     </>
   );

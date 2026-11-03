@@ -1,467 +1,210 @@
-import getConfig from "@/lib/config";
-import { useQuery } from "@tanstack/react-query";
-import { useAuth0 } from "@/lib/auth";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
-import { Calendar, CheckCircle2, Clock, Filter, Search, List, CalendarDays } from "lucide-react";
+/**
+ * Trang Lịch: task có hạn chót của mọi board trên lịch tháng/tuần/ngày.
+ * Dùng chung dữ liệu và form với màn "Việc của tôi"; mọi thao tác làm được bằng bấm,
+ * kéo task sang ngày khác chỉ là cách nhanh hơn để đổi hạn.
+ */
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
-import { Input } from "@/components/ui/input";
-import { useState, useMemo } from "react";
+import { toast } from "sonner";
+import { CalendarClock, CircleAlert, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { EventCalendar, type CalendarEvent } from "@/components/event-calendar";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { getDueStatus } from "@/lib/due-status";
-import { useUpdateCard } from "@/hooks/use-card";
-import store from "@/stores/store";
-import { accessTokenAtom } from "@/stores/access-token";
+  useBoardsSummary,
+  useCreateTask,
+  useDeleteTask,
+  useTasks,
+  useUpdateTask,
+  type Task,
+  type TaskInput,
+} from "@/features/tasks/api";
+import { isOverdue } from "@/features/tasks/logic";
+import TaskFormDialog from "@/features/tasks/task-form-dialog";
+import { formatDue } from "@/lib/date";
 
-interface TaskCard {
-  id: string;
-  name: string;
-  description: string | null;
-  order: number;
-  listId: string;
-  listName: string;
-  boardId: string;
-  boardName: string;
-  labels: Array<{ id: string; name: string; color: string }> | null;
-  members: Array<{
-    id: string;
-    name: string;
-    email: string;
-    avatar?: string;
-    initials: string;
-  }> | null;
-  startDate: string | null;
-  deadline: string | null;
-  dueAt: string | null;
-  dueComplete: boolean | null;
-  reminderMinutes: number | null;
-  recurrence: string | null;
-  recurrenceDay: number | null;
-  recurrenceWeekday: number | null;
-  latitude: number | null;
-  longitude: number | null;
-  coverColor: string | null;
-  coverUrl: string | null;
-  coverPublicId: string | null;
-  coverMode: string | null;
-  completed: boolean | null;
-  createdAt: string | null;
-  updatedAt: string | null;
+/** Màu sự kiện theo trạng thái, cùng ý nghĩa với tab Todo/Doing/Done; quá hạn dùng đỏ. */
+function colorOf(task: Task): CalendarEvent["color"] {
+  if (task.status === "done") return "emerald";
+  if (isOverdue(task)) return "rose";
+  if (task.status === "doing") return "amber";
+  return "sky";
 }
 
-export default function TasksPage() {
-  const { isAuthenticated, isLoading: authLoading, getAccessTokenSilently } = useAuth0();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<string>("dueDate");
-  const viewMode = "calendar" as "list" | "calendar";
-  const { mutate: updateCard } = useUpdateCard();
+export default function CalendarPage() {
+  const tasksQuery = useTasks();
+  const boardsQuery = useBoardsSummary();
+  const createTask = useCreateTask();
+  const updateTask = useUpdateTask();
+  const deleteTask = useDeleteTask();
 
-  const { data: tasks, isLoading, error, refetch } = useQuery({
-    queryKey: ["all-cards"],
-    queryFn: async () => {
-      try {
-        // Try to get token from store first
-        let accessToken = store.get(accessTokenAtom);
-        
-        // If no token in store, try to get it from Auth0
-        if (!accessToken) {
-          accessToken = await getAccessTokenSilently();
-          if (accessToken) {
-            store.set(accessTokenAtom, accessToken);
-          }
-        }
-        
-        if (!accessToken) {
-          throw new Error("No access token available");
-        }
+  const [formOpen, setFormOpen] = useState(false);
+  const [editing, setEditing] = useState<Task | null>(null);
+  const [newDue, setNewDue] = useState<string | null>(null);
 
-        const response = await fetch(`${getConfig().backendUrl}/boards/cards/all`, {
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error("Fetch error:", response.status, errorText);
-          throw new Error(`Không tải được task: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        return data as TaskCard[];
-      } catch (err) {
-        console.error("Error in queryFn:", err);
-        throw err;
-      }
-    },
-    enabled: isAuthenticated,
-    retry: 1,
-  });
+  const tasks = tasksQuery.data ?? [];
+  const byId = useMemo(() => new Map(tasks.map((t) => [t.id, t])), [tasks]);
 
-  // Filter and sort tasks
-  const filteredAndSortedTasks = useMemo(() => {
-    if (!tasks) return [];
+  const events = useMemo<CalendarEvent[]>(
+    () =>
+      tasks
+        .filter((t) => t.dueAt)
+        .map((t) => ({
+          id: t.id,
+          title: t.name,
+          description: t.description ?? undefined,
+          start: new Date(t.dueAt!),
+          end: new Date(t.dueAt!),
+          allDay: false,
+          color: colorOf(t),
+          isDone: t.status === "done",
+          labels: t.labels,
+          listId: t.listId,
+          location: t.boardName,
+        })),
+    [tasks],
+  );
 
-    const filtered = tasks.filter((task) => {
-      // Search filter
-      const matchesSearch = task.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.boardName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.listName.toLowerCase().includes(searchQuery.toLowerCase());
+  function openTask(event: CalendarEvent) {
+    const task = byId.get(event.id);
+    if (!task) return;
+    setEditing(task);
+    setNewDue(null);
+    setFormOpen(true);
+  }
 
-      if (!matchesSearch) return false;
+  function openNew(date?: Date) {
+    const due = date ? new Date(date) : null;
+    if (due && due.getHours() === 0 && due.getMinutes() === 0) due.setHours(17, 0, 0, 0);
+    setEditing(null);
+    setNewDue(due && due > new Date() ? due.toISOString() : null);
+    setFormOpen(true);
+  }
 
-      // Status filter
-      if (filterStatus === "completed") return task.completed;
-      if (filterStatus === "pending") return !task.completed;
-      if (filterStatus === "overdue") {
-        const dueStatus = getDueStatus(task.dueAt, task.dueComplete ?? undefined);
-        return dueStatus.status === "overdue";
-      }
-      if (filterStatus === "today") {
-        if (!task.dueAt) return false;
-        const today = new Date();
-        const dueDate = new Date(task.dueAt);
-        return (
-          dueDate.getDate() === today.getDate() &&
-          dueDate.getMonth() === today.getMonth() &&
-          dueDate.getFullYear() === today.getFullYear()
-        );
-      }
+  async function moveTo(event: CalendarEvent) {
+    const task = byId.get(event.id);
+    if (!task) return;
+    const old = task.dueAt ? new Date(task.dueAt) : new Date();
+    const next = new Date(event.start);
+    if (event.allDay || (next.getHours() === 0 && next.getMinutes() === 0)) {
+      next.setHours(old.getHours(), old.getMinutes(), 0, 0);
+    }
+    try {
+      await updateTask.mutateAsync({ task, input: { dueAt: next.toISOString() } });
+      toast.success(`Đã dời "${task.name}" sang ${formatDue(next)}`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Không đổi được hạn chót");
+    }
+  }
 
-      return true; // "all"
-    });
+  async function save(input: TaskInput) {
+    if (editing) {
+      await updateTask.mutateAsync({ task: editing, input });
+      toast.success("Đã lưu thay đổi");
+    } else {
+      await createTask.mutateAsync(input);
+      toast.success("Đã thêm task", { description: input.name });
+    }
+  }
 
-    // Sort tasks
-    filtered.sort((a, b) => {
-      if (sortBy === "dueDate") {
-        // Tasks with due dates first, then by date
-        if (!a.dueAt && !b.dueAt) return 0;
-        if (!a.dueAt) return 1;
-        if (!b.dueAt) return -1;
-        return new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime();
-      }
-      if (sortBy === "name") {
-        return a.name.localeCompare(b.name);
-      }
-      if (sortBy === "board") {
-        return a.boardName.localeCompare(b.boardName);
-      }
-      if (sortBy === "created") {
-        if (!a.createdAt && !b.createdAt) return 0;
-        if (!a.createdAt) return 1;
-        if (!b.createdAt) return -1;
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      }
-      return 0;
-    });
-
-    return filtered;
-  }, [tasks, searchQuery, filterStatus, sortBy]);
-
-  // Group tasks by board
-  const tasksByBoard = useMemo(() => {
-    if (!filteredAndSortedTasks) return new Map();
-    
-    const grouped = new Map<string, { boardName: string; tasks: TaskCard[] }>();
-    
-    filteredAndSortedTasks.forEach((task) => {
-      if (!grouped.has(task.boardId)) {
-        grouped.set(task.boardId, { boardName: task.boardName, tasks: [] });
-      }
-      grouped.get(task.boardId)!.tasks.push(task);
-    });
-    
-    return grouped;
-  }, [filteredAndSortedTasks]);
-
-  // Transform tasks to calendar events
-  const calendarEvents = useMemo((): CalendarEvent[] => {
-    if (!filteredAndSortedTasks) return [];
-    
-    return filteredAndSortedTasks
-      .filter(task => task.dueAt || task.startDate) // Only show tasks with dates
-      .map(task => {
-        const startDate = task.startDate ? new Date(task.startDate) : new Date(task.dueAt!);
-        const endDate = task.dueAt ? new Date(task.dueAt) : new Date(task.startDate!);
-        
-        // Determine color based on due status
-        let color: CalendarEvent['color'] = 'sky';
-        const dueStatus = getDueStatus(task.dueAt, task.dueComplete ?? undefined);
-        if (task.completed) {
-          color = 'emerald';
-        } else if (dueStatus.status === 'overdue') {
-          color = 'rose';
-        } else if (dueStatus.status === 'dueSoon') {
-          color = 'amber';
-        }
-        
-        return {
-          id: task.id,
-          title: task.name,
-          description: task.description || undefined,
-          start: startDate,
-          end: endDate,
-          allDay: !task.startDate, // If no start date, treat as all-day
-          color,
-          isDone: !!task.completed || !!task.dueComplete,
-          labels: task.labels?.map(l => ({
-            id: l.id,
-            name: l.name,
-            color: l.color,
-          })),
-          members: task.members || undefined,
-          listId: task.listId,
-        };
-      });
-  }, [filteredAndSortedTasks]);
-
-  const handleToggleComplete = (task: TaskCard) => {
-    updateCard(
-      {
-        boardId: task.boardId,
-        cardId: task.id,
-        completed: !task.completed,
-      },
-      {
-        onSuccess: () => {
-          refetch();
+  async function remove() {
+    const task = editing;
+    if (!task) return;
+    setFormOpen(false);
+    try {
+      await deleteTask.mutateAsync(task);
+      toast("Đã xoá task", {
+        description: task.name,
+        action: {
+          label: "Hoàn tác",
+          onClick: () =>
+            createTask.mutate({
+              name: task.name,
+              description: task.description ?? "",
+              dueAt: task.dueAt,
+              priority: task.priority ?? "medium",
+              status: task.status,
+              boardId: task.boardId,
+            }),
         },
-      }
-    );
-  };
-
-  if (authLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-lg">Đang tải…</div>
-      </div>
-    );
+      });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Không xoá được task");
+    }
   }
 
-  if (!isAuthenticated) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-lg">Đăng nhập để xem task</div>
-      </div>
-    );
-  }
+  const undated = tasks.filter((t) => !t.dueAt && t.status !== "done").length;
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 pt-6 pb-16 sm:px-6 lg:px-8">
-      <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-[1.75rem]">Lịch</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Task có hạn chót của mọi board, xếp theo ngày. Kéo task sang ngày khác để đổi hạn.
-          </p>
-        </div>
-        <Link to="/" className="text-sm font-medium text-primary underline-offset-4 hover:underline">
-          Xem dạng danh sách
-        </Link>
+      <header className="mb-6">
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-[1.75rem]">Lịch</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Bấm vào task để sửa hoặc đổi hạn, bấm vào ô ngày để thêm task.
+          {undated > 0 && (
+            <>
+              {" "}
+              <Link to="/" className="font-medium text-foreground underline-offset-4 hover:underline">
+                {undated} task chưa có hạn
+              </Link>{" "}
+              không hiện trên lịch.
+            </>
+          )}
+        </p>
       </header>
 
-      {/* Task List or Calendar View */}
-      {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="text-lg">Đang tải task…</div>
-        </div>
-      ) : error ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="text-lg text-destructive">Không tải được task</div>
-        </div>
-      ) : filteredAndSortedTasks.length === 0 ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <div className="text-lg text-muted-foreground mb-2">
-              {searchQuery || filterStatus !== "all"
-                ? "Không có task nào khớp bộ lọc"
-                : "Chưa có task nào có hạn chót"}
-            </div>
-            {!searchQuery && filterStatus === "all" && (
-              <p className="text-sm text-muted-foreground">
-                Tạo một board và thêm vài task để bắt đầu
-              </p>
-            )}
+      {tasksQuery.isPending ? (
+        <div aria-busy="true" aria-label="Đang tải lịch" className="h-[32rem] animate-pulse rounded-xl border bg-card" />
+      ) : tasksQuery.isError ? (
+        <div role="alert" className="flex flex-col items-center gap-3 rounded-xl border bg-card px-6 py-16 text-center">
+          <CircleAlert className="size-8 text-destructive" aria-hidden="true" />
+          <div>
+            <p className="font-medium">Không tải được lịch</p>
+            <p className="mt-1 text-sm text-muted-foreground">{tasksQuery.error.message}</p>
           </div>
-        </div>
-      ) : viewMode === "calendar" ? (
-        <div className="mb-6">
-          <EventCalendar
-            events={calendarEvents}
-            initialView="month"
-            className=""
-          />
+          <Button variant="outline" onClick={() => tasksQuery.refetch()}>
+            Thử lại
+          </Button>
         </div>
       ) : (
-        <div className="pb-12 overflow-auto pr-2">
-          <Accordion type="multiple" className="space-y-4">
-            {Array.from(tasksByBoard.entries()).map(([boardId, { boardName, tasks: boardTasks }]) => {
-            const completedCount = boardTasks.filter((t: TaskCard) => t.completed).length;
-            const totalCount = boardTasks.length;
-
-            return (
-              <AccordionItem key={boardId} value={boardId} className="border-2 last:border-b-2 rounded-2xl px-4">
-                <AccordionTrigger className="hover:no-underline p-5">
-                  <div className="flex items-center justify-between w-full pr-4">
-                    <div className="flex items-center gap-3">
-                      <Link 
-                        to={`/board/${boardId}`} 
-                        onClick={(e) => e.stopPropagation()}
-                        className="hover:underline"
-                      >
-                        <h2 className="text-xl font-semibold">{boardName}</h2>
-                      </Link>
-                      <Badge variant="secondary" className="text-xs">
-                        {completedCount}/{totalCount} card
-                      </Badge>
-                    </div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="pb-2 last:mb-4">
-                    <div className="space-y-4 pt-4">
-                    {boardTasks.map((task: TaskCard, index: number) => {
-                      const dueStatus = getDueStatus(task.dueAt, task.dueComplete ?? undefined);
-
-                      return (
-                        <Card
-                          key={task.id}
-                          className={`p-4 hover:shadow-md transition-shadow ${
-                            task.completed ? "opacity-60" : ""
-                          }`}
-                        >
-                          <div className="flex items-start gap-4">
-                            {/* Checkbox */}
-                            <Checkbox
-                              checked={task.completed || false}
-                              onCheckedChange={() => handleToggleComplete(task)}
-                              className="mt-1"
-                            />
-
-                            {/* Task Content */}
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-start justify-between gap-2 mb-2">
-                                <div className="flex-1">
-                                  <h3
-                                    className={`font-semibold text-lg ${
-                                      task.completed ? "line-through" : ""
-                                    }`}
-                                  >
-                                    {task.name}
-                                  </h3>
-                                  {task.description && (
-                                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                                      {task.description}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-
-                              {/* Labels */}
-                              {task.labels && task.labels.length > 0 && (
-                                <div className="flex flex-wrap gap-1 mb-2">
-                                  {task.labels.map((label: { id: string; name: string; color: string }) => (
-                                    <Badge
-                                      key={label.id}
-                                      style={{ backgroundColor: label.color }}
-                                      className="text-white text-xs"
-                                    >
-                                      {label.name}
-                                    </Badge>
-                                  ))}
-                                </div>
-                              )}
-
-                              {/* Meta information */}
-                              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                  <span>{task.listName}</span>
-                                </div>
-
-                                {task.dueAt && (
-                                  <div className="flex items-center gap-1">
-                                    <Calendar className="w-4 h-4" />
-                                    <Badge
-                                      variant={
-                                        dueStatus.status === "overdue"
-                                          ? "destructive"
-                                          : dueStatus.status === "dueSoon"
-                                          ? "default"
-                                          : "secondary"
-                                      }
-                                      className="text-xs"
-                                    >
-                                      {new Date(task.dueAt).toLocaleDateString()}
-                                    </Badge>
-                                  </div>
-                                )}
-
-                                {task.dueComplete && (
-                                  <div className="flex items-center gap-1 text-green-600">
-                                    <CheckCircle2 className="w-4 h-4" />
-                                    <span className="text-xs">Đã xong</span>
-                                  </div>
-                                )}
-
-                                {task.reminderMinutes && (
-                                  <div className="flex items-center gap-1">
-                                    <Clock className="w-4 h-4" />
-                                    <span className="text-xs">
-                                      Reminder: {task.reminderMinutes}m
-                                    </span>
-                                  </div>
-                                )}
-
-                                {/* Members */}
-                                {task.members && task.members.length > 0 && (
-                                  <div className="flex -space-x-2">
-                                    {task.members.slice(0, 3).map((member: { id: string; name: string; initials: string }) => (
-                                      <div
-                                        key={member.id}
-                                        className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs border-2 border-background"
-                                        title={member.name}
-                                      >
-                                        {member.initials}
-                                      </div>
-                                    ))}
-                                    {task.members.length > 3 && (
-                                      <div className="w-6 h-6 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xs border-2 border-background">
-                                        +{task.members.length - 3}
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            );
-          })}
-          </Accordion>
-        </div>
+        <>
+          {events.length === 0 && (
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-card px-4 py-3">
+              <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                <CalendarClock className="size-4" aria-hidden="true" />
+                Chưa có task nào có hạn chót.
+              </p>
+              <Button size="sm" className="gap-1.5" onClick={() => openNew()}>
+                <Plus className="size-4" aria-hidden="true" />
+                Thêm task có hạn
+              </Button>
+            </div>
+          )}
+          <EventCalendar
+            events={events}
+            initialView="month"
+            createLabel="Thêm task"
+            onCreateClick={openNew}
+            onEventSelect={(e) => {
+              openTask(e);
+            }}
+            onEventUpdate={(e) => {
+              void moveTo(e);
+              return false;
+            }}
+          />
+        </>
       )}
+
+      <TaskFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        task={editing}
+        boards={boardsQuery.data ?? []}
+        defaultDueAt={newDue}
+        saving={createTask.isPending || updateTask.isPending}
+        onSubmit={save}
+        onDelete={editing ? remove : undefined}
+      />
     </div>
   );
 }
