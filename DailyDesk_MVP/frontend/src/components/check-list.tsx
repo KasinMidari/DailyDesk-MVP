@@ -75,7 +75,7 @@ export default function CheckList({
       setCreating(false);
     } catch (err: any) {
       console.error("Failed to create checklist item:", err);
-      toast.error(err?.message || "Failed to create checklist item");
+      toast.error(err?.message || "Không thêm được việc con.");
     }
   };
 
@@ -300,6 +300,17 @@ export default function CheckList({
               <Input
                 value={newItem}
                 onChange={(e) => setNewItem(e.target.value)}
+                onKeyDown={(e) => {
+                  // Enter thêm mục, Esc đóng: gõ xong một việc con là gõ tiếp việc sau,
+                  // không ai muốn rời bàn phím để bấm nút giữa chừng.
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleCreate();
+                  } else if (e.key === "Escape") {
+                    e.preventDefault();
+                    handleCancel();
+                  }
+                }}
                 placeholder="Nhập tên việc con…"
                 className="min-w-[220px]"
                 autoFocus
@@ -311,7 +322,7 @@ export default function CheckList({
                     <path d="M4 12a8 8 0 018-8" strokeWidth="4" strokeLinecap="round" />
                   </svg>
                 ) : (
-                  'Create'
+                  'Thêm'
                 )}
               </Button>
               <Button onClick={handleCancel} size="sm" variant="ghost" type="button">

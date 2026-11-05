@@ -16,6 +16,13 @@ export const MSG = {
   listName: "Tên danh sách từ 1 đến 100 ký tự.",
   startAfterDue: "Ngày bắt đầu không được sau hạn chót.",
   color: "Màu phải có dạng #RRGGBB.",
+  itemRequired: "Hãy nhập nội dung việc cần làm.",
+  itemTooLong: "Nội dung tối đa 200 ký tự.",
+  labelName: "Tên nhãn từ 1 đến 50 ký tự.",
+  commentRequired: "Hãy nhập nội dung bình luận.",
+  commentTooLong: "Bình luận tối đa 5000 ký tự.",
+  reminderInvalid: "Nhắc trước phải là số phút.",
+  queryRequired: "Hãy nhập từ khoá tìm kiếm.",
 };
 
 export const PRIORITIES = ["high", "medium", "low"] as const;
@@ -78,6 +85,56 @@ export const createBoardSchema = z.object({
   backgroundUrl: z.string().nullable().optional(),
 });
 export const updateBoardSchema = createBoardSchema.omit({ id: true }).partial();
+
+/** Nhắc trước: giao diện gửi số phút dạng chuỗi nên nhận cả hai kiểu. */
+const minutes = z
+  .union([z.number().int(), z.string(), z.null()])
+  .transform((v) => (v === null || v === "" ? null : Number(v)))
+  .refine((v) => v === null || Number.isInteger(v), MSG.reminderInvalid)
+  .optional();
+
+/** PATCH …/cards/:cardId/due (nhóm B). */
+export const updateDueSchema = z.object({
+  startDate: isoDate.nullable().optional(),
+  dueAt: isoDate.nullable().optional(),
+  deadline: isoDate.nullable().optional(),
+  dueComplete: z.boolean().nullable().optional(),
+  reminderMinutes: minutes,
+  repeatFrequency: z.enum(["daily", "weekly", "monthly"]).nullable().optional(),
+  repeatInterval: z.number().int().min(1).nullable().optional(),
+});
+
+const itemName = z
+  .string({ error: MSG.itemRequired })
+  .transform((v) => v.trim())
+  .pipe(z.string().min(1, MSG.itemRequired).max(200, MSG.itemTooLong));
+
+export const createChecklistItemSchema = z.object({
+  id: idSchema,
+  name: itemName,
+  completed: z.boolean().optional(),
+  order: z.number().int().min(0).optional(),
+});
+export const updateChecklistItemSchema = z.object({
+  name: itemName.optional(),
+  completed: z.boolean().optional(),
+  order: z.number().int().min(0).optional(),
+});
+
+const labelName = z
+  .string({ error: MSG.labelName })
+  .transform((v) => v.trim())
+  .pipe(z.string().min(1, MSG.labelName).max(50, MSG.labelName));
+
+export const createLabelSchema = z.object({ id: idSchema, name: labelName, color: hex });
+export const updateLabelSchema = z.object({ name: labelName.optional(), color: hex.optional() });
+
+export const commentSchema = z.object({
+  content: z
+    .string({ error: MSG.commentRequired })
+    .transform((v) => v.trim())
+    .pipe(z.string().min(1, MSG.commentRequired).max(5000, MSG.commentTooLong)),
+});
 
 export const createListSchema = z.object({
   id: idSchema,

@@ -3,15 +3,20 @@ import { Spinner } from "@/components/ui/spinner";
 
 export default function PageLoader({
   className,
-  text = "Loading",
+  text = "Đang mở sổ…",
 }: {
   className?: string;
   text?: string;
 }) {
   return (
-    <div className="flex flex-col gap-3 justify-center items-center w-full h-full">
-      <Spinner className={cn("size-10", className)} />
-      <h2 className="text-2xl font-bold tracking-tight">{text}</h2>
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex h-full w-full flex-col items-center justify-center gap-3"
+    >
+      {/* Chữ ngang hàng với vòng quay, cỡ chữ thường: màn chờ không phải tiêu đề của trang. */}
+      <Spinner className={cn("size-6", className)} />
+      <p className="text-sm text-muted-foreground">{text}</p>
     </div>
   );
 }

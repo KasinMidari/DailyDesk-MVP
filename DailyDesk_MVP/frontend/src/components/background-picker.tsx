@@ -7,6 +7,7 @@ import { BackgroundTypeValue } from "@/hooks/use-background-picker";
 import ImageCropper from "./image-cropper";
 import { useBackgroundPickerContext } from "./background-picker-provider";
 import { Card, CardContent } from "./ui/card";
+import { SHOW_COVER_UPLOAD } from "@/lib/features";
 
 export function BackgroundPicker() {
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -53,8 +54,8 @@ export function BackgroundPicker() {
         onCropComplete={handleCropComplete}
         onCancel={() => setShowCropper(false)}
       />
-      {/* Switcher */}
-      <div className="flex gap-3">
+      {/* Switcher: chỉ còn màu khi backend thật không nhận ảnh tải lên */}
+      <div className={cn("flex gap-3", !SHOW_COVER_UPLOAD && "hidden")}>
         <button
           type="button"
           onClick={() => setBackgroundType(BackgroundTypeValue.COLOR)}
@@ -83,7 +84,7 @@ export function BackgroundPicker() {
       </div>
 
       {/* COLOR MODE */}
-      {backgroundType === BackgroundTypeValue.COLOR ? (
+      {!SHOW_COVER_UPLOAD || backgroundType === BackgroundTypeValue.COLOR ? (
         <div className="flex w-full gap-4 my-4 items-start">
           <div className="grid gap-6 w-full flex-[2]">
             <AdvancedColorPicker
@@ -94,7 +95,12 @@ export function BackgroundPicker() {
                 setSelectedBGIndex(null); // Clear gradient selection when picking color
               }}
             />
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(0.5rem,1fr))] w-[250] ">
+            <div
+              className={cn(
+                "grid grid-cols-[repeat(auto-fit,minmax(0.5rem,1fr))] w-[250]",
+                !SHOW_COVER_UPLOAD && "hidden",
+              )}
+            >
               {colorPalette.map((c, index) => (
                 <button
                   key={c}

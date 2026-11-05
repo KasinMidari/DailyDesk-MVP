@@ -16,6 +16,7 @@ import TemplateGalleryDialog from "@/components/template-gallery-dialog";
 import { GlobalSearch } from "@/components/global-search";
 import { useTheme } from "@/components/theme-provider";
 import { useAuth0 } from "@/lib/auth";
+import { SHOW_TEMPLATES } from "@/lib/features";
 
 const main = [
   { title: "Việc của tôi", url: "/", match: (p: string) => p === "/" },
@@ -23,10 +24,12 @@ const main = [
   { title: "Board", url: "/boards", match: (p: string) => p.startsWith("/boards") || p.startsWith("/board/") },
 ];
 
+/* Mục đang mở: nền giấy đậm hơn một bậc cộng một vạch mực bên trái,
+   thay cho cả ô tô kín màu mực. */
 const itemClass =
-  "h-9 rounded-md px-3 text-[14px] font-medium text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-semibold";
+  "h-9 rounded-md px-3 text-[14px] font-medium text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-ink data-[active=true]:font-semibold data-[active=true]:shadow-[inset_3px_0_0_var(--ink)]";
 
-/** Bìa sổ: điều hướng, tìm kiếm, tài khoản và đổi giao diện nằm trên bìa. */
+/** Gáy sổ: điều hướng, tìm kiếm, tài khoản và đổi giao diện. */
 export function AppSidebar() {
   const [isTemplateGalleryOpen, setIsTemplateGalleryOpen] = useState(false);
   const { pathname } = useLocation();
@@ -37,21 +40,22 @@ export function AppSidebar() {
     theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
   const close = () => setOpenMobile(false);
 
+  // Vạch mực 4px ở mép phải là "gáy sổ" — thay cho cả bìa tô kín màu mực.
   return (
-    <Sidebar>
+    <Sidebar className="shadow-[inset_-4px_0_0_var(--ink)]">
       <SidebarHeader className="px-4 pt-5 pb-3">
-        {/* Nhãn vở dán trên bìa */}
+        {/* Nhãn vở dán trên gáy */}
         <Link
           to="/"
           onClick={close}
-          className="block rounded-md bg-sidebar-primary px-3 py-2.5 text-sidebar-primary-foreground shadow-[0_1px_0_oklch(0_0_0/0.15)] outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+          className="block rounded-md border border-sidebar-border bg-card px-3 py-2.5 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
         >
           <span className="flex items-center gap-2">
             <img src="/logo-dailydesk.png" alt="" className="size-7 rounded-sm object-contain" />
-            <span className="font-planner text-[17px] font-semibold leading-none">DailyDesk</span>
+            <span className="text-[17px] font-semibold leading-none text-ink">DailyDesk</span>
           </span>
           {user?.name && (
-            <span className="mt-2 block truncate border-t border-dashed border-current/25 pt-1.5 text-xs opacity-80">
+            <span className="mt-2 block truncate border-t border-sidebar-border pt-1.5 text-xs text-muted-foreground">
               Sổ của {user.name}
             </span>
           )}
@@ -69,11 +73,13 @@ export function AppSidebar() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
-          <SidebarMenuItem>
-            <SidebarMenuButton className={itemClass} onClick={() => setIsTemplateGalleryOpen(true)}>
-              Mẫu board
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {SHOW_TEMPLATES && (
+            <SidebarMenuItem>
+              <SidebarMenuButton className={itemClass} onClick={() => setIsTemplateGalleryOpen(true)}>
+                Mẫu board
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
         </SidebarMenu>
 
         <div className="mx-2 mt-4 border-t border-sidebar-border pt-4">
@@ -133,7 +139,9 @@ export function AppSidebar() {
         </div>
       </SidebarFooter>
 
-      <TemplateGalleryDialog open={isTemplateGalleryOpen} onOpenChange={setIsTemplateGalleryOpen} />
+      {SHOW_TEMPLATES && (
+        <TemplateGalleryDialog open={isTemplateGalleryOpen} onOpenChange={setIsTemplateGalleryOpen} />
+      )}
     </Sidebar>
   );
 }

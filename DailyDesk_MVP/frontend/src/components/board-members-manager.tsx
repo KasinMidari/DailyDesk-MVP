@@ -86,7 +86,7 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
 
     // Check if user is the owner
     if (ownerInfo && selectedUser.userId === ownerInfo.userId) {
-      toast.error("Cannot add the board owner as a member");
+      toast.error("Chủ board đã có sẵn trong board");
       return;
     }
 
@@ -96,7 +96,7 @@ export function BoardMembersManager({ boardId, isOwner, isAdmin = false, current
     );
 
     if (isAlreadyMember) {
-      toast.error("This user is already a member of the board");
+      toast.error("Người này đã là thành viên của board");
       return;
     }
 

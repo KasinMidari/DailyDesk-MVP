@@ -1,42 +1,65 @@
 ---
 name: DailyDesk
-description: Personal task desk for Vietnamese students and office workers, drawn as an office file folder.
+description: Sổ kế hoạch giấy cho người Việt đi học và đi làm — giấy ấm, mực tím, lề đỏ, ô tick.
 colors:
-  paper: "oklch(0.982 0.004 240)"
-  sheet: "oklch(1 0 0)"
-  ink: "oklch(0.25 0.03 258)"
-  ink-soft: "oklch(0.49 0.025 258)"
-  navy: "oklch(0.38 0.1 258)"
-  navy-foreground: "oklch(0.99 0 0)"
-  drawer-tint: "oklch(0.955 0.008 245)"
-  hover-wash: "oklch(0.945 0.016 245)"
-  hairline: "oklch(0.9 0.012 245)"
-  field-edge: "oklch(0.87 0.014 245)"
-  focus-blue: "oklch(0.58 0.13 255)"
-  sidebar-paper: "oklch(0.965 0.007 245)"
-  sidebar-active: "oklch(0.925 0.02 245)"
-  tab-todo: "oklch(0.5 0.12 250)"
-  tab-todo-soft: "oklch(0.94 0.035 245)"
-  tab-doing: "oklch(0.52 0.12 62)"
-  tab-doing-soft: "oklch(0.94 0.07 85)"
-  tab-done: "oklch(0.48 0.1 155)"
-  tab-done-soft: "oklch(0.94 0.045 155)"
-  prio-high: "oklch(0.55 0.19 28)"
-  prio-medium: "oklch(0.62 0.14 70)"
-  prio-low: "oklch(0.6 0.03 250)"
-  overdue: "oklch(0.53 0.19 27)"
-  destructive: "oklch(0.56 0.2 27)"
-  manila-panel: "oklch(0.94 0.065 90)"
-  manila-sheet: "oklch(0.995 0.004 90)"
-  manila-ink: "oklch(0.27 0.035 60)"
+  paper: "oklch(0.978 0.01 85)"
+  card: "oklch(0.993 0.005 85)"
+  popover: "oklch(0.995 0.004 85)"
+  rule: "oklch(0.9 0.018 80)"
+  ink: "oklch(0.38 0.13 292)"
+  ink-soft: "oklch(0.93 0.03 292)"
+  ink-foreground: "oklch(0.99 0.005 85)"
+  foreground: "oklch(0.24 0.012 285)"
+  muted: "oklch(0.95 0.014 82)"
+  muted-foreground: "oklch(0.47 0.02 285)"
+  accent: "oklch(0.945 0.02 292)"
+  accent-foreground: "oklch(0.3 0.09 292)"
+  input: "oklch(0.86 0.02 80)"
+  ring: "oklch(0.55 0.15 292)"
+  red-ink: "oklch(0.54 0.18 25)"
+  overdue: "oklch(0.54 0.18 25)"
+  margin-rule: "oklch(0.72 0.12 20 / 0.55)"
+  hl-high: "oklch(0.86 0.1 15 / 0.75)"
+  hl-medium: "oklch(0.92 0.14 98 / 0.85)"
+  sidebar: "oklch(0.962 0.012 85)"
+  sidebar-foreground: "oklch(0.28 0.015 285)"
+  sidebar-accent: "oklch(0.935 0.018 85)"
+  sidebar-border: "oklch(0.9 0.018 80)"
+  status-todo: "oklch(0.45 0.03 285)"
+  status-todo-soft: "oklch(0.95 0.012 82)"
+  status-doing: "oklch(0.5 0.12 75)"
+  status-doing-soft: "oklch(0.93 0.11 95)"
+  status-done: "oklch(0.45 0.03 285)"
+  status-done-soft: "oklch(0.95 0.012 82)"
+  prio-high: "oklch(0.56 0.17 15)"
+  prio-medium: "oklch(0.68 0.14 90)"
+  prio-low: "oklch(0.62 0.02 285)"
+colorsDark:
+  paper: "oklch(0.17 0 0)"
+  card: "oklch(0.21 0 0)"
+  popover: "oklch(0.23 0 0)"
+  rule: "oklch(0.27 0 0)"
+  muted: "oklch(0.25 0 0)"
+  muted-foreground: "oklch(0.74 0.015 285)"
+  secondary: "oklch(0.26 0 0)"
+  input: "oklch(0.33 0 0)"
+  sidebar: "oklch(0.15 0 0)"
+  foreground: "oklch(0.93 0.01 85)"
+  ink: "oklch(0.8 0.1 292)"
+  red-ink: "oklch(0.72 0.15 25)"
+  status-done: "oklch(0.72 0.015 285)"
 typography:
-  headline:
-    fontFamily: "Be Vietnam Pro, ui-sans-serif, system-ui, sans-serif"
+  planner-heading:
+    fontFamily: "Literata, ui-serif, Georgia, serif"
     fontSize: "1.75rem"
     fontWeight: 600
     lineHeight: 1.25
-    letterSpacing: "-0.025em"
-    fontFeature: "\"cv11\", \"ss01\""
+    letterSpacing: "-0.01em"
+  group-heading:
+    fontFamily: "Literata, ui-serif, Georgia, serif"
+    fontSize: "0.9375rem"
+    fontWeight: 600
+    lineHeight: 1.3
   title:
     fontFamily: "Be Vietnam Pro, ui-sans-serif, system-ui, sans-serif"
     fontSize: "1.125rem"
@@ -58,16 +81,15 @@ typography:
     fontWeight: 400
     lineHeight: 1.4
     fontFeature: "\"tnum\""
-  label:
+  stamp:
     fontFamily: "Be Vietnam Pro, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "0.75rem"
-    fontWeight: 600
-    lineHeight: 1.35
+    fontSize: "11px"
+    fontWeight: 700
+    letterSpacing: "0.06em"
 rounded:
-  sm: "4px"
-  md: "6px"
-  lg: "8px"
-  xl: "12px"
+  sm: "2px"
+  md: "4px"
+  lg: "6px"
   full: "9999px"
 spacing:
   hair: "2px"
@@ -77,315 +99,304 @@ spacing:
   lg: "16px"
   xl: "20px"
   2xl: "24px"
+layout:
+  canvas: "mx-auto w-full max-w-6xl px-4 pt-8 pb-16 sm:px-6 lg:px-10"
+  planner-margin: "3rem"
+  planner-margin-sm: "3.25rem"
 components:
   button-primary:
-    backgroundColor: "{colors.navy}"
-    textColor: "{colors.navy-foreground}"
-    rounded: "{rounded.md}"
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.ink-foreground}"
+    rounded: "{rounded.lg}"
     padding: "0 16px"
     height: "40px"
   button-outline:
-    backgroundColor: "{colors.sheet}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.md}"
+    backgroundColor: "{colors.card}"
+    textColor: "{colors.foreground}"
+    rounded: "{rounded.lg}"
     padding: "0 16px"
     height: "36px"
-  folder-tab:
-    textColor: "{colors.ink-soft}"
-    rounded: "{rounded.lg}"
-    padding: "0 16px"
-    height: "40px"
-  folder-tab-active:
-    backgroundColor: "{colors.sheet}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.lg}"
-    padding: "0 16px"
-    height: "40px"
-  status-pill-todo:
-    backgroundColor: "{colors.tab-todo-soft}"
-    textColor: "{colors.tab-todo}"
-    rounded: "{rounded.full}"
-    height: "28px"
-    width: "5.5rem"
-  status-pill-doing:
-    backgroundColor: "{colors.tab-doing-soft}"
-    textColor: "{colors.tab-doing}"
-    rounded: "{rounded.full}"
-    height: "28px"
-    width: "5.5rem"
-  status-pill-done:
-    backgroundColor: "{colors.tab-done-soft}"
-    textColor: "{colors.tab-done}"
-    rounded: "{rounded.full}"
-    height: "28px"
-    width: "5.5rem"
-  filter-pill:
-    backgroundColor: "{colors.sheet}"
-    textColor: "{colors.ink}"
+  planner-tab:
+    textColor: "{colors.muted-foreground}"
+    padding: "0 4px"
+    height: "36px"
+  planner-tab-active:
+    textColor: "{colors.foreground}"
+    padding: "0 4px"
+    height: "36px"
+  status-box:
+    backgroundColor: "{colors.card}"
     rounded: "{rounded.md}"
+    width: "20px"
+    height: "20px"
+  highlighter:
+    backgroundColor: "{colors.hl-medium}"
+    rounded: "0.2em 0.5em 0.3em 0.45em"
+    padding: "0.05em 0.35em"
+  stamp:
+    textColor: "{colors.red-ink}"
+    rounded: "{rounded.full}"
+    padding: "0 7px"
+    height: "22px"
+  filter-pill:
+    backgroundColor: "{colors.card}"
+    textColor: "{colors.foreground}"
+    rounded: "{rounded.lg}"
     padding: "0 12px"
     height: "36px"
   input:
-    backgroundColor: "{colors.sheet}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.md}"
+    backgroundColor: "{colors.card}"
+    textColor: "{colors.foreground}"
+    rounded: "{rounded.lg}"
     padding: "0 12px"
-    height: "40px"
+    height: "36px"
   segmented:
-    backgroundColor: "{colors.drawer-tint}"
+    backgroundColor: "{colors.muted}"
     rounded: "{rounded.lg}"
     padding: "4px"
   segmented-option-active:
-    backgroundColor: "{colors.sheet}"
-    textColor: "{colors.ink}"
+    backgroundColor: "{colors.card}"
+    textColor: "{colors.foreground}"
     rounded: "{rounded.md}"
-    height: "32px"
+    height: "28px"
   task-row:
-    backgroundColor: "{colors.sheet}"
-    textColor: "{colors.ink}"
-    padding: "12px 20px"
+    backgroundColor: "{colors.card}"
+    textColor: "{colors.foreground}"
+    padding: "10px 20px"
   drawer:
-    backgroundColor: "{colors.sheet}"
-    rounded: "{rounded.xl}"
+    backgroundColor: "{colors.card}"
+    rounded: "{rounded.lg}"
+  board-column:
+    backgroundColor: "color-mix(in oklch, {colors.card} 60%, {colors.paper})"
+    rounded: "{rounded.lg}"
   board-card:
-    backgroundColor: "{colors.sheet}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.xl}"
-    padding: "14px 16px"
+    backgroundColor: "{colors.card}"
+    textColor: "{colors.foreground}"
+    rounded: "{rounded.lg}"
+    padding: "12px"
   nav-item-active:
-    backgroundColor: "{colors.sidebar-active}"
+    backgroundColor: "{colors.sidebar-accent}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.md}"
+    rounded: "{rounded.lg}"
     height: "36px"
 ---
 
 # Design System: DailyDesk
 
-## Overview
+> Tài liệu này mô tả **giao diện đang chạy**, không mô tả ý định. Mọi giá trị dưới đây
+> đọc ra từ `src/index.css` và từ ảnh chụp bản chạy thật. Nếu mã đổi, sửa file này;
+> đừng sửa mã cho khớp một mô tả đã cũ.
 
-**Creative North Star: "The Office File Folder"**
+## North Star
 
-DailyDesk is a filing cabinet drawer on cool office paper. Status is a set of folder index tabs physically joined to the drawer below them; each task is one ruled line on a form inside that drawer. Text and the one primary action are written in navy ink. Everything else is paper, hairlines, and three tab hues that mean exactly one thing each: Todo, Doing, Done.
+DailyDesk là **một cuốn sổ kế hoạch giấy**. Trang giấy ấm hơi ngả kem, chữ than chì,
+một đường lề đỏ mảnh chạy dọc bên trái, mực tím của bút học trò dùng để viết dữ liệu,
+bút dạ quang đánh dấu việc gấp, và một con dấu đỏ đóng xuống đúng lúc tick xong một việc.
 
-Density is a working list, not a dashboard. Rows are short (12px vertical padding), metadata sits in fixed columns on desktop and folds under the title on narrow screens, and deadline is the default order of everything. The system rejects card grids for tasks, hero metrics, gradients, and glass: depth comes from one soft drawer shadow and tonal paper steps.
+Cuốn sổ này là thứ người ta mở ra mỗi sáng và gạch đi từng dòng. Nên thước đo không phải
+"trông có ấn tượng không", mà là: **quét mắt một lượt có biết hôm nay phải làm gì chưa,
+và gạch một việc mất mấy thao tác.**
 
-The one moment of motion that matters is acknowledgement: a row that just changed stays washed in manila for a beat so the person notices it. The sign-in screen carries the same folder world in a warmer manila register.
+## Ngân sách màu
 
-The people at this desk are Vietnamese students and office workers between classes or meetings. The system is judged by how little they have to think: every action is a visible click or a key, nothing depends on dragging, hovering, or right-clicking, and every element on screen earns its place. A screen should never feel like an empty form, and never like a spreadsheet of every field the data model holds. The rule of thumb is the paper form itself: one line per task, the facts needed to decide what to do next, and everything else one click away inside the folder.
+Luật quan trọng nhất của hệ thống này, và cũng là luật dễ phá nhất:
 
-**Key Characteristics:**
-- Cool blue-grey paper ground, white sheets, navy ink; color reserved for status and priority.
-- Folder index tabs with a 3px colored lip, joined to a bordered drawer.
-- Ruled task rows divided by hairlines, grouped under sticky deadline headers.
-- Be Vietnam Pro throughout; tabular figures for every date, time, and count.
-- Gentle 8px corners, hairline borders, one soft drawer shadow.
-- Click-first operation: status, deadline, and placement change through a visible control; drag is only an accelerator.
-- Fixed information budget per row and per card; secondary detail lives in the dialog, not on the line.
+> **Màu đi trên dữ liệu, không đi trên khung.** Tối đa ~5% số điểm ảnh của màn hình có màu.
+
+Khung — sidebar, thanh tiêu đề, nền thẻ, viền — đều là **giấy**. Mực tím chỉ được xuất hiện ở:
+
+1. Vạch gáy sổ 4px ở mép phải sidebar (`shadow-[inset_-4px_0_0_var(--ink)]`).
+2. Vạch mực 3px bên trái mục điều hướng đang mở.
+3. Đúng **một** nút chính mỗi màn ("Thêm task").
+4. Con trỏ nhập (`caret-color`), vòng focus, và vùng chọn văn bản.
+
+Đỏ (`red-ink`) chỉ dành cho **việc quá hạn** và **con dấu XONG**. Hổ phách (`status-doing`)
+chỉ dành cho **đang làm**. Không có hue thứ tư.
+
+### Mực tím là màu của chủ thể
+
+Nhiều bộ quy tắc thiết kế cấm thẳng tím/violet vì nó là màu mặc định của hàng loạt sản phẩm SaaS.
+Ở đây **giữ hue 292 là có chủ ý**: nó là màu mực bút bi tím trong vở học trò Việt Nam, tức là
+màu lấy từ chính thế giới của người dùng, không phải màu mượn từ một trang web khác.
+
+Điều kiện để giữ nó: **không được dùng làm chrome**. Khi chạy
+`.agents/skills/design-taste-frontend/scripts/inspect.mjs --app`, phải truyền `--allow` cho luật
+palette violet, và phải kiểm lại tỉ lệ điểm ảnh có màu nằm dưới 5%.
 
 ## Colors
 
-A restrained cool-paper palette with navy ink, plus a fixed semantic set of three tab hues and three priority marks.
+### Mực (ink)
+`ink` tím 292 là màu viết. Dùng cho: nút chính, vạch gáy, mục nav đang mở, caret, focus ring.
+**Không** dùng làm nền mảng lớn, **không** dùng cho trạng thái Xong.
 
-### Primary
-- **Folder Navy** (navy): the single primary action per view ("Thêm task", dialog submit), the active sidebar text, and the default board tab color. Never used as a decorative fill.
+### Giấy (paper, card, popover)
+Ba bậc giấy rất gần nhau: trang (`paper` 0.978) → tờ (`card` 0.993) → tờ nổi (`popover` 0.995).
+Bậc cách nhau khoảng 1.5%, vừa đủ tách mà không thành "khối". Cột kanban nằm giữa trang và tờ:
+`color-mix(in oklch, var(--card) 60%, var(--paper))`.
 
-### Secondary (semantic status hues)
-- **Todo Blue** (tab-todo / tab-todo-soft): text and pale wash of the Todo pill, Todo tab lip, Todo dots.
-- **Manila Amber** (tab-doing / tab-doing-soft): Doing pill and tab lip; its soft tone is also the row-flash wash and the text-selection color.
-- **Ledger Green** (tab-done / tab-done-soft): Done pill, tab lip, and dots.
+### Trạng thái
+| Trạng thái | Màu | Ghi chú |
+|---|---|---|
+| Cần làm | `status-todo` than chì | Không nền |
+| Đang làm | `status-doing` hổ phách | Có nền `status-doing-soft` |
+| Xong | `status-done` than chì nhạt | **Không nền màu.** Xong là trạng thái yên nhất |
+| Quá hạn | `overdue` = `red-ink` | Chỉ ở ngày hạn, không tô cả dòng |
 
-### Tertiary (priority and alarm)
-- **Stamp Red** (prio-high): the High priority square.
-- **Ochre** (prio-medium): the Medium priority square.
-- **Slate** (prio-low): the Low priority square, drawn at 70% opacity.
-- **Overdue Red** (overdue): overdue deadlines, the "Quá hạn" group header, and the "N việc quá hạn" link in the page header.
-- **Destructive Red** (destructive): delete actions, validation errors, error panels at 10% wash.
+Trước đây `status-done` trỏ thẳng vào `ink`, tức là trạng thái cần yên nhất lại được tô bằng
+màu nổi nhất của hệ thống. Đã sửa; **đừng trỏ ngược lại**.
 
-### Neutral
-- **Office Paper** (paper): app background.
-- **White Sheet** (sheet): drawer, cards, inputs, popovers, the active folder tab.
-- **Navy Ink** (ink): all body text and titles.
-- **Faded Ink** (ink-soft): secondary text, column headers, inactive tabs, placeholders at 80%.
-- **Drawer Tint** (drawer-tint): drawer toolbar band (at 40%), segmented track, count badge on the active tab, skeletons.
-- **Hover Wash** (hover-wash): hover on rows (at 50%), pills, and icon buttons.
-- **Hairline** (hairline) and **Field Edge** (field-edge): dividers and borders; inputs and pills use the slightly darker field edge.
-- **Focus Blue** (focus-blue): every focus ring and focused input border.
-- **Sidebar Paper** (sidebar-paper) / **Sidebar Active** (sidebar-active): the sidebar ground and its active item.
-- **Manila Panel / Sheet / Ink** (manila-panel, manila-sheet, manila-ink): scoped to the sign-in screen only, the warm folder-cover side of the same world.
+### Ưu tiên
+Ưu tiên **không** dùng ô vuông hay chấm tròn, mà dùng **vệt bút dạ quang** (`.hl`): `hl-high`
+hồng cho Cao, `hl-medium` vàng cho Vừa, Thấp không tô. Tương phản chữ trên dạ quang đạt
+11.26–13.47:1. Đây là chi tiết "sổ giấy" thành công nhất của hệ thống — đừng thay bằng badge.
 
-Dark theme re-inks every role on a deep navy ground (background oklch(0.2 0.018 258), card oklch(0.24 0.02 258)); status hues flip to light text on dark soft tints. The sidecar records the dark values.
-
-### Named Rules
-**The Three Tabs Rule.** Blue, amber, and green mean Todo, Doing, Done, and nothing else. A new feature may not borrow a status hue for decoration.
-
-**The One Navy Rule.** Each view has one filled navy button. Secondary actions are outline or ghost.
-
-**The Square Means Priority Rule.** Priority is a 10px rounded square (3px radius); status is a round dot or pill. The shapes never swap.
+### Chế độ tối
+Nền tối **trung tính tuyệt đối**: mọi token nền có chroma **đúng bằng 0**
+(`paper` `oklch(0.17 0 0)`, `card` `0.21`, `popover` `0.23`, `muted` `0.25`, `sidebar` `0.15`).
+Không navy, không slate, không nhuộm tím nền. Tím chỉ còn trong `ink`.
 
 ## Typography
 
-**Display Font:** none; the system has no display face.
-**Body Font:** Be Vietnam Pro (with ui-sans-serif, system-ui, sans-serif), self-hosted at 400/500/600/700, with `cv11` and `ss01` enabled on `html`.
+Hai mặt chữ, mỗi mặt **một việc duy nhất**:
 
-**Character:** One Vietnamese-native sans carries everything; hierarchy comes from size and weight steps, not from a second family. Diacritics stay clean at every size.
+- **Be Vietnam Pro** — toàn bộ giao diện: tiêu đề task, nhãn, meta, nút, ô nhập.
+- **Literata** (`.font-planner`) — **chỉ** H1 của màn và tiêu đề nhóm ngày trong danh sách.
+
+Không thêm mặt chữ thứ ba. Không dùng Literata cho logo, tên board, tiêu đề empty state hay
+H2 — đã từng bị dùng lung tung ở sáu chỗ, đã gom lại còn hai.
 
 ### Hierarchy
-- **Headline** (600, 24px mobile / 28px desktop, tight tracking): page H1 such as "Việc của tôi". Sign-in uses the same weight at 30–36px.
-- **Title** (600, 18px): dialog titles ("Thêm task mới", "Sửa task").
-- **Body strong** (500, 15px): task titles in rows, board card titles (600), input text.
-- **Body** (400, 14px): descriptions, filter pills, field labels (500), subtitle line.
-- **Meta** (400, 13px, tabular): row meta on narrow screens, board card counts.
-- **Label** (600, 12px): deadline group headers ("Quá hạn", "7 ngày tới"); column headers use 500.
-
-### Named Rules
-**The Tabular Clock Rule.** Every date, time, and count is set with tabular figures and the shared Vietnamese formats: "Hôm nay", "Ngày mai", "T4, 4/11", "T4, 4/11, 17:00", "Tháng 11, 2026". Do not hand-format dates in a component.
-
-**The No Small Caps Rule.** Labels are sentence case at 12px; the system has no uppercase tracked micro-labels.
+- **H1 màn app: 28px** (`text-[1.75rem]`), Literata 600, `leading-tight`. Đây là trần.
+  Chữ app không phải chữ trưng bày; vượt 32px là sai. Màn đăng nhập là *trang*, không phải
+  màn app, nên được dùng 36/41.6px.
+- Tiêu đề task 15px / 500. Meta và ngày 13px. **Không có chữ nào dưới 11px.**
+- Mọi ngày, giờ, số đếm dùng `tabular-nums` (`.tabular`) để so sánh được theo cột dọc.
 
 ## Layout
 
-The signed-in app is a left sidebar (Việc của tôi / Lịch / Board) beside a centered content column capped at 72rem (max-w-6xl), padded 16 / 24 / 32px at mobile / sm / lg, 24px top and 64px bottom. The page header is a wrap row: H1 plus a one-line status sentence on the left, the navy primary action on the right.
+Cả bốn màn app dùng **chung một lề canvas**:
 
-Below the header (24px gap), folder tabs sit directly on the drawer (`-1px` overlap so the active tab merges into the drawer border). On mobile the four tabs become an equal 4-column grid; from `sm` they size to content.
+```
+mx-auto w-full max-w-6xl px-4 pt-8 pb-16 sm:px-6 lg:px-10
+```
 
-Inside the drawer: a toolbar band (12px × 16–20px padding) with a flexible search field (basis 14rem) and wrapping pills; then, at `lg` only, a column header grid `5.5rem / 1fr / 9rem / 6rem / 10.5rem / 2rem` that the rows share. Below `lg`, rows collapse to `status / title / actions` and meta folds under the title.
+Một mép trái duy nhất chạy từ tiêu đề xuống hàng cuối. Khi đổi tab, khung không được nhảy.
 
-Spacing runs on a 4px base: 4, 8, 12, 16, 20, 24px, with 2px reserved for tab gaps. Dialogs use 24px horizontal and 20px vertical padding with 20px between fields.
+### Đường lề đỏ
+`--planner-margin` (3rem, 3.25rem từ breakpoint `sm`) là **một mốc duy nhất** cho cả đường lề
+đỏ (`.planner-page::before`) lẫn mép trái của cột tiêu đề. Đừng đặt lại hai con số rời nhau:
+trước đây chúng lệch 4px ở `sm` và đường lề cắt vào trong ô tiêu đề.
 
-**The Deadline First Rule.** Lists default to nearest deadline and group under sticky deadline headers; other sorts flatten the groups.
+### Title row
+Mọi màn mở đầu bằng cùng một khối: dòng ngày nhỏ → H1 → **một câu dữ liệu** → nút chính bên phải.
 
-### Density budget
+Câu dữ liệu nói về **dữ liệu**, không dạy cách dùng giao diện:
+`"18 việc chưa xong · 3 việc quá hạn"` (số quá hạn là nút đổi bộ lọc), `"3/14 task đã xong · 2 quá hạn"`.
+Không viết "Bấm vào task để sửa…". Nếu một control cần một câu hướng dẫn cách bấm thì phải
+thiết kế lại control, không thêm câu.
 
-Density is balanced, not maximal. These budgets are taken from the shipped "Việc của tôi" list, the reference surface; other surfaces conform to them.
-
-- **Page header:** H1, one status sentence of at most three facts (open count, overdue count as a link, today's date), and the one navy action. No stat tiles, no greeting, no second action row.
-- **Toolbar:** one search field plus at most three select pills (today: "Ưu tiên", "Board", "Sắp xếp") and a "Xoá bộ lọc" ghost button that appears only while a filter is active. A pill that would offer a single real choice is hidden (the Board pill already hides when there is one board).
-- **Task row:** status pill, title (one line at `lg`, two below), at most one line of description, then at most three metadata fields: board, priority, deadline. Overdue adds one "Trễ …" line under the deadline. One overflow "…" button. Nothing else belongs on a row: no labels, members, checklist progress, comment or attachment counts, cover images, or created dates.
-- **Board card (Kanban):** title (two lines max), one date line, one priority mark, optional cover. At most two metadata items under the title.
-- **Board tile (Board list):** board name plus the three Todo / Doing / Done counts, or "Chưa có task" when empty.
-- **Counts:** each number appears once per view. Folder tabs own the per-status counts; the header sentence owns open and overdue; group headers own their group size. Do not repeat a count in a footer, badge, or tooltip.
-- **Hints:** a keyboard hint appears once, next to the control it triggers (the "N" `kbd` on "Thêm task", the "/" `kbd` in search).
-
-**The Earned Element Rule.** Every element answers "what do I do next?" or "is this mine and when is it due?". If removing it would not slow the person down, it does not ship on the line; move it into the dialog.
-
-**The Not Empty, Not Crowded Rule.** The first viewport always holds the header, the filters, and real rows or a designed empty state; it never shows a lone form or a blank canvas. A row never exceeds the budget above, and a field that is unset shows a quiet placeholder ("—", "Không có hạn") rather than being dropped from a desktop column, so columns stay aligned.
-
-**The One Board Rule.** When the person has only one board, every board selector, filter, and board column is redundant and hides; the board name is still available inside the dialog.
+### Mật độ
+Hàng task `py-2.5`, ô tick 20px, `gap-x-3`. Lưới cột cố định để mắt quét dọc theo cột, không
+phải chip rời trôi nổi. Cột ngày căn **phải** — ngày là thứ người ta so sánh theo chiều dọc.
 
 ## Elevation & Depth
 
-Mostly flat with tonal layering: paper ground, white sheet, tinted toolbar band. Shadows are soft, cool, and few; the drawer owns the only resting shadow on a page.
+> **Một mặt phẳng, một bóng.**
 
-### Shadow Vocabulary
-- **Drawer** (`box-shadow: 0 1px 2px rgb(0 0 0/0.04), 0 8px 24px -12px rgb(15 23 42/0.12)`): the task drawer under the folder tabs.
-- **Card lift** (`box-shadow: 0 6px 18px -10px rgb(15 23 42/0.25)`): board cards on hover only, with the border shifting to focus blue at 60%.
-- **Raised option** (`box-shadow: 0 1px 2px rgb(0 0 0/0.08)`): the selected option in a segmented control.
-- **Field inset** (`box-shadow: inset 0 1px 0 rgb(0 0 0/0.02)`): text inputs.
-- **Sign-in sheet** (`box-shadow: 0 18px 40px -18px oklch(0.55 0.11 70 / 0.45)`): the preview sheet on the manila panel.
+Toàn app có **đúng một** resting shadow: "ngăn kéo" bọc danh sách task ở `tasks-page.tsx`.
+Mọi thứ khác phân tầng bằng **bậc nền và viền 1px**, không bằng bóng.
 
-### Named Rules
-**The One Drawer Rule.** One resting shadow per view, on the drawer. Everything else is flat until hovered or selected.
+Luật cứng: **viền hoặc bóng, không bao giờ cả hai** trên cùng một bề mặt đứng yên.
+Ngăn kéo có bóng thì không có viền. Thẻ board có viền thì không có `shadow-sm`.
+Nút outline không có `shadow-xs`.
 
 ## Shapes
 
-Gently curved, paper-like corners from a 0.5rem base: 4px for tiny controls, 6px for buttons, inputs, and pills, 8px for folder tabs (top corners only) and segmented tracks, 12px for the drawer and board cards. Status pills and count badges are fully round. Borders are 1px hairlines everywhere.
-
-The recurring silhouette is the folder tab: a top-rounded tab joined to a container. The status tabs use it at full size; each board card carries a small 64 × 10px tab in the board's color above its top-left edge. The drawer's top-left corner is square where the first tab joins it (rounded-b-xl rounded-tr-xl).
+`--radius: 0.375rem` (6px). Bo góc theo dải hẹp: **6px** cho mọi khối, **4px** cho chip nhỏ và
+ô trạng thái, **999px** chỉ cho con dấu và avatar. Không có 12px, không có 16px.
 
 ## Components
 
-### Buttons
-Quiet and competent; only one is loud.
-- **Shape:** gently rounded (6px).
-- **Primary:** navy fill, white text, 40px tall, 16px horizontal, leading plus icon; the header action carries a `kbd` "N" hint at 30% white border.
-- **Hover / Focus:** shadcn defaults (90% fill on hover), 2px focus-blue ring.
-- **Outline / Ghost:** white sheet with field-edge border for "Thử lại", "Xoá bộ lọc"; ghost for in-toolbar resets. Destructive in dialogs is a ghost with red text and a 10% red hover wash; the confirm "Xoá task" is solid destructive.
+### Ô trạng thái (`.status-box`) — chữ ký của hệ thống
+Một ký hiệu 20px, ba hình thái, **không cần màu**:
+- trống = Cần làm
+- một nét gạch chéo = Đang làm
+- đã tô + tick = Xong
 
-### Chips
-- **Status pill:** 28px tall, fixed 5.5rem wide, fully round, soft status tint with status-colored 12px semibold text and a chevron; it is a menu trigger ("Chuyển sang"). Hover darkens 5% (brightens 10% in dark).
-- **Filter pill:** 36px, white sheet, field-edge border, 6px radius, "Ưu tiên: Tất cả" pattern with the label in faded ink and the value in medium weight.
-- **Priority tag:** 10px square in priority color plus label ("Cao", "Vừa", "Thấp"); an em dash when unset.
+### Con dấu XONG (`.stamp`)
+11px, `letter-spacing: 0.06em`, viền 1.5px `red-ink`, xoay -6°, tương phản 5.44:1.
 
-### Cards / Containers
-- **Drawer:** white sheet, hairline border, 12px radius except the tab-joined corner, drawer shadow, overflow hidden.
-- **Board card:** white sheet, hairline border, 12px radius, 14px × 16px padding, folder tab above, Todo/Doing/Done dot counts in meta type; hover lifts with the card-lift shadow.
+**Chỉ đóng một lần, đúng khoảnh khắc vừa tick, rồi biến mất.** Không được thường trú trên mọi
+dòng Done: dòng Done đã có ô tick đã tô, tiêu đề gạch ngang và chữ mờ đi — con dấu là mark thứ tư
+nói cùng một điều, và khi lặp lại thì đỏ thành hoạ tiết chứ không còn là tín hiệu.
 
-### Inputs / Fields
-- **Style:** 40px (search 36px), white sheet, field-edge border, 6px radius, 15px text, faint inset top shadow, search icon at 12px left.
-- **Focus:** border turns focus blue plus a 3px focus-blue ring at 25%.
-- **Error:** destructive border and 20% destructive ring; message in 14px destructive below the field. Field labels are 14px medium with an optional right-aligned tabular hint.
-- **Segmented control:** drawer-tint track with 4px padding; options 32px, selected option lifts onto white with the raised-option shadow; each option leads with its status or priority dot.
+### Sidebar = gáy sổ
+Nền giấy (`sidebar`, đậm hơn trang một bậc), vạch mực 4px ở mép phải. Mục đang mở: nền
+`sidebar-accent` + vạch mực 3px bên trái. **Không** tô kín sidebar bằng màu mực.
 
-### Navigation
-- **Sidebar:** sidebar-paper ground, 36px logo plus "DailyDesk" at 15px semibold, items 36px medium weight; active item on sidebar-active with darker ink.
-- **Folder tabs:** 40px, inactive tabs transparent in faded ink; hover washes the tab with 60% sheet and shows the status lip at 50%; the active tab becomes a white sheet with border, sits above the drawer edge, shows its 3px status lip at full strength, and fills its count badge.
+### Nút
+Một primary mỗi màn, và nó là hành động của màn đó ("Thêm task"). Mọi nút khác là `outline`
+hoặc `ghost`. **Không có nút nổi `fixed`** — chuyển chế độ xem là segmented control nằm trong
+title row, không phải nút trôi giữa màn.
 
-### Task Row (signature)
-A ruled form line: status pill, title (15px medium, underline on hover, one line on desktop), one-line description in faded ink, then board, priority, and deadline columns. Overdue deadlines turn overdue red and medium weight with a "Trễ …" line underneath; done tasks strike through in faded ink. The row action button appears on hover/focus at `lg`. After any create, edit, or status change the row takes the manila flash (Doing soft at 70%) for 2.4s and fades over 1.6s on `cubic-bezier(0.16, 1, 0.3, 1)`.
+### Mô hình lưu
+> **Một mô hình lưu cho mỗi view.**
 
-### Task Dialog
-The add/edit form ("Thêm task mới" / "Sửa task") is the single place where a task is filled in. Fields run in decision order: "Tiêu đề" (the only required field, stated in the description line "Chỉ tiêu đề là bắt buộc. Các ô khác có thể điền sau."), "Mô tả", "Hạn chót" (date button + time select, "Bỏ hạn" to clear), "Độ ưu tiên" and "Trạng thái" as segmented controls, then "Lưu vào board" only when there is more than one board. Footer: ghost destructive "Xoá task" at left; "Huỷ" outline and one navy submit at right. Errors appear under the field and focus moves to the first invalid one. The larger board card dialog follows the same order: status and priority first, then deadline and description, then labels, checklist, attachments, and cover.
+Các **trường** (tiêu đề, mô tả, hạn chót, ưu tiên, trạng thái) gom vào bản nháp cục bộ và chỉ
+gửi đi khi bấm **Lưu thay đổi** — đúng yêu cầu của `spec.md` (báo lỗi khi bấm lưu, toast
+"Đã lưu thay đổi"). Cả hộp thoại ở danh sách lẫn hộp thoại ở board đều theo mô hình này, và
+**cùng thứ tự trường**: Tiêu đề → Mô tả → Hạn chót → Độ ưu tiên → Trạng thái.
 
-### Interaction model
-The person must be able to do everything with clicks and the keyboard alone.
+Các **thao tác trên đối tượng riêng** — bình luận, việc con, nhãn, ảnh bìa, thành viên — vẫn
+lưu ngay khi thực hiện. Thêm một bình luận là một hành động, không phải sửa một trường.
 
-- **Change status:** one click on the status pill opens "Chuyển sang" with the three statuses; the dialog offers the same choice as a segmented control. Any surface that shows a task must offer one of these two.
-- **Change deadline:** through the "Hạn chót" field in the dialog (calendar popover plus time select). A calendar may also accept dragging an item to another day, but clicking the item must open that field.
-- **Move or reorder on a board:** a card's menu offers "Chuyển sang" with every list of the board; list order and card order have menu commands too. Drag is an accelerator on top, never the only path.
-- **Open:** clicking anywhere on a row or card opens it; Enter on the focused title does the same.
-- **Delete:** from the row or card menu or the dialog footer, then a confirm dialog ("Xoá task này?", "Giữ lại" / "Xoá task"), then a toast with "Hoàn tác".
-- **Feedback:** every mutation gets a toast in Vietnamese and, on lists, the manila row flash.
-- **Shortcuts:** N adds a task, / focuses search; both are disabled while typing or inside a dialog.
-- **Targets:** icon buttons are at least 32px (size-8) with an `aria-label`; primary actions are 40px.
+### Trạng thái tải
+Skeleton phải có **hình dạng của trạng thái đã tải**: đúng số cột, đúng chiều cao chữ của từng
+cột, đúng pitch của hàng, nhãn và header hiện ngay. **Không dùng `animate-pulse`**, dùng
+`bg-muted` tĩnh. Khi dữ liệu về, layout không được nhảy.
 
-**The No Drag Required Rule.** Every change that dragging can make (status, list, order, date) has a visible click or keyboard path on the item or in its menu. Copy never tells the person to drag as the way to do something, and the default cursor on a working surface is never a grab hand.
+### Nhãn hiển thị vs tên dữ liệu
+`STATUS_TEXT` (`Cần làm / Đang làm / Xong`) là chữ cho người đọc.
+`STATUS_LABEL` (`Todo / Doing / Done`) là **tên danh sách gửi lên backend** — là dữ liệu.
+Đừng gộp hai thứ này: đổi nhãn hiển thị không được làm đổi tên list trong cơ sở dữ liệu.
 
-**The Visible Action Rule.** No action lives only behind hover or right-click. Hover may reveal a shortcut button (the row "…" at `lg`) only when the same action is reachable by opening the item; context menus may duplicate a visible menu but never replace it.
+## Do's
 
-**The One Status Rule.** A task has exactly one status, Todo / Doing / Done. A separate "done" checkbox that can disagree with the card's list is not allowed; ticking done means moving to Done.
+- Viết **mọi** chữ hiện ra màn hình, toast và chữ cho trình đọc màn hình bằng **tiếng Việt**.
+- Cho mỗi nút chỉ có icon một `aria-label` tiếng Việt.
+- Giữ chiều cao control trong title row và hàng bộ lọc ở 32–40px.
+- Dùng icon nội dòng cỡ 12–14px.
+- Đặt một mép phải chung cho mỗi hàng; số và ngày căn phải.
+- Chọn số cột theo số phần tử, đừng để lưới 4 cột với 1 board.
+- Giữ `prefers-reduced-motion` cho mọi animation.
 
-### Empty, loading and error states
-Each list region has four designed states, all inside the drawer so the page frame never collapses:
+## Don'ts
 
-- **Loading:** five skeleton rows shaped like real rows (pill, title bar, meta bar); never a bare "Đang tải…" line.
-- **Empty (no data yet):** 32px muted icon, a one-line headline ("Chưa có task nào"), one sentence that says what to do and why, and exactly one navy action ("Thêm task đầu tiên"). This repeats the header action where the eye already is, and is the only sanctioned exception to The One Navy Rule.
-- **Filtered empty:** search-off icon, a headline naming the cause ("Không có task nào khớp bộ lọc" or "Không có task nào ở trạng thái Doing"), the query quoted when there is one, and only outline reset actions ("Xoá bộ lọc", "Xem tất cả").
-- **Error:** destructive icon, "Không tải được …", the reason in faded ink, and an outline "Thử lại".
-
-Empty states are text and one icon, centered, 64px vertical padding. No illustrations, no marketing copy, no tips carousel.
-
-## Do's and Don'ts
-
-### Do:
-- **Do** join status tabs to the drawer with the -1px overlap and a 3px status lip on the active tab.
-- **Do** use the shared date helpers and tabular figures for every date, time, and count.
-- **Do** keep one filled navy button per view and make everything else outline or ghost.
-- **Do** mark priority with the 10px square and status with dots or pills, colored only from the status and priority tokens.
-- **Do** flash a changed row in the manila wash so the change is noticed, and respect reduced motion for any added animation.
-- **Do** design every list state: skeleton rows, empty with a first action, filtered-empty with a reset, error with "Thử lại".
-- **Do** give every drag interaction a click path: a "Chuyển sang" menu for lists and status, menu commands for order, the "Hạn chót" field for dates.
-- **Do** keep a task row to status, title, one description line, and at most three metadata fields (board, priority, deadline).
-- **Do** hide a filter, column, or selector the moment it can only offer one real choice.
-- **Do** give every icon-only button an `aria-label` in Vietnamese and a 32px minimum target.
-- **Do** write all visible, toast, and screen-reader copy in Vietnamese with one spelling: "Xoá", "Huỷ", "task" (not "thẻ" or "card").
-
-### Don't:
-- **Don't** lay tasks out as a grid of cards, or add hero metrics, gradients, or glass panels.
-- **Don't** use a status hue (blue, amber, green) for anything that is not that status.
-- **Don't** add a second resting shadow beside the drawer, or heavier shadows than the drawer's.
-- **Don't** introduce a second typeface or uppercase tracked labels.
-- **Don't** pull the manila sign-in palette into the signed-in app; it is scoped to sign-in.
-- **Don't** make any action drag-only, hover-only, or right-click-only, and don't write copy such as "Kéo … để …" that presents dragging as the way to do something.
-- **Don't** put labels, members, checklist progress, comment or attachment counts, or progress bars on task rows or board cards.
-- **Don't** repeat the same count or the same shortcut hint twice in one view.
-- **Don't** let a task carry a "done" checkbox that can disagree with its Todo / Doing / Done status.
-- **Don't** ship a bare "Đang tải…" line, an error with no "Thử lại", or an empty state with no next action.
+- **Đừng** tô kín sidebar hay thanh tiêu đề bằng màu mực.
+- **Đừng** cho `status-done` trỏ vào `ink`.
+- **Đừng** nhuộm màu vào nền chế độ tối.
+- **Đừng** dùng cả viền lẫn bóng trên một bề mặt đứng yên.
+- **Đừng** thêm nút nổi `fixed` cho thứ không phải hành động chính của màn.
+- **Đừng** dùng bảng màu Tailwind thô (`bg-green-100`, `text-amber-950`…) — mọi màu phải là token.
+- **Đừng** đặt chữ dưới 11px, hay nhãn chữ hoa giãn chữ quá 0.06em.
+- **Đừng** dùng `backdrop-blur` (kính mờ) hay viền nét đứt ngoài lưới biểu đồ và ô trống.
+- **Đừng** để `cursor-grab` làm con trỏ mặc định trên bề mặt làm việc.
+- **Đừng** giấu hành động chính sau hover (`opacity-60 group-hover:opacity-100`).
+- **Đừng** đặt thanh tiến độ không có nhãn số lên thẻ hay hàng task.
+- **Đừng** thêm mặt chữ thứ ba.
 
 ## Known Drift
 
-<!-- DRIFT LOG: violations of the rules above, not rules. Remove an item when the code is fixed. -->
+Những chỗ mã **đang** lệch khỏi tài liệu này, biết và chấp nhận tạm:
 
-The 13 items recorded by /impeccable document on 2026-11-03 were fixed the same day (calendar click paths and saving, board click-to-move and reorder menus, visible card and column menus, Done checkbox moving the card, undo on delete, glass and off-palette chrome removed, Vietnamese copy, card dialog order and labels, board list primary action and empty states, single-board column hiding, shared date formatting, footer hint trimmed). Two deliberate deviations remain:
-
-1. **Photo cover scrim.** Cards whose cover is a photo keep a `from-black/80` gradient behind the white title (`src/pages/kanban/KanbanCard.tsx`). It is functional, for legibility on arbitrary photos, not decoration. Color covers are already a flat band.
-2. **Board color fills the kanban canvas.** The board's chosen color or image paints the whole board page (`src/pages/kanban/Kanban.tsx`). It is the user's own choice and the only place a board's identity shows at scale. Columns, cards and header sit on paper surfaces above it.
+1. **Hướng "sổ giấy" mới đi được một nửa.** Hiện chỉ có đường lề đỏ và con dấu là thiết bị giấy
+   thật. Chưa có kẻ dòng, chưa có bậc giấy ở mép trang. Sau khi con dấu thôi thường trú, trạng
+   thái nghỉ của danh sách gần như không còn dấu hiệu "giấy" nào — cần bù bằng kẻ dòng mảnh
+   hoặc mép giấy ở lượt sau.
+2. **`AVATAR_COLORS`** trong `BoardHeaderBar.tsx` vẫn là bảng màu Tailwind thô, ngoài hệ token.
+   Hiện bị ẩn sau cờ `SHOW_COLLABORATION = false` nên chưa hiện ra.
+3. **4 lỗi kiểu có sẵn** trong `card-create-dialog.tsx` và `card-edit-dialog.tsx` chưa sửa;
+   chúng nằm ngoài `tsconfig.mvp.json` và `vite build` không typecheck nên không chặn CI.
+4. **`typecheck:mvp` không bao `src/components/**`.** Cổng kiểm thật cho component là `pnpm build`.
+5. **Chưa chạy `inspect.mjs --app`** để đo tỉ lệ điểm ảnh có màu, focus ring và motion trên màn
+   thật. Mục 6 của `docs/UI_AUDIT_TASTE.md` liệt kê 12 thứ cần đo.

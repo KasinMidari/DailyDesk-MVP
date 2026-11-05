@@ -393,29 +393,6 @@ const DATA_TRANSFER_TYPES = {
   COLUMN: "kanban-board-column",
 };
 
-// ... existing code ...
-
-const KANBAN_BOARD_CIRCLE_COLORS_MAP = {
-  primary: "bg-kanban-board-circle-primary",
-  gray: "bg-kanban-board-circle-gray",
-  red: "bg-kanban-board-circle-red",
-  yellow: "bg-kanban-board-circle-yellow",
-  green: "bg-kanban-board-circle-green",
-  cyan: "bg-kanban-board-circle-cyan",
-  blue: "bg-kanban-board-circle-blue",
-  indigo: "bg-kanban-board-circle-indigo",
-  violet: "bg-kanban-board-circle-violet",
-  purple: "bg-kanban-board-circle-purple",
-  pink: "bg-kanban-board-circle-pink",
-};
-
-export type KanbanBoardCircleColor =
-  keyof typeof KANBAN_BOARD_CIRCLE_COLORS_MAP;
-
-export const KANBAN_BOARD_CIRCLE_COLORS = Object.keys(
-  KANBAN_BOARD_CIRCLE_COLORS_MAP
-) as KanbanBoardCircleColor[];
-
 /*
 Board
 */
@@ -466,8 +443,9 @@ export type KanbanBoardColumnProps = {
   index?: number;
 };
 
+/* Cột là một trang giấy mỏng hơn thẻ: nền giữa --card và --paper, không bóng. */
 export const kanbanBoardColumnClassNames =
-  "w-64 flex-shrink-0 rounded-lg border flex flex-col border-border bg-muted/70 py-2 h-full min-h-0 transition-colors";
+  "w-64 flex-shrink-0 rounded-lg border flex flex-col border-border bg-[color-mix(in_oklch,var(--card)_60%,var(--paper))] py-2 h-full min-h-0 transition-colors";
 
 export function KanbanBoardColumn({
   className,
@@ -591,29 +569,6 @@ export function KanbanBoardColumnIconButton({
       className={cn("text-muted-foreground size-6", className)}
       variant="ghost"
       size="icon"
-      ref={ref}
-      {...props}
-    />
-  );
-}
-
-export type KanbanBoardColorCircleProps = {
-  color?: KanbanBoardCircleColor;
-};
-
-export function KanbanColorCircle({
-  className,
-  color = "primary",
-  ref,
-  ...props
-}: ComponentProps<"div"> & KanbanBoardColorCircleProps) {
-  return (
-    <div
-      className={cn(
-        "mr-2 size-2 rounded-full",
-        KANBAN_BOARD_CIRCLE_COLORS_MAP[color],
-        className
-      )}
       ref={ref}
       {...props}
     />
@@ -748,8 +703,9 @@ export type KanbanBoardCardProps<T extends { id: string } = { id: string }> = {
   isActive?: boolean;
 };
 
+/* Viền hoặc bóng, không cả hai: thẻ đứng yên nên giữ viền, bỏ bóng. */
 const kanbanBoardCardClassNames =
-  "rounded-lg border border-border bg-background p-3 text-start text-foreground shadow-sm";
+  "rounded-lg border border-border bg-card p-3 text-start text-foreground";
 
 export function KanbanBoardCard({
   className,
@@ -769,7 +725,8 @@ export function KanbanBoardCard({
       aria-roledescription="draggable"
       className={cn(
         kanbanBoardCardClassNames,
-        "focus-visible:ring-ring inline-flex w-full cursor-grab touch-manipulation flex-col gap-1 focus-visible:ring-1 focus-visible:outline-none",
+        // Con trỏ mặc định trên mặt làm việc không bao giờ là bàn tay nắm.
+        "focus-visible:ring-ring inline-flex w-full cursor-pointer touch-manipulation flex-col gap-1 focus-visible:ring-1 focus-visible:outline-none",
         isDragging
           ? "cursor-grabbing active:cursor-grabbing"
           : "group relative",

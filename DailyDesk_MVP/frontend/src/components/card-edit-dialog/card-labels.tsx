@@ -111,7 +111,7 @@ export function CardLabels({ card, onUpdate, boardId, isOpen: controlledIsOpen, 
             toast.success("Đã tạo nhãn");
           },
           onError: (error: any) => {
-            const errorMsg = error?.message || "Failed to create label";
+            const errorMsg = error?.message || "Không tạo được nhãn.";
             if (errorMsg.includes("409") || errorMsg.includes("tồn tại") || errorMsg.includes("duplicate")) {
               toast.error("Đã có nhãn trùng tên và màu");
             } else {
@@ -159,7 +159,7 @@ export function CardLabels({ card, onUpdate, boardId, isOpen: controlledIsOpen, 
           setEditingLabelId(null);
         },
         onError: (error: any) => {
-          const errorMsg = error?.message || "Failed to update label";
+          const errorMsg = error?.message || "Không sửa được nhãn.";
           if (errorMsg.includes("409") || errorMsg.includes("tồn tại") || errorMsg.includes("duplicate")) {
             toast.error("Đã có nhãn trùng tên và màu");
           } else {

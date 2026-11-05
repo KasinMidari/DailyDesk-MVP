@@ -1,4 +1,5 @@
 import { USE_MOCK } from "@/mocks/install";
+import { SHOW_COVER_UPLOAD } from "@/lib/features";
 import { queryApi } from "@/lib/api";
 import { queryClient } from "@/lib/query-client";
 import imageCompression from "browser-image-compression";
@@ -28,8 +29,10 @@ export function useUploadImage() {
   const mutation = queryApi.useMutation("post", "/media/image/{type}/{id}");
 
   const uploadImage = async ({ file, type, id }: UploadImageInput) => {
+    // Backend thật không có `/media/image/*` (nhóm C): bỏ qua thay vì gọi rồi 404.
+    if (!SHOW_COVER_UPLOAD) return undefined;
     if (!cloudName || !uploadPreset)
-      throw new Error("Cloudinary config not loaded");
+      throw new Error("Chưa cấu hình nơi lưu ảnh");
 
     let fileToUpload = file;
     try {
@@ -90,6 +93,8 @@ export function useUploadImage() {
 export function useDeleteImage() {
   const mutation = queryApi.useMutation("delete", "/media/image/{type}/{id}");
   const deleteImage = async (type: "board" | "card", id: string) => {
+    // Như trên: không có route thật thì coi như không có ảnh để xoá.
+    if (!SHOW_COVER_UPLOAD) return;
     await mutation.mutateAsync({
       params: { path: { type, id } },
     });

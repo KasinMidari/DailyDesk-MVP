@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
+import { SHOW_COLLABORATION } from "@/lib/features";
 import { uuidv7 } from "uuidv7";
 
 export interface Member {
@@ -34,7 +35,8 @@ export function useMembers(boardId: string) {
 
       return data as unknown as Member[];
     },
-    enabled: !!boardId,
+    // Cộng tác nhóm ngoài phạm vi: không gọi `/boards/:id/members` (backend trả 404).
+    enabled: SHOW_COLLABORATION && !!boardId,
   });
 }
 

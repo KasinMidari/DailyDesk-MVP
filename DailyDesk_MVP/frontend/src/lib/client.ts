@@ -1,10 +1,11 @@
 import { accessTokenAtom } from "@/stores/access-token";
 import { getAccessTokenFnAtom } from "@/stores/auth";
 import store from "@/stores/store";
+import getConfig from "@/lib/config";
 import axios from "axios";
 
 const httpClient = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: getConfig().backendUrl,
 });
 
 httpClient.interceptors.request.use((request) => {
@@ -22,7 +23,7 @@ httpClient.interceptors.response.use(
   async (error) => {
     const refresher = store.get(getAccessTokenFnAtom);
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
       originalRequest._retry = true;
       if (refresher) {
         const accessToken = await refresher();

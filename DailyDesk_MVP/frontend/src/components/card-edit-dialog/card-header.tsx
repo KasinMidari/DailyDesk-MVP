@@ -6,9 +6,11 @@ import type { Card } from "@/types/card";
 interface CardHeaderProps {
   card: Card;
   onUpdate: (updates: Partial<Card>) => void;
+  /** Lỗi của trường tiêu đề, hiện khi bấm Lưu mà tiêu đề trống. */
+  error?: string;
 }
 
-export function CardHeader({ card, onUpdate }: CardHeaderProps) {
+export function CardHeader({ card, onUpdate, error }: CardHeaderProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(card.title);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -24,6 +26,11 @@ export function CardHeader({ card, onUpdate }: CardHeaderProps) {
     setTitle(card.title);
   }, [card.title]);
 
+  // Bấm Lưu mà tiêu đề trống: mở ô nhập để câu báo lỗi nằm ngay dưới nó.
+  useEffect(() => {
+    if (error) setIsEditing(true);
+  }, [error]);
+
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -31,14 +38,9 @@ export function CardHeader({ card, onUpdate }: CardHeaderProps) {
     }
   }, [title, isEditing]);
 
+  // Ghi vào bản nháp, kể cả khi trống: hộp thoại chỉ báo lỗi lúc bấm Lưu.
   const handleSave = () => {
     const trimmedTitle = title.trim();
-
-    if (trimmedTitle === "") {
-      setTitle(card.title);
-      setIsEditing(false);
-      return;
-    }
 
     if (trimmedTitle !== card.title) {
       onUpdate({ title: trimmedTitle });
@@ -86,6 +88,8 @@ export function CardHeader({ card, onUpdate }: CardHeaderProps) {
             onChange={(e) => setTitle(e.target.value)}
             onBlur={handleSave}
             onKeyDown={handleKeyDown}
+            aria-invalid={!!error}
+            aria-label="Tiêu đề"
             className="font-planner font-semibold text-xl resize-none min-h-0 p-2 -ml-2"
             rows={1}
           />
@@ -93,12 +97,13 @@ export function CardHeader({ card, onUpdate }: CardHeaderProps) {
           <h2
             className={`font-planner font-semibold text-xl cursor-pointer hover:bg-muted rounded px-2 py-1 -mx-2 -my-1 break-words ${
               isDone ? "line-through text-muted-foreground" : ""
-            }`}
+            } ${card.title ? "" : "text-muted-foreground"}`}
             onClick={() => setIsEditing(true)}
           >
-            {card.title}
+            {card.title || "Bấm để nhập tiêu đề…"}
           </h2>
         )}
+        {error && <p className="mt-1.5 text-sm text-destructive">{error}</p>}
       </div>
     </div>
   );

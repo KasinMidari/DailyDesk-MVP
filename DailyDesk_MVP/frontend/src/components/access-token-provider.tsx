@@ -55,7 +55,7 @@ export default function AccessTokenProvider({
   // Show loading while Auth0 is initializing
   if (auth.isLoading) {
     return (
-      <div className="flex h-screen w-full items-center justify-center">
+      <div className="flex h-dvh w-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           <p className="text-muted-foreground">Đang tải…</p>
@@ -73,7 +73,7 @@ export default function AccessTokenProvider({
   // Wait for access token to be fetched before rendering children
   if (!isTokenReady && !accessToken) {
     return (
-      <div className="flex h-screen w-full items-center justify-center">
+      <div className="flex h-dvh w-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           <p className="text-muted-foreground">Đang xác thực…</p>

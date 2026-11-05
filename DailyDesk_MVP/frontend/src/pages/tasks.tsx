@@ -6,9 +6,10 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
 import { toast } from "sonner";
+import { addDays, startOfWeek } from "date-fns";
 import { CalendarClock, CircleAlert, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { EventCalendar, type CalendarEvent } from "@/components/event-calendar";
+import { EventCalendar, EventGap, EventHeight, type CalendarEvent } from "@/components/event-calendar";
 import {
   useBoardsSummary,
   useCreateTask,
@@ -20,14 +21,56 @@ import {
 } from "@/features/tasks/api";
 import { isOverdue } from "@/features/tasks/logic";
 import TaskFormDialog from "@/features/tasks/task-form-dialog";
-import { formatDue } from "@/lib/date";
+import { formatDue, weekdayShort } from "@/lib/date";
 
-/** Màu sự kiện theo trạng thái, cùng ý nghĩa với tab Todo/Doing/Done; quá hạn dùng đỏ. */
+/**
+ * Màu chip theo trạng thái. Chỉ việc cần quyết mới có nền màu:
+ * quá hạn = đỏ, đang làm = hổ phách. Cần làm = nền xám, đã xong = không nền.
+ */
 function colorOf(task: Task): CalendarEvent["color"] {
   if (task.status === "done") return "emerald";
   if (isOverdue(task)) return "rose";
   if (task.status === "doing") return "amber";
   return "sky";
+}
+
+/** Khung chờ: đúng khung lịch tháng thật, ô trống, không shimmer. */
+function CalendarSkeleton() {
+  const weekdays = Array.from({ length: 7 }, (_, i) =>
+    weekdayShort(addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), i)),
+  );
+  return (
+    <div
+      aria-busy="true"
+      aria-label="Đang tải lịch"
+      className="flex flex-col rounded-lg border"
+      style={{ "--event-height": `${EventHeight}px`, "--event-gap": `${EventGap}px` } as React.CSSProperties}
+    >
+      <div className="flex items-center justify-between p-2 sm:p-4">
+        <span className="h-9 w-40 rounded-md bg-muted" />
+        <span className="h-9 w-28 rounded-md bg-muted" />
+      </div>
+      <div className="grid grid-cols-7 border-b">
+        {weekdays.map((d) => (
+          <div className="py-2 text-center text-sm text-muted-foreground" key={d}>
+            {d}
+          </div>
+        ))}
+      </div>
+      <div className="grid auto-rows-fr">
+        {Array.from({ length: 6 }).map((_, week) => (
+          <div className="grid grid-cols-7 [&:last-child>*]:border-b-0" key={week}>
+            {Array.from({ length: 7 }).map((_, day) => (
+              <div className="border-r border-b p-1 last:border-r-0" key={day}>
+                <span className="mt-1 block size-6 rounded-full bg-muted" />
+                <div className="min-h-[calc((var(--event-height)+var(--event-gap))*2)] sm:min-h-[calc((var(--event-height)+var(--event-gap))*3)] lg:min-h-[calc((var(--event-height)+var(--event-gap))*4)]" />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default function CalendarPage() {
@@ -133,27 +176,40 @@ export default function CalendarPage() {
   }
 
   const undated = tasks.filter((t) => !t.dueAt && t.status !== "done").length;
+  const overdue = tasks.filter((t) => isOverdue(t)).length;
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 pt-6 pb-16 sm:px-6 lg:px-8">
+    <div className="mx-auto w-full max-w-6xl px-4 pt-8 pb-16 sm:px-6 lg:px-10">
       <header className="mb-6">
-        <h1 className="font-planner text-[2rem] leading-tight font-semibold sm:text-[2.25rem]">Lịch</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Bấm vào task để sửa hoặc đổi hạn, bấm vào ô ngày để thêm task.
-          {undated > 0 && (
-            <>
-              {" "}
-              <Link to="/" className="font-medium text-foreground underline-offset-4 hover:underline">
-                {undated} task chưa có hạn
-              </Link>{" "}
-              không hiện trên lịch.
-            </>
-          )}
-        </p>
+        <h1 className="font-planner text-[1.75rem] leading-tight font-semibold">Lịch</h1>
+        {/* Một câu về dữ liệu của màn, không dạy cách bấm. */}
+        {tasksQuery.isSuccess && (
+          <p className="mt-1 text-sm text-muted-foreground">
+            {overdue > 0 ? (
+              <>
+                <Link to="/" className="font-medium text-overdue underline-offset-4 hover:underline">
+                  {overdue} việc quá hạn
+                </Link>{" "}
+                nằm trước hôm nay.
+              </>
+            ) : (
+              "Không có việc nào quá hạn."
+            )}
+            {undated > 0 && (
+              <>
+                {" "}
+                <Link to="/" className="font-medium text-foreground underline-offset-4 hover:underline">
+                  {undated} task chưa có hạn
+                </Link>{" "}
+                không hiện trên lịch.
+              </>
+            )}
+          </p>
+        )}
       </header>
 
       {tasksQuery.isPending ? (
-        <div aria-busy="true" aria-label="Đang tải lịch" className="h-[32rem] animate-pulse rounded-xl border bg-card" />
+        <CalendarSkeleton />
       ) : tasksQuery.isError ? (
         <div role="alert" className="flex flex-col items-center gap-3 rounded-xl border bg-card px-6 py-16 text-center">
           <CircleAlert className="size-8 text-destructive" aria-hidden="true" />

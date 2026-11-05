@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
+import { SHOW_COLLABORATION } from "@/lib/features";
 
 export interface UserSearchResult {
   user_id: string;
@@ -36,7 +37,8 @@ export function useUserSearch(query: string, enabled: boolean = true) {
 
       return (data || []) as UserSearchResult[];
     },
-    enabled: enabled && query.length >= 2,
+    // `/members/search` ngoài phạm vi (nhóm C): tắt khi không có cộng tác nhóm.
+    enabled: SHOW_COLLABORATION && enabled && query.length >= 2,
     staleTime: 30000, // Cache for 30 seconds
   });
 }

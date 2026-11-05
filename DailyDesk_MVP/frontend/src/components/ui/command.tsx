@@ -28,8 +28,8 @@ function Command({
 }
 
 function CommandDialog({
-  title = "Command Palette",
-  description = "Search for a command to run...",
+  title = "Tìm nhanh",
+  description = "Gõ để tìm trong sổ.",
   children,
   className,
   showCloseButton = true,

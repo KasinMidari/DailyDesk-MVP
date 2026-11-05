@@ -46,9 +46,8 @@ export function DeleteBoardDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Xoá board</AlertDialogTitle>
           <AlertDialogDescription>
-            Bạn chắc chắn muốn xoá <strong>"{boardName}"</strong>? This
-            action cannot be undone. All lists and cards in this board will be
-            permanently deleted.
+            Bạn chắc chắn muốn xoá <strong>"{boardName}"</strong>? Thao tác này
+            không hoàn tác được. Mọi danh sách và task trong board sẽ bị xoá vĩnh viễn.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -64,7 +63,7 @@ export function DeleteBoardDialog({
                 Đang xoá…
               </>
             ) : (
-              "Delete"
+              "Xoá board"
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

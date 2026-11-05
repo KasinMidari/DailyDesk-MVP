@@ -17,6 +17,15 @@ import {
 import PageLoader from "./components/full-page-loader";
 import { useUploadImage } from "@/hooks/use-image";
 import { useAuth0 } from "@/lib/auth";
+import { cn } from "@/lib/utils";
+
+/** Số cột chọn theo số board, để một board không để lại ba ô mồ côi. */
+function boardGrid(count: number) {
+  return cn(
+    "grid gap-4",
+    count === 1 ? "max-w-sm" : count === 2 ? "max-w-2xl sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
+  );
+}
 
 type BoardToEdit = {
   id: string;
@@ -189,11 +198,11 @@ export default function Home() {
 
   return (
     <Suspense fallback={<PageLoader />}>
-      <div className="flex flex-col w-full h-full mx-auto max-w-6xl px-4 pt-6 pb-20 gap-6 sm:px-6 lg:px-8 overflow-y-auto">
+      <div className="flex flex-col w-full h-full mx-auto max-w-6xl px-4 pt-8 pb-16 gap-6 sm:px-6 lg:px-10 overflow-y-auto">
         {/* Header with Search */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
           <div>
-            <h1 className="font-planner text-[2rem] leading-tight font-semibold text-foreground sm:text-[2.25rem]">
+            <h1 className="font-planner text-[1.75rem] leading-tight font-semibold text-foreground">
               Board
             </h1>
             <p className="mt-1 text-muted-foreground">
@@ -227,7 +236,7 @@ export default function Home() {
                 Mở gần đây
               </h2>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className={boardGrid(recentBoards.length)}>
               {recentBoards.map((board: any) => (
                 <div key={board.id}  onClick={() => handleBoardClick(board.id)}>
                   <BoardCard
@@ -262,7 +271,7 @@ export default function Home() {
         <section>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <h2 className="font-planner text-lg font-semibold text-foreground">
+              <h2 className="text-base font-semibold text-foreground">
                 Board của tôi
               </h2>
               <span className="text-xs text-muted-foreground tabular">{filteredOwnedBoards.length}</span>
@@ -279,7 +288,7 @@ export default function Home() {
               </Button>
             )}
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className={boardGrid(filteredOwnedBoards.length)}>
             {filteredOwnedBoards.length === 0 && (
               <div className="col-span-full rounded-xl border bg-card px-6 py-10 text-center">
                 <p className="font-medium">
@@ -357,7 +366,7 @@ export default function Home() {
                 </Button>
               )}
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className={boardGrid(filteredInvitedBoards.length)}>
               {filteredInvitedBoards.slice(0, 8).map((board: any) => (
                 <div key={board.id} className="relative" onClick={() => handleBoardClick(board.id)}>
                   <BoardCard

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { USE_MOCK } from "@/mocks/install";
@@ -53,25 +53,27 @@ function Check() {
 /** Bản xem trước tĩnh của một trang sổ: chỉ minh hoạ những gì app làm được. */
 function PlannerPreview() {
   return (
-    <div aria-hidden="true" className="planner-page signin-preview w-full max-w-sm rounded-md py-4 shadow-[0_24px_50px_-24px_oklch(0.1_0.05_292/0.7)]">
+    <div aria-hidden="true" className="planner-page signin-preview w-full max-w-md rounded-md py-4 shadow-[0_24px_50px_-24px_oklch(0.1_0.05_292/0.7)]">
       {PREVIEW.map((g) => (
         <div key={g.day} className="mb-2 last:mb-0">
-          <p className="font-planner pr-5 pb-1 pl-16 text-[15px] font-semibold">{g.day}</p>
+          {/* Tiêu đề ngày và tiêu đề việc cùng bắt đầu ở đường lề đỏ. */}
+          <p className="font-planner pr-5 pb-1 pl-[var(--planner-margin)] text-[15px] font-semibold">{g.day}</p>
           <ul className="border-t">
             {g.tasks.map((t) => (
-              <li key={t.title} data-status={t.status} className="signin-row flex h-11 items-center gap-3 border-b pr-4 pl-4">
+              <li
+                key={t.title}
+                data-status={t.status}
+                className="signin-row flex h-11 items-center gap-3 border-b pr-4 pl-[calc(var(--planner-margin)-2rem)]"
+              >
                 <span className="status-box signin-box" data-status={t.status}>
                   {t.status === "done" && <Check />}
                   {t.stampIn && <span className="signin-box-check"><Check /></span>}
                 </span>
-                <span className="ml-5 min-w-0 flex-1 truncate text-sm">
+                <span className="min-w-0 flex-1 truncate text-sm">
                   <span className={t.status === "done" ? "text-muted-foreground line-through" : "signin-title"}>{t.title}</span>
                 </span>
-                {t.status === "done" ? (
-                  <span className="stamp">XONG</span>
-                ) : t.stampIn ? (
-                  <span className="stamp signin-stamp">XONG</span>
-                ) : null}
+                {/* Con dấu chỉ đóng một lần, ở đúng việc vừa được tick. */}
+                {t.stampIn && <span className="stamp signin-stamp">XONG</span>}
                 {t.prio && !t.stampIn && (
                   <span className={`hl text-xs font-medium ${t.prio === "high" ? "hl-high" : "hl-medium"}`}>
                     {t.prio === "high" ? "Cao" : "Vừa"}
@@ -88,17 +90,60 @@ function PlannerPreview() {
 }
 
 export default function SignInScreen() {
-  const { loginWithRedirect } = useAuth();
+  const {
+    loginWithRedirect,
+    googleEnabled,
+    renderGoogleButton,
+    devLoginEnabled,
+    loginWithDev,
+    authFailed,
+  } = useAuth();
   const [pending, setPending] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState<string | null>(null);
+  const googleSlot = useRef<HTMLDivElement | null>(null);
+
+  // Không có Client ID thì nút Google chỉ có thể hỏng. Bản demo dùng dữ liệu
+  // mock nên nút giả ở đó vẫn đăng nhập được — chỉ chặn khi nối backend thật.
+  const googleUnconfigured = !USE_MOCK && !googleEnabled;
+
+  /** Nói đúng chỗ hỏng: máy chủ chưa chạy khác với thiếu cấu hình khác với mạng. */
+  const reasonOf = (e: unknown) => {
+    const msg = e instanceof Error ? e.message : "";
+    if (msg.includes("VITE_GOOGLE_CLIENT_ID")) {
+      return "Chưa cấu hình đăng nhập Google (thiếu VITE_GOOGLE_CLIENT_ID). Dùng tài khoản thử nghiệm hoặc đặt Client ID trong .env.local.";
+    }
+    if (msg.includes("Không kết nối được máy chủ")) {
+      return "Không gọi được máy chủ. Kiểm tra backend đã chạy chưa (pnpm --dir DailyDesk_MVP/backend dev).";
+    }
+    return msg || "Không đăng nhập được. Thử lại sau giây lát.";
+  };
+
+  // Backend thật: dùng nút Google chính thức thay nút giả.
+  useEffect(() => {
+    const el = googleSlot.current;
+    if (!googleEnabled || !el) return;
+    renderGoogleButton(el).catch((e) => setFailed(reasonOf(e)));
+  }, [googleEnabled, renderGoogleButton]);
 
   async function signIn() {
     setPending(true);
-    setFailed(false);
+    setFailed(null);
     try {
       await loginWithRedirect();
-    } catch {
-      setFailed(true);
+    } catch (e) {
+      setFailed(reasonOf(e));
+      setPending(false);
+    }
+  }
+
+  async function signInDev() {
+    setPending(true);
+    setFailed(null);
+    try {
+      // Trùng tài khoản của `pnpm db:seed` ở backend để thấy luôn dữ liệu mẫu.
+      await loginWithDev("dev@dailydesk.local", "Người dùng thử nghiệm");
+    } catch (e) {
+      setFailed(reasonOf(e));
       setPending(false);
     }
   }
@@ -114,8 +159,8 @@ export default function SignInScreen() {
           <ThemeToggle />
         </header>
 
-        <div className="flex flex-1 items-center py-12">
-          <div className="w-full max-w-sm">
+        <div className="flex flex-1 items-center pt-8 pb-12">
+          <div className="w-full max-w-md">
             <h1 className="font-planner text-balance text-[2.25rem] leading-[1.15] font-semibold sm:text-[2.6rem]">
               Mở sổ, xem hôm nay cần làm gì.
             </h1>
@@ -123,24 +168,47 @@ export default function SignInScreen() {
               Ghi việc, đặt hạn và mức ưu tiên, rồi tick dần từ Todo sang Done.
             </p>
 
-            <button
-              type="button"
-              onClick={signIn}
-              disabled={pending}
-              className="mt-8 flex h-12 w-full items-center justify-center gap-3 rounded-md border border-input bg-card px-4 text-[15px] font-medium text-card-foreground shadow-[0_1px_2px_oklch(0.3_0.05_80/0.12)] transition-[background-color,transform] duration-150 ease-out hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-px disabled:cursor-wait disabled:opacity-80"
-            >
-              {pending ? (
-                <Loader2 className="size-5 animate-spin text-muted-foreground" aria-hidden="true" />
-              ) : (
-                <GoogleMark />
-              )}
-              {pending ? "Đang kết nối với Google…" : "Tiếp tục với Google"}
-            </button>
+            {googleEnabled ? (
+              <div ref={googleSlot} className="mt-8 flex min-h-12 justify-start [color-scheme:light]" />
+            ) : (
+              <button
+                type="button"
+                onClick={signIn}
+                disabled={pending || googleUnconfigured}
+                aria-describedby={googleUnconfigured ? "google-note" : undefined}
+                className="mt-8 flex h-12 w-full items-center justify-center gap-3 rounded-md border border-input bg-card px-4 text-[15px] font-medium text-card-foreground transition-[background-color,transform] duration-150 ease-out hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {pending ? (
+                  <Loader2 className="size-5 animate-spin text-muted-foreground" aria-hidden="true" />
+                ) : (
+                  <GoogleMark />
+                )}
+                {pending ? "Đang kết nối với Google…" : "Tiếp tục với Google"}
+              </button>
+            )}
 
-            {failed && (
+            {googleUnconfigured && (
+              <p id="google-note" className="mt-2 text-sm text-muted-foreground">
+                Chưa đặt <code className="tabular">VITE_GOOGLE_CLIENT_ID</code> nên chưa đăng nhập Google được. Dùng tài
+                khoản thử nghiệm bên dưới.
+              </p>
+            )}
+
+            {devLoginEnabled && (
+              <button
+                type="button"
+                onClick={signInDev}
+                disabled={pending}
+                className="mt-3 flex h-10 items-center justify-center rounded-md border border-dashed border-input px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-wait disabled:opacity-80"
+              >
+                Đăng nhập tài khoản thử nghiệm
+              </button>
+            )}
+
+            {(failed || authFailed) && (
               <p role="alert" className="mt-4 flex items-start gap-2 rounded-md bg-destructive/10 px-3 py-2.5 text-sm text-destructive">
                 <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                Không đăng nhập được. Kiểm tra kết nối mạng rồi bấm lại nút ở trên.
+                {failed ?? "Không đăng nhập được. Thử lại sau giây lát."}
               </p>
             )}
 
@@ -160,7 +228,7 @@ export default function SignInScreen() {
 
       {/* Bìa sổ mực tím, kẹp một trang xem trước */}
       <aside className="hidden items-center justify-center bg-sidebar px-10 py-16 md:flex">
-        <div className="flex w-full max-w-sm flex-col gap-8">
+        <div className="flex w-full max-w-md flex-col gap-8">
           <p className="font-planner text-balance text-2xl leading-snug font-semibold text-sidebar-accent-foreground">
             Việc trễ hiện trước, việc xong được đóng dấu.
           </p>

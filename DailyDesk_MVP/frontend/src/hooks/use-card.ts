@@ -47,7 +47,8 @@ export function useUpdateCard() {
           listId: params.listId,
           labels: params.labels,
           members: params.members,
-          deadline: params.deadline?.toISOString(),
+          // `null` = bỏ hạn chót, nên phải giữ nguyên thay vì đổi thành undefined.
+          deadline: params.deadline === null ? null : params.deadline?.toISOString(),
           coverColor: params.coverColor,
           coverUrl: params.coverUrl,
           completed: params.completed,

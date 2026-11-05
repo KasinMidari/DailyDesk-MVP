@@ -222,7 +222,7 @@ export function CardComments({
                   Đang lưu…
                 </>
               ) : (
-                "Save"
+                "Lưu"
               )}
             </Button>
           </div>
@@ -310,7 +310,7 @@ export function CardComments({
                                   Đang lưu…
                                 </>
                               ) : (
-                                "Save"
+                                "Lưu"
                               )}
                             </Button>
                             <Button

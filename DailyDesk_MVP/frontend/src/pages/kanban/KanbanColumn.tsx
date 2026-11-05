@@ -77,11 +77,12 @@ export function KanbanColumn({
     prevCardCount.current = column.cards.length;
   }, [column.cards.length]);
 
+  // Cột cao hết canvas: "+ Thêm task" rơi xuống đáy thành footer của cột.
   return (
     <KanbanBoardColumn
       key={column.id}
       id={`list-${column.id}`}
-      className="max-h-full h-auto"
+      className="h-full"
       columnId={column.id}
       onDropOverColumn={onDropOverColumn}
       index={index}

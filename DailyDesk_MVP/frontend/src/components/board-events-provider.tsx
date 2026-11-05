@@ -1,4 +1,4 @@
-import { USE_MOCK } from "@/mocks/install";
+import { SHOW_REALTIME } from "@/lib/features";
 import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 import { useAtomValue } from "jotai";
@@ -32,8 +32,8 @@ export function BoardEventsProvider({
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    // Backend giả không có luồng sự kiện realtime.
-    if (USE_MOCK || !boardId || !accessToken || !queryClient) {
+    // Cả backend giả và backend thật đều chưa có luồng sự kiện realtime.
+    if (!SHOW_REALTIME || !boardId || !accessToken || !queryClient) {
       return;
     }
 

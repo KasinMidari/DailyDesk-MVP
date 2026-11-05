@@ -132,12 +132,12 @@
   - `POST /auth/dev` `{ email, name }` (chỉ khi `AUTH_DEV_LOGIN`, `googleSub = "dev|" + email`)
   - `GET /auth/me`
   - Gắn vào `app.ts`
-- [ ] T031 [US1] Viết lại phần cài đặt trong `DailyDesk_MVP/frontend/src/lib/auth.tsx`, giữ nguyên API hook (`isAuthenticated`, `isLoading`, `user`, `loginWithRedirect`, `logout`, `getAccessTokenSilently`):
+- [X] T031 [US1] Viết lại phần cài đặt trong `DailyDesk_MVP/frontend/src/lib/auth.tsx`, giữ nguyên API hook (`isAuthenticated`, `isLoading`, `user`, `loginWithRedirect`, `logout`, `getAccessTokenSilently`):
   - Khi `USE_MOCK` thì giữ bản giả lập hiện có
   - Khi không thì nạp `https://accounts.google.com/gsi/client`, `google.accounts.id.initialize({ client_id: VITE_GOOGLE_CLIENT_ID, callback })`; `loginWithRedirect` gọi `prompt()`, callback POST `/auth/google`, lưu `{ token, user }` vào localStorage `dailydesk-session`
   - `getAccessTokenSilently` trả token
   - `logout` xoá session
-- [ ] T032 [US1] Trong `DailyDesk_MVP/frontend/src/components/sign-in-screen.tsx`, khi không mock thì render nút Google chính thức (`google.accounts.id.renderButton`) thay cho nút giả, giữ dòng lỗi "Không đăng nhập được…" khi callback thất bại; ẩn đoạn "Bản demo…" khi không mock
+- [X] T032 [US1] Trong `DailyDesk_MVP/frontend/src/components/sign-in-screen.tsx`, khi không mock thì render nút Google chính thức (`google.accounts.id.renderButton`) thay cho nút giả, giữ dòng lỗi "Không đăng nhập được…" khi callback thất bại; ẩn đoạn "Bản demo…" khi không mock
 - [ ] T033 [US1] Tạo OAuth Client ID (Web) trên Google Cloud Console, Authorized JavaScript origins = `http://localhost:5173` + domain Vercel; điền `GOOGLE_CLIENT_ID` (Render) và `VITE_GOOGLE_CLIENT_ID` (Vercel)
 
 **Checkpoint**: Đăng nhập Google thật ở máy; T026, T027 xanh.
@@ -176,7 +176,7 @@
   - `getCard`
   - `listAllCardsForUser`: join lists/boards, `WHERE boards.user_id = :me`
 - [X] T040 [US2] `DailyDesk_MVP/backend/src/routes/boards.ts` + `routes/lists.ts` + `routes/cards.ts` (phần GET/POST) theo nhóm A của `contracts/api.md`; **khai báo `GET /boards/cards/all` trước `GET /boards/:id`**; tất cả đi qua `requireUser`
-- [ ] T041 [US2] Bật dữ liệu thật ở máy: `DailyDesk_MVP/frontend/.env.local` với `VITE_USE_MOCK=false`; chạy luồng thêm task ở màn "Việc của tôi" (`src/features/tasks/tasks-page.tsx`) và trang Board. Sửa chỗ lệch hình dạng JSON ở backend (không sửa frontend) cho tới khi khớp
+- [X] T041 [US2] Bật dữ liệu thật ở máy: `DailyDesk_MVP/frontend/.env.local` với `VITE_USE_MOCK=false`; chạy luồng thêm task ở màn "Việc của tôi" (`src/features/tasks/tasks-page.tsx`) và trang Board. Sửa chỗ lệch hình dạng JSON ở backend (không sửa frontend) cho tới khi khớp
 
 **Checkpoint**: T034, T035 xanh; thêm/xem task chạy với backend thật.
 
@@ -190,7 +190,7 @@
 
 - [X] T042 [P] [US3] Thêm vào `DailyDesk_MVP/backend/tests/cards.test.ts`: `PUT …/cards/{id}` `{ listId: doneListId }` → `completed = true`, `dueComplete = true`; chuyển về Todo → `false`; `listId` thuộc board khác → 400/404
 - [X] T043 [US3] Trong `DailyDesk_MVP/backend/src/services/cards.ts` viết `moveCard`/phần `listId` của `updateCard`: kiểm list cùng board; đặt `completed`/`due_complete` theo `statusFromList(list.name)` (todo mặc định; doing: `doing`/`đang làm`/`in progress`; done: `done`/`xong`/`đã xong`/`hoàn thành`); ghi activity `card.moved`
-- [ ] T044 [US3] `PUT /boards/:boardId/cards/:id` trong `DailyDesk_MVP/backend/src/routes/cards.ts` gọi `updateCard`; kiểm thủ công menu trạng thái ở "Việc của tôi", ô đánh dấu xong và menu "Chuyển sang …" trên Board với backend thật
+- [X] T044 [US3] `PUT /boards/:boardId/cards/:id` trong `DailyDesk_MVP/backend/src/routes/cards.ts` gọi `updateCard`; kiểm thủ công menu trạng thái ở "Việc của tôi", ô đánh dấu xong và menu "Chuyển sang …" trên Board với backend thật
 - [ ] T045 [US3] Deploy bản có US1–US3: trên Vercel đặt `VITE_USE_MOCK=false`, `VITE_BACKEND_URL=https://<render>`; chạy bước 1–3 của `quickstart.md` trên link thật
 
 **Checkpoint (trưa 04/11)**: luồng chính P1 chạy end-to-end trên bản deploy. **MVP đạt yêu cầu đề bài.**
@@ -244,12 +244,12 @@
 
 **Independent Test**: Mở hộp thoại chi tiết của một task, thêm việc con, nhãn, bình luận; tải lại vẫn còn; ô tìm kiếm trên header tìm ra task.
 
-- [ ] T051 [P] [US6] `DailyDesk_MVP/backend/src/routes/due.ts`: `PATCH`/`DELETE /boards/:boardId/cards/:cardId/due` theo `contracts/api.md`; `startDate ≤ dueAt`
-- [ ] T052 [P] [US6] `DailyDesk_MVP/backend/src/routes/checklist.ts` + service: CRUD `…/checklist-items`, `name` 1–200, trả `members: []`
-- [ ] T053 [P] [US6] `DailyDesk_MVP/backend/src/routes/labels.ts` + service: CRUD `/users/:userId/labels` (bỏ qua `:userId`, luôn là người gọi), `color` `#RRGGBB`, `name` ≤ 50
-- [ ] T054 [P] [US6] `DailyDesk_MVP/backend/src/routes/comments.ts` + service: CRUD comments (`content` 1–5000, chỉ tác giả sửa hoặc xoá, nếu không thì 403), `GET …/activities`, `GET …/timeline` (mới nhất trước, có `type`)
-- [ ] T055 [P] [US6] `DailyDesk_MVP/backend/src/routes/search.ts`: `GET /search?q=&types=&boardId=&limit=` cho `board`/`list`/`card`, so khớp bỏ dấu tiếng Việt, chỉ dữ liệu của người gọi
-- [ ] T056 [US6] Trong `DailyDesk_MVP/frontend/src/lib/features.ts` thêm `SHOW_TEMPLATES`, `SHOW_ATTACHMENTS`, `SHOW_COVER_UPLOAD` = `USE_MOCK`, rồi bọc các nút tương ứng:
+- [X] T051 [P] [US6] `DailyDesk_MVP/backend/src/routes/due.ts`: `PATCH`/`DELETE /boards/:boardId/cards/:cardId/due` theo `contracts/api.md`; `startDate ≤ dueAt`
+- [X] T052 [P] [US6] `DailyDesk_MVP/backend/src/routes/checklist.ts` + service: CRUD `…/checklist-items`, `name` 1–200, trả `members: []`
+- [X] T053 [P] [US6] `DailyDesk_MVP/backend/src/routes/labels.ts` + service: CRUD `/users/:userId/labels` (bỏ qua `:userId`, luôn là người gọi), `color` `#RRGGBB`, `name` ≤ 50
+- [X] T054 [P] [US6] `DailyDesk_MVP/backend/src/routes/comments.ts` + service: CRUD comments (`content` 1–5000, chỉ tác giả sửa hoặc xoá, nếu không thì 403), `GET …/activities`, `GET …/timeline` (mới nhất trước, có `type`)
+- [X] T055 [P] [US6] `DailyDesk_MVP/backend/src/routes/search.ts`: `GET /search?q=&types=&boardId=&limit=` cho `board`/`list`/`card`, so khớp bỏ dấu tiếng Việt, chỉ dữ liệu của người gọi
+- [X] T056 [US6] Trong `DailyDesk_MVP/frontend/src/lib/features.ts` thêm `SHOW_TEMPLATES`, `SHOW_ATTACHMENTS`, `SHOW_COVER_UPLOAD` = `USE_MOCK`, rồi bọc các nút tương ứng:
   - "Mẫu board" ở `src/components/app-sidebar.tsx`
   - "Đính kèm" ở `src/components/card-edit-dialog/card-edit-dialog.tsx`
   - nút đổi ảnh bìa ở `card-edit-dialog.tsx`

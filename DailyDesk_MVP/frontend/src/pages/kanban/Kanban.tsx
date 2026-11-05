@@ -14,7 +14,6 @@ import { useUploadImage } from "@/hooks/use-image";
 import type { Card as CardType } from "@/types/card";
 import { EventCalendar, type CalendarEvent } from "@/components/event-calendar";
 import { listsCardsToCalendarEvents } from "@/components/event-calendar/utils";
-import { Button } from "@/components/ui/button";
 import { useAtom, useSetAtom } from "jotai";
 import { useDraggableScroll } from "@/hooks/use-draggable-scroll";
 import { useEffect, useState, useMemo } from "react";
@@ -34,7 +33,7 @@ import { useSearchParams, useParams } from "react-router";
 import { BoardEventsProvider } from "@/components/board-events-provider";
 import { useQueryClient } from "@tanstack/react-query";
 import { uuidv7 } from "uuidv7";
-import { request, statusFromList, STATUS_LABEL, type Status } from "@/features/tasks/api";
+import { request, statusFromList, STATUS_TEXT, type Status } from "@/features/tasks/api";
 
 interface KanbanProps {
   boardId?: string;
@@ -85,12 +84,12 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
   // Otherwise, we'll need to pass the userId for now (owner display in members list)
   const ownerInfo = isOwner && currentUser ? {
     userId: currentUser.sub!,
-    name: currentUser.name || currentUser.nickname || currentUser.email || "Owner",
+    name: currentUser.name || currentUser.nickname || currentUser.email || "Chủ board",
     email: currentUser.email || "",
     avatar: currentUser.picture || null,
   } : board?.userId ? {
     userId: board.userId,
-    name: "Board Owner",
+    name: "Chủ board",
     email: "",
     avatar: null,
   } : undefined;
@@ -536,7 +535,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
       .find((l) => statusFromList(l.name) === status);
     if (!target) {
-      toast.error(`Board này chưa có danh sách ${STATUS_LABEL[status]}`, { position: "bottom-left" });
+      toast.error(`Board này chưa có danh sách ${STATUS_TEXT[status]}`, { position: "bottom-left" });
       return;
     }
     handleMoveCardTo(cardId, target.id);
@@ -602,25 +601,48 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
     );
   };
 
+  // Câu dữ liệu dưới H1. "Xong" tính theo danh sách Done — đúng thứ ô tick trên thẻ nói.
   const totalCards = lists.reduce((acc, list) => acc + list.cards.length, 0);
-  const doneCards = lists.reduce((acc, list) => {
-    return acc + list.cards.filter((card) => card.completed).length;
+  const doneCards = lists.reduce(
+    (acc, list) => (statusFromList(list.name) === "done" ? acc + list.cards.length : acc),
+    0,
+  );
+  const overdueCards = lists.reduce((acc, list) => {
+    if (statusFromList(list.name) === "done") return acc;
+    return (
+      acc +
+      list.cards.filter((card) => {
+        const due = (card as { dueAt?: string | null; deadline?: string | null }).dueAt ??
+          (card as { deadline?: string | null }).deadline;
+        return !!due && new Date(due).getTime() < Date.now();
+      }).length
+    );
   }, 0);
-  const progress = totalCards === 0 ? 0 : (doneCards / totalCards) * 100;
 
   const isCalendarView = viewMode === "calendar";
+
+  /** Nút chính của màn: thêm task vào danh sách đầu tiên. */
+  const handleOpenAddTask = () => {
+    if (!lists.length) {
+      toast.error("Hãy tạo danh sách trước", { position: "bottom-left" });
+      return;
+    }
+    setCalendarCreateDate(null);
+    setIsCalendarCreateOpen(true);
+  };
 
   return (
     <BoardEventsProvider boardId={boardId || ""}>
       <KanbanBoardProvider>
       <div
-        className={`relative w-full h-full flex-1 flex flex-col overflow-hidden bg-background ${isCalendarView ? "" : "p-4 pt-5"}`}
+        className="relative flex h-full w-full flex-1 flex-col overflow-hidden bg-background"
           style={{
             // Màu của board chỉ còn là mép bìa sổ ở trên cùng; nền luôn là trang giấy.
             boxShadow: `inset 0 6px 0 ${board.backgroundColor || "var(--ink)"}`,
           }}
         >
-          {!isCalendarView && (
+          {/* Lề canvas dùng chung với màn "Việc của tôi"; board cao hết khung nên đáy chỉ cần một nhịp. */}
+          <div className="mx-auto flex w-full max-w-6xl min-h-0 flex-1 flex-col overflow-hidden px-4 pt-8 pb-6 sm:px-6 lg:px-10">
             <BoardHeaderBar
               boardId={boardId || ""}
               boardName={board.name}
@@ -634,48 +656,30 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
               filters={filters}
               onFiltersChange={setFilters}
               onEditBoard={() => setIsEditBoardOpen(true)}
-              progress={progress}
+              doneCards={doneCards}
+              totalCards={totalCards}
+              overdueCards={overdueCards}
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+              onAddTask={handleOpenAddTask}
             />
-          )}
-          <div className="fixed bottom-4 left-1/2 z-30 -translate-x-1/2">
-            <div role="group" aria-label="Chế độ xem" className="inline-flex items-center gap-1 rounded-lg border bg-card p-1 shadow-[0_1px_2px_rgb(0_0_0/0.06)]">
-              <Button
-                variant={viewMode === "kanban" ? "default" : "ghost"}
-                size="sm"
-                className="h-8 px-3 text-sm"
-                onClick={() => setViewMode("kanban")}
-              >
-                Kanban
-              </Button>
-              <Button
-                variant={viewMode === "calendar" ? "default" : "ghost"}
-                size="sm"
-                className="h-8 px-3 text-sm"
-                onClick={() => setViewMode("calendar")}
-              >
-                Lịch
-              </Button>
-            </div>
-          </div>
           {isCalendarView ? (
-            <div className="absolute inset-0 z-20 overflow-y-auto">
-              <div className="min-h-full w-full bg-background">
-                <EventCalendar
-                  events={calendarEvents}
-                  initialView="month"
-                  boardId={boardId || ""}
-                  lists={lists.map((list) => ({ id: list.id, title: list.name }))}
-                  onEventAdd={handleEventAdd}
-                  onEventUpdate={handleEventUpdate}
-                  onEventDelete={handleEventDelete}
-                  createLabel="Thêm task"
-                  onCreateClick={handleOpenCalendarCreate}
-                  onEventSelect={handleCalendarEventSelect}
-                />
-              </div>
+            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+              <EventCalendar
+                events={calendarEvents}
+                initialView="month"
+                boardId={boardId || ""}
+                lists={lists.map((list) => ({ id: list.id, title: list.name }))}
+                onEventAdd={handleEventAdd}
+                onEventUpdate={handleEventUpdate}
+                onEventDelete={handleEventDelete}
+                createLabel="Thêm task"
+                onCreateClick={handleOpenCalendarCreate}
+                onEventSelect={handleCalendarEventSelect}
+              />
             </div>
           ) : (
-            <KanbanBoard ref={scrollRef} {...dragEvents} className="pb-24 flex-1 overflow-x-auto overflow-y-auto items-start">
+            <KanbanBoard ref={scrollRef} {...dragEvents} className="min-h-0 flex-1 items-stretch overflow-x-auto overflow-y-hidden">
               {filteredLists.map((column, index) => (
                 <KanbanColumn
                   key={column.id}
@@ -704,6 +708,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
               <KanbanBoardExtraMargin />
             </KanbanBoard>
           )}
+          </div>
 
           <CardEditDialog
             card={selectedCard}
@@ -728,7 +733,8 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
             onSave={handleBoardUpdate}
           />
 
-          {isCalendarView && boardId && lists.length > 0 && (
+          {/* Dùng cho cả hai chế độ xem: nút "Thêm task" ở title row và ô ngày trên lịch. */}
+          {boardId && lists.length > 0 && (
             <CardCreateDialog
               boardId={boardId}
               listId={lists[0].id}

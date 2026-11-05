@@ -269,8 +269,8 @@ export function LabelManager({ members, creatorId, currentUserId }: LabelManager
             </DialogTitle>
             <DialogDescription>
               {dialogMode === "create"
-                ? "Add a new label to organize your cards."
-                : "Update the label name and color."}
+                ? "Tạo nhãn mới để phân loại task."
+                : "Đổi tên hoặc màu của nhãn."}
             </DialogDescription>
           </DialogHeader>
 

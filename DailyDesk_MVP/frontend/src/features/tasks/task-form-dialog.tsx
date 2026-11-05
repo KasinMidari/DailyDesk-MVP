@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { CalendarDays, Loader2 } from "lucide-react";
+import { CalendarDays, ChevronDown, Loader2 } from "lucide-react";
 import { vi } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   PRIORITY_LABEL,
-  STATUS_LABEL,
+  STATUS_TEXT,
   STATUS_ORDER,
   type BoardSummary,
   type Priority,
@@ -92,7 +92,7 @@ function Field({
 }
 
 const inputClass =
-  "h-10 w-full rounded-md border border-input bg-card px-3 text-[15px] shadow-[inset_0_1px_0_rgb(0_0_0/0.02)] outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground/80 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/25 aria-invalid:border-destructive aria-invalid:ring-destructive/20";
+  "h-10 w-full rounded-md border border-input bg-card px-3 text-[15px] shadow-[inset_0_1px_0_rgb(0_0_0/0.02)] outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/25 aria-invalid:border-destructive aria-invalid:ring-destructive/20";
 
 export function Segmented<T extends string>({
   name,
@@ -108,7 +108,12 @@ export function Segmented<T extends string>({
   tone?: (v: T) => string;
 }) {
   return (
-    <div role="radiogroup" aria-label={name} className="grid auto-cols-fr grid-flow-col gap-1 rounded-md border border-input bg-muted p-1">
+    // Rộng bằng các lựa chọn của nó; chỉ kéo full-width dưới 480px.
+    <div
+      role="radiogroup"
+      aria-label={name}
+      className="inline-grid auto-cols-max grid-flow-col justify-self-start gap-1 rounded-md border border-input bg-muted p-1 max-[480px]:grid max-[480px]:auto-cols-fr max-[480px]:justify-self-stretch"
+    >
       {options.map((o) => {
         const active = o.value === value;
         const v = o.value as string;
@@ -122,8 +127,8 @@ export function Segmented<T extends string>({
             aria-checked={active}
             onClick={() => onChange(o.value)}
             className={cn(
-              "flex h-8 items-center justify-center gap-2 rounded text-sm font-medium text-muted-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              active ? "bg-card text-foreground shadow-[0_1px_2px_oklch(0.3_0.04_80/0.15)] ring-1 ring-ink/40" : "hover:text-foreground",
+              "flex h-8 items-center justify-center gap-2 rounded px-4 text-sm font-medium text-muted-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              active ? "bg-card text-foreground ring-1 ring-ink/40" : "hover:text-foreground",
             )}
           >
             {isStatus && (
@@ -255,7 +260,8 @@ export default function TaskFormDialog({
               />
             </Field>
 
-            <Field label="Mô tả" htmlFor={`${id}-desc`} error={errors.description} hint={description ? `${description.length}/2000` : "Không bắt buộc"}>
+            {/* Hint "Không bắt buộc" chỉ xuất hiện một lần, ở trường Hạn chót ngay dưới. */}
+            <Field label="Mô tả" htmlFor={`${id}-desc`} error={errors.description} hint={description ? `${description.length}/2000` : undefined}>
               <textarea
                 id={`${id}-desc`}
                 value={description}
@@ -285,7 +291,7 @@ export default function TaskFormDialog({
                       {date ? (
                         formatShort(new Date(`${date}T00:00`))
                       ) : (
-                        <span className="text-muted-foreground/80">Chọn ngày</span>
+                        <span className="text-muted-foreground">Chọn ngày</span>
                       )}
                     </button>
                   </PopoverTrigger>
@@ -336,25 +342,32 @@ export default function TaskFormDialog({
                 name="Trạng thái"
                 value={status}
                 onChange={setStatus}
-                options={STATUS_ORDER.map((s) => ({ value: s, label: STATUS_LABEL[s] }))}
+                options={STATUS_ORDER.map((s) => ({ value: s, label: STATUS_TEXT[s] }))}
                 tone={(s) => STATUS_DOT[s]}
               />
             </Field>
 
             {isNew && boards.length > 1 && (
               <Field label="Lưu vào board" htmlFor={`${id}-board`} error={errors.boardId}>
-                <select
-                  id={`${id}-board`}
-                  value={boardId}
-                  onChange={(e) => setBoardId(e.target.value)}
-                  className={cn(inputClass, "appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22 fill=%22none%22 stroke=%22%23667085%22 stroke-width=%221.6%22><path d=%22M4 6l4 4 4-4%22/></svg>')] bg-[length:16px] bg-[right_0.75rem_center] bg-no-repeat pr-9")}
-                >
-                  {boards.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name}
-                    </option>
-                  ))}
-                </select>
+                {/* Mũi tên vẽ bằng icon theo currentColor, không phải SVG mã cứng một màu. */}
+                <div className="relative">
+                  <select
+                    id={`${id}-board`}
+                    value={boardId}
+                    onChange={(e) => setBoardId(e.target.value)}
+                    className={cn(inputClass, "appearance-none pr-9")}
+                  >
+                    {boards.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    aria-hidden="true"
+                    className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground"
+                  />
+                </div>
               </Field>
             )}
 

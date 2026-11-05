@@ -5,14 +5,22 @@ import store from "@/stores/store";
 import { accessTokenAtom } from "@/stores/access-token";
 import { getAccessTokenFnAtom } from "@/stores/auth";
 import createQueryClient from "openapi-react-query";
+import { apiErrorFrom, ApiError, fallbackMessage } from "@/lib/api-error";
 
 const api = createClient<paths>({
   baseUrl: getConfig().backendUrl,
   // Gọi qua window.fetch tại thời điểm request để backend giả (src/mocks) chặn được.
-  fetch: (request) => globalThis.fetch(request),
+  fetch: async (request) => {
+    try {
+      return await globalThis.fetch(request);
+    } catch {
+      throw new ApiError(0, fallbackMessage(0));
+    }
+  },
 });
 const queryApi = createQueryClient(api);
 
+/** Gắn `Authorization: Bearer`, thử lại một lần khi 401, và dịch lỗi sang tiếng Việt. */
 const accessTokenInjectMiddleware: Middleware = {
   async onRequest({ request }) {
     const accessToken = store.get(accessTokenAtom);
@@ -23,58 +31,30 @@ const accessTokenInjectMiddleware: Middleware = {
   },
 
   async onResponse({ response, request }) {
-    // 1. Check for Unauthorized/Forbidden status
-    // Note: Axios code checked 403, your target code checked 401.
-    // I've included both to be safe.
-    if (response.status === 401 || response.status === 403) {
+    // Token hết hạn: lấy token mới rồi gửi lại. Chỉ thử khi token thực sự khác
+    // token vừa dùng, nên không có vòng lặp (và không cần header lạ qua CORS).
+    if (response.status === 401) {
+      const used = request.headers.get("Authorization")?.replace(/^Bearer\s+/i, "") ?? "";
       const refresher = store.get(getAccessTokenFnAtom);
-
-      // Ensure we haven't already retried this specific request to prevent loops
-      // (We detect this by checking if the Authorization header matches the *current* store token
-      // or simply by trusting the refresher not to fail infinitely)
       if (refresher) {
         try {
-          // 2. Call the refresh function
           const newAccessToken = await refresher();
-
-          if (newAccessToken) {
-            // Update old access token
+          if (newAccessToken && newAccessToken !== used) {
             store.set(accessTokenAtom, newAccessToken);
-            // 3. Create a new request based on the original
-            // We clone the headers to ensure we don't mutate the old request incorrectly
-            const newHeaders = new Headers(request.headers);
-            newHeaders.set("Authorization", `Bearer ${newAccessToken}`);
-
-            // 4. Retry the request with the new token
-            const retryResponse = await fetch(request.url, {
-              ...request,
-              method: request.method,
-              headers: newHeaders,
-              body: request.body,
-            });
-
-            return retryResponse;
+            const retry = request.clone();
+            retry.headers.set("Authorization", `Bearer ${newAccessToken}`);
+            const retryResponse = await globalThis.fetch(retry);
+            if (retryResponse.status < 400) return retryResponse;
+            throw await apiErrorFrom(retryResponse);
           }
         } catch (refreshError) {
-          // If refresh fails, we fall through to return the original error response
-          console.error("Token refresh failed", refreshError);
+          if (refreshError instanceof ApiError) throw refreshError;
+          console.error("Không lấy được token mới", refreshError);
         }
       }
     }
 
-    // 5. Global Error Handling (from your target code)
-    if (response.status >= 400) {
-      // Optional: Parse JSON safely to avoid crashing if response isn't JSON
-      let errorMessage = "Unknown error";
-      try {
-        const errorData = await response.clone().json();
-        errorMessage = errorData.message || errorMessage;
-      } catch {
-        errorMessage = await response.text();
-      }
-
-      throw new Error(`Error happened, detail: ${errorMessage}`);
-    }
+    if (response.status >= 400) throw await apiErrorFrom(response);
 
     return response;
   },

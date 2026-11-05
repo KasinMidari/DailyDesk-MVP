@@ -7,7 +7,7 @@ import {
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import type { MouseEvent } from "react";
 import { Link } from "react-router";
-import { statusFromList } from "@/features/tasks/api";
+import { STATUS_TEXT, statusFromList } from "@/features/tasks/api";
 import { cn } from "@/lib/utils";
 
 type ListLike = { name: string; cards?: unknown[] };
@@ -67,7 +67,8 @@ export function BoardCard({
         )}
       >
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-planner line-clamp-2 text-base font-semibold leading-snug">{title}</h3>
+          {/* Literata chỉ dành cho H1 của màn và tiêu đề nhóm ngày. */}
+          <h3 className="line-clamp-2 text-base font-semibold leading-snug">{title}</h3>
           {(onEdit || onDelete) && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild onClick={stop}>
@@ -102,9 +103,9 @@ export function BoardCard({
               "Chưa có task"
             ) : (
               <>
-                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-status-todo" aria-hidden="true" />{counts.todo} Todo</span>
-                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-status-doing" aria-hidden="true" />{counts.doing} Doing</span>
-                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-status-done" aria-hidden="true" />{counts.done} Done</span>
+                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-status-todo" aria-hidden="true" />{counts.todo} {STATUS_TEXT.todo}</span>
+                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-status-doing" aria-hidden="true" />{counts.doing} {STATUS_TEXT.doing}</span>
+                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-status-done" aria-hidden="true" />{counts.done} {STATUS_TEXT.done}</span>
               </>
             )}
           </p>

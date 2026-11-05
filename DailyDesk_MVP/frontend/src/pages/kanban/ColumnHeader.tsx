@@ -14,6 +14,7 @@ import {
 import { useAtom } from "jotai";
 import { editingListIdAtom, editingListTitleAtom } from "./atoms";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
+import { listDisplayName } from "@/features/tasks/api";
 
 interface ColumnHeaderProps {
   columnId: string;
@@ -44,7 +45,8 @@ export function ColumnHeader({
 
   const startEditing = () => {
     setEditingListId(columnId);
-    setEditingListTitle(columnName);
+    // Ô sửa mở ra đúng chữ đang thấy trên đầu cột, không phải tên tiếng Anh ở dưới dữ liệu.
+    setEditingListTitle(listDisplayName(columnName));
   };
 
   const cancelEdit = () => {
@@ -62,7 +64,7 @@ export function ColumnHeader({
   const handleDelete = async () => {
     const confirmed = await confirm({
       title: "Xoá danh sách này?",
-      description: `Danh sách "${columnName}" và ${cardCount} task trong đó sẽ bị xoá.`,
+      description: `Danh sách "${listDisplayName(columnName)}" và ${cardCount} task trong đó sẽ bị xoá.`,
       confirmText: "Xoá danh sách",
       cancelText: "Giữ lại",
       variant: "destructive"
@@ -102,14 +104,14 @@ export function ColumnHeader({
   return (
     <>
       <KanbanBoardColumnTitle columnId={columnId}>
-        {columnName}
+        {listDisplayName(columnName)}
         <span className="ml-2 text-xs font-normal text-muted-foreground tabular">{cardCount}</span>
       </KanbanBoardColumnTitle>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            aria-label={`Thao tác với danh sách ${columnName}`}
+            aria-label={`Thao tác với danh sách ${listDisplayName(columnName)}`}
             className="grid size-8 place-items-center rounded-md text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
           >
             <MoreHorizontal className="size-4" />

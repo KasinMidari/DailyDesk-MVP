@@ -2,21 +2,25 @@ import { and, asc, eq, inArray, max } from "drizzle-orm";
 import { uuidv7 } from "uuidv7";
 import type { z } from "zod";
 import type { Db } from "../db/client.js";
-import { activities, boards, cardLabels, cards, labels, lists } from "../db/schema.js";
+import { boards, cardLabels, cards, labels, lists } from "../db/schema.js";
 import { HttpError, nowIso } from "../http.js";
-import { assertDueNotPast, MSG, type createCardSchema, type updateCardSchema } from "../validation.js";
-import { requireBoard, requireCard, statusFromList } from "./access.js";
+import {
+  assertDueNotPast,
+  MSG,
+  type createCardSchema,
+  type updateCardSchema,
+  type updateDueSchema,
+} from "../validation.js";
+import { listDisplayName, requireBoard, requireCard, statusFromList } from "./access.js";
+import { logActivity } from "./activity.js";
 import { labelsByCard } from "./boards.js";
 import { cardJson } from "./serialize.js";
 
 type CreateInput = z.output<typeof createCardSchema>;
 type UpdateInput = z.output<typeof updateCardSchema>;
+type DueInput = z.output<typeof updateDueSchema>;
 
 const bool = (v: boolean | null | undefined) => (v ? 1 : 0);
-
-async function logActivity(db: Db, cardId: string, userId: string, actionType: string, description: string) {
-  await db.insert(activities).values({ id: uuidv7(), cardId, userId, actionType, description, createdAt: nowIso() });
-}
 
 /** List đích phải nằm trong đúng board của đường dẫn. */
 async function listInBoard(db: Db, boardId: string, listId: string) {
@@ -93,7 +97,7 @@ export async function createCard(db: Db, userId: string, boardId: string, input:
     })
     .returning();
   if (input.labels?.length) await setLabels(db, userId, id, input.labels.map((l) => l.id));
-  await logActivity(db, id, userId, "card.created", `đã tạo task trong ${list.name}`);
+  await logActivity(db, id, userId, "card.created", `đã tạo task trong ${listDisplayName(list.name)}`);
   return toJson(db, row!);
 }
 
@@ -182,7 +186,14 @@ export async function updateCard(db: Db, userId: string, boardId: string, cardId
   const [row] = await db.update(cards).set(patch).where(eq(cards.id, cardId)).returning();
   if (input.labels !== undefined) await setLabels(db, userId, cardId, (input.labels ?? []).map((l) => l.id));
 
-  if (movedTo) await logActivity(db, cardId, userId, "card.moved", `đã chuyển từ ${list.name} sang ${movedTo}`);
+  if (movedTo)
+    await logActivity(
+      db,
+      cardId,
+      userId,
+      "card.moved",
+      `đã chuyển từ ${listDisplayName(list.name)} sang ${listDisplayName(movedTo)}`,
+    );
   if (input.name !== undefined && input.name !== card.name) {
     await logActivity(db, cardId, userId, "card.renamed", `đã đổi tên thành "${input.name}"`);
   }
@@ -196,4 +207,63 @@ export async function deleteCard(db: Db, userId: string, boardId: string, cardId
   await requireCard(db, userId, boardId, cardId);
   await db.delete(cards).where(eq(cards.id, cardId));
   return { message: "Đã xoá task" };
+}
+
+/** Hình dạng response của nhóm hạn chót (contracts/api.md nhóm B). */
+function dueJson(c: typeof cards.$inferSelect) {
+  return {
+    startDate: c.startDate,
+    dueAt: c.dueAt,
+    deadline: c.dueAt,
+    dueComplete: c.dueComplete === 1,
+    reminderMinutes: c.reminderMinutes,
+    repeatFrequency: c.repeatFrequency,
+    repeatInterval: c.repeatInterval,
+  };
+}
+
+/** PATCH …/due: chỉ sửa nhóm trường ngày; `dueComplete` kéo theo `completed`. */
+export async function updateDue(db: Db, userId: string, boardId: string, cardId: string, input: DueInput) {
+  const { card } = await requireCard(db, userId, boardId, cardId);
+  const patch: Partial<typeof cards.$inferInsert> = {};
+
+  const nextDue = input.dueAt !== undefined ? input.dueAt : input.deadline;
+  if (nextDue !== undefined) {
+    assertDueNotPast(nextDue, card.dueAt);
+    patch.dueAt = nextDue;
+  }
+  if (input.startDate !== undefined) patch.startDate = input.startDate;
+  assertStartBeforeDue(patch.startDate ?? card.startDate, patch.dueAt !== undefined ? patch.dueAt : card.dueAt);
+
+  if (input.reminderMinutes !== undefined) patch.reminderMinutes = input.reminderMinutes;
+  if (input.repeatFrequency !== undefined) patch.repeatFrequency = input.repeatFrequency;
+  if (input.repeatInterval !== undefined) patch.repeatInterval = input.repeatInterval;
+  if (input.dueComplete !== undefined && input.dueComplete !== null) {
+    patch.dueComplete = bool(input.dueComplete);
+    patch.completed = bool(input.dueComplete);
+  }
+
+  patch.updatedAt = nowIso();
+  const [row] = await db.update(cards).set(patch).where(eq(cards.id, cardId)).returning();
+  await logActivity(db, cardId, userId, "card.due.updated", "đã cập nhật hạn hoàn thành");
+  return dueJson(row!);
+}
+
+/** DELETE …/due: xoá mọi trường ngày. Giữ nguyên `completed` (trạng thái do list quyết định). */
+export async function clearDue(db: Db, userId: string, boardId: string, cardId: string) {
+  const { card } = await requireCard(db, userId, boardId, cardId);
+  await db
+    .update(cards)
+    .set({
+      startDate: null,
+      dueAt: null,
+      reminderMinutes: null,
+      repeatFrequency: null,
+      repeatInterval: null,
+      dueComplete: card.completed,
+      updatedAt: nowIso(),
+    })
+    .where(eq(cards.id, cardId));
+  await logActivity(db, cardId, userId, "card.due.removed", "đã xoá hạn hoàn thành");
+  return { message: "Đã xoá hạn" };
 }

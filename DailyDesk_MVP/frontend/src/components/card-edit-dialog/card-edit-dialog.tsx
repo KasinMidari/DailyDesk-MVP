@@ -1,6 +1,5 @@
-import { SHOW_CARD_TEMPLATES } from "@/lib/features";
+import { SHOW_ATTACHMENTS, SHOW_CARD_TEMPLATES, SHOW_COVER_UPLOAD } from "@/lib/features";
 import { formatDue } from "@/lib/date";
-import CardMetaControls from "@/features/tasks/card-meta-controls";
 import { SHOW_COLLABORATION } from "@/lib/features";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -14,9 +13,17 @@ import { CardMembers } from "./card-members";
 import { CardComments } from "./card-comments";
 import { CardLabels } from "./card-labels";
 import { CardDates } from "./card-dates";
+import { CardField, CardPriorityField, CardStatusField } from "./card-fields";
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useUpdateDue } from "@/hooks/use-due";
+import {
+  request,
+  statusFromList,
+  STATUS_LABEL,
+  type Priority,
+  type Status,
+} from "@/features/tasks/api";
 import { useUpdateCard, useCreateCard } from "@/hooks/use-card";
 import { useAddComment } from "@/hooks/use-comments";
 import { BackgroundPickerProvider } from "@/components/background-picker-provider";
@@ -83,23 +90,27 @@ export function CardEditDialog({
     return result.secure_url || "";
   };
 
-  // For create mode, use a temporary card object with default values
-  const tempCard: Card = card || {
-    id: "",
-    title: "",
-    description: "",
-    listId: listId || "",
-    position: order || 0,
-    order: order || 0,
-    labels: [],
-    members: [],
-    dueDate: new Date(), // Default to today's date
-    coverUrl: "",
-    coverColor: "",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    isTemplate: defaultIsTemplate,
-  };
+  // Thẻ tạm cho chế độ tạo mới. Phải ổn định giữa các lần render, vì hộp thoại
+  // so bản nháp với nó để biết trường nào đã đổi. Task mới không có hạn chót.
+  const emptyCard: Card = useMemo(
+    () => ({
+      id: "",
+      title: "",
+      description: "",
+      listId: listId || "",
+      position: order || 0,
+      order: order || 0,
+      labels: [],
+      members: [],
+      coverUrl: "",
+      coverColor: "",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isTemplate: defaultIsTemplate,
+    }),
+    [listId, order, defaultIsTemplate],
+  );
+  const tempCard: Card = card || emptyCard;
 
   return (
     <BackgroundPickerProvider
@@ -129,6 +140,20 @@ export function CardEditDialog({
 }
 
 /* ================= INNER ================= */
+type ListRow = { id: string; name: string; order: number };
+type FieldErrors = { title?: string; description?: string; dueAt?: string };
+
+/** Thẻ từ backend trả về `name`, kiểu frontend dùng `title`. */
+function cardTitleOf(card: Card): string {
+  return card.title || (card as unknown as { name?: string }).name || "";
+}
+
+function timeOf(value: Date | string | null | undefined): number | null {
+  if (!value) return null;
+  const t = new Date(value).getTime();
+  return Number.isNaN(t) ? null : t;
+}
+
 interface InnerDialogProps {
   card: Card;
   boardId: string;
@@ -171,20 +196,20 @@ function InnerDialog({
   const [isLabelPopoverOpen, setIsLabelPopoverOpen] = useState(false);
   const [isMemberPopoverOpen, setIsMemberPopoverOpen] = useState(false);
   const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false);
-  const [isPillButtonDateOpen, setIsPillButtonDateOpen] = useState(false);
   const [isAttachmentPopoverOpen, setIsAttachmentPopoverOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const [linkName, setLinkName] = useState("");
   const attachmentFileInputRef = useRef<HTMLInputElement | null>(null);
   const [showActivities, setShowActivities] = useState(true); // For comments/activities toggle
 
-  // Create mode state - default title to "Untitled Card" for new cards
-  // Handle both 'title' (frontend type) and 'name' (backend response) 
-  const [title, setTitle] = useState(card.title || (card as any).name || "Untitled Card");
+  // Bản nháp các trường của form: tiêu đề, mô tả, ngày, ưu tiên, trạng thái.
+  // Chúng chỉ được gửi lên backend khi bấm Lưu (spec 001 §46, §79).
+  // Nhận cả 'title' (kiểu frontend) và 'name' (phản hồi backend).
+  const [title, setTitle] = useState(cardTitleOf(card));
   const [description, setDescription] = useState(card.description || "");
   const [labels, setLabels] = useState<CardLabel[]>(card.labels || []);
   const [members, setMembers] = useState<Member[]>(card.members || []);
-  
+
   // Date and Reminder State
   const [startDate, setStartDate] = useState<Date | undefined>(
     card.startDate ? new Date(card.startDate) : undefined
@@ -193,19 +218,24 @@ function InnerDialog({
     card.dueAt ? new Date(card.dueAt) : (card.dueDate ? new Date(card.dueDate) : undefined)
   );
   const [dueComplete, setDueComplete] = useState(card.dueComplete || false);
+  const [completed, setCompleted] = useState(card.completed || false);
   const [reminderMinutes, setReminderMinutes] = useState<number | null>(card.reminderMinutes || null);
   const [repeatFrequency, setRepeatFrequency] = useState<"daily" | "weekly" | "monthly" | null>(card.repeatFrequency || null);
   const [repeatInterval, setRepeatInterval] = useState<number | null>(card.repeatInterval || null);
+  // `null` = người dùng chưa chỉnh, giá trị hiển thị lấy theo dữ liệu đã tải.
+  const [priorityPick, setPriorityPick] = useState<Priority | null>(null);
+  const [statusPick, setStatusPick] = useState<Status | null>(null);
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [isSavingFields, setIsSavingFields] = useState(false);
 
   const [isTemplate, setIsTemplate] = useState(card.isTemplate || false);
   const [isCreating, setIsCreating] = useState(false);
-  
+
   // Pending items for create mode
   const [pendingAttachments, setPendingAttachments] = useState<File[]>([]);
   const [pendingComments, setPendingComments] = useState<string[]>([]);
   const { mutateAsync: addCommentAsync } = useAddComment();
   const { mutate: updateCard } = useUpdateCard();
-  const { mutate: updateDue } = useUpdateDue();
   const { mutate: createCard, isPending: isCreatePending } = useCreateCard();
   const { deleteImage } = useDeleteImage();
   const uploadAttachmentMutation = useUploadAttachment();
@@ -216,6 +246,55 @@ function InnerDialog({
   const imageFile = croppedFile || selectedFile;
 
   const formatDueDateVN = (date: Date | string): string => formatDue(date);
+
+  /* ---------- TRẠNG THÁI + ĐỘ ƯU TIÊN ĐÃ LƯU ---------- */
+  // Trạng thái của thẻ nằm ở tên danh sách, nên cần cả danh sách của board.
+  const metaEnabled = !!boardId && !!card.id && !isCreateMode && isOpen;
+  const lists = useQuery({
+    queryKey: ["board-lists", boardId],
+    queryFn: () => request<ListRow[]>("GET", `/boards/${boardId}/lists`),
+    enabled: metaEnabled,
+  });
+  const detail = useQuery({
+    queryKey: ["card-detail", boardId, card.id],
+    queryFn: () =>
+      request<{ priority?: Priority | null; listId: string }>(
+        "GET",
+        `/boards/${boardId}/cards/${card.id}`,
+      ),
+    enabled: metaEnabled,
+  });
+  const savedPriority: Priority =
+    detail.data?.priority ??
+    (card as unknown as { priority?: Priority | null }).priority ??
+    "medium";
+  const savedList = lists.data?.find((l) => l.id === (detail.data?.listId ?? card.listId));
+  const savedStatus: Status = savedList ? statusFromList(savedList.name) : "todo";
+  const priority = priorityPick ?? savedPriority;
+  const status = statusPick ?? savedStatus;
+  const isMetaLoading = metaEnabled && (lists.isPending || detail.isPending);
+
+  /* ---------- BẢN NHÁP: nạp lại mỗi lần mở một thẻ ---------- */
+  useEffect(() => {
+    if (!isOpen) return;
+    setTitle(cardTitleOf(card));
+    setDescription(card.description || "");
+    setStartDate(card.startDate ? new Date(card.startDate) : undefined);
+    setDueAt(
+      card.dueAt ? new Date(card.dueAt) : card.dueDate ? new Date(card.dueDate) : undefined,
+    );
+    setDueComplete(card.dueComplete || false);
+    setCompleted(card.completed || false);
+    setReminderMinutes(card.reminderMinutes ?? null);
+    setRepeatFrequency(card.repeatFrequency ?? null);
+    setRepeatInterval(card.repeatInterval ?? null);
+    setIsTemplate(card.isTemplate || false);
+    setPriorityPick(null);
+    setStatusPick(null);
+    setErrors({});
+    // Chỉ nạp khi mở hoặc đổi thẻ; sau đó bản nháp là của người dùng.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, card.id]);
 
 
   /* ---------- PREVIEW IMAGE ---------- */
@@ -267,130 +346,187 @@ function InnerDialog({
       ? [...(card.attachments || []), ...previewAttachments] 
       : card.attachments;
 
+    // Các trường của form lấy từ bản nháp ở cả hai chế độ; nhãn, thành viên và
+    // ảnh bìa vẫn lấy từ thẻ thật vì chúng tự lưu ngay khi thao tác.
     return {
       ...card,
-      title: isCreateMode ? title : (card.title || (card as any).name || "Untitled Card"),
-      description: isCreateMode ? description : card.description,
+      title,
+      description,
       labels: isCreateMode ? labels : card.labels,
       members: isCreateMode ? members : card.members,
-      dueDate: isCreateMode ? dueAt : card.dueDate,
-      startDate: isCreateMode ? startDate : card.startDate,
-      dueAt: isCreateMode ? dueAt : card.dueAt,
-      dueComplete: isCreateMode ? dueComplete : card.dueComplete,
-      reminderMinutes: isCreateMode ? reminderMinutes : card.reminderMinutes,
-      repeatFrequency: isCreateMode ? repeatFrequency : card.repeatFrequency,
-      repeatInterval: isCreateMode ? repeatInterval : card.repeatInterval,
+      dueDate: dueAt,
+      startDate,
+      dueAt,
+      dueComplete,
+      completed,
+      reminderMinutes,
+      repeatFrequency,
+      repeatInterval,
       isTemplate: isCreateMode ? isTemplate : card.isTemplate,
       attachments: displayedAttachments,
     };
-  }, [card, isCreateMode, title, description, labels, members, dueAt, startDate, dueComplete, reminderMinutes, repeatFrequency, repeatInterval, isTemplate, pendingAttachments]);
+  }, [card, isCreateMode, title, description, labels, members, dueAt, startDate, dueComplete, completed, reminderMinutes, repeatFrequency, repeatInterval, isTemplate, pendingAttachments]);
 
+  /**
+   * Một hộp thoại, hai loại thay đổi:
+   * - Trường của form (tiêu đề, mô tả, ngày, ưu tiên, trạng thái) chỉ ghi vào
+   *   bản nháp, chờ nút Lưu — đúng mô hình của form task ở "Việc của tôi".
+   * - Thao tác trên đối tượng riêng (nhãn, thành viên, ảnh bìa, mẫu) là một
+   *   hành động hoàn chỉnh, nên vẫn tự lưu ngay.
+   */
   const handleUpdate = useCallback(
     (updates: Partial<Card>) => {
-      if (isCreateMode) {
-        // In create mode, just update local state
-        if (updates.title !== undefined) setTitle(updates.title);
-        if (updates.description !== undefined) setDescription(updates.description || "");
-        if (updates.labels !== undefined) setLabels(updates.labels || []);
-        if (updates.members !== undefined) setMembers(updates.members || []);
-        
-        // Handle Date Updates
-        const nextStart = updates.startDate !== undefined
-          ? (updates.startDate ? new Date(updates.startDate) : undefined)
-          : startDate;
-        const nextDue = updates.dueAt !== undefined
-          ? (updates.dueAt ? new Date(updates.dueAt) : undefined)
-          : dueAt;
-
-        if (nextStart && nextDue && nextStart.getTime() > nextDue.getTime()) {
-          toast.error("Ngày bắt đầu không được sau hạn chót");
-          return;
-        }
-
-        if (updates.startDate !== undefined) setStartDate(nextStart);
-        if (updates.dueAt !== undefined) {
-          const nextDueAt = nextDue;
-          if (nextDueAt && nextDueAt.getTime() < Date.now()) {
-            toast.error("Hạn chót không được ở quá khứ");
-            return;
-          }
-          setDueAt(nextDueAt);
-        }
-        // Map dueDate to dueAt if dueAt is missing but dueDate is present (compatibility)
-        if (updates.dueDate !== undefined && updates.dueAt === undefined) setDueAt(updates.dueDate);
-        
-        if (updates.dueComplete !== undefined) setDueComplete(updates.dueComplete);
-        if (updates.reminderMinutes !== undefined) setReminderMinutes(updates.reminderMinutes);
-        if (updates.repeatFrequency !== undefined) setRepeatFrequency(updates.repeatFrequency);
-        if (updates.repeatInterval !== undefined) setRepeatInterval(updates.repeatInterval);
-        
-        if (updates.isTemplate !== undefined) setIsTemplate(updates.isTemplate);
-        return;
+      // 1. Phần thuộc bản nháp.
+      if (updates.title !== undefined) setTitle(updates.title);
+      if (updates.description !== undefined) setDescription(updates.description || "");
+      if (updates.startDate !== undefined) {
+        setStartDate(updates.startDate ? new Date(updates.startDate) : undefined);
       }
-
-      if (!card) return;
-
-      const nextStart = updates.startDate !== undefined
-        ? (updates.startDate ? new Date(updates.startDate) : undefined)
-        : startDate;
-      const nextDue = updates.dueAt !== undefined
-        ? (updates.dueAt ? new Date(updates.dueAt) : undefined)
-        : dueAt;
-
-      if (nextStart && nextDue && nextStart.getTime() > nextDue.getTime()) {
-        toast.error("Ngày bắt đầu không được sau hạn chót");
-        return;
-      }
-
       if (updates.dueAt !== undefined) {
-        const nextDueAt = nextDue;
-        if (nextDueAt && nextDueAt.getTime() < Date.now()) {
-          toast.error("Hạn chót không được ở quá khứ");
-          return;
-        }
+        setDueAt(updates.dueAt ? new Date(updates.dueAt) : undefined);
+      } else if (updates.dueDate !== undefined) {
+        // Tương thích: vài chỗ còn gửi `dueDate`.
+        setDueAt(updates.dueDate ? new Date(updates.dueDate) : undefined);
+      }
+      if (updates.reminderMinutes !== undefined) setReminderMinutes(updates.reminderMinutes);
+      if (updates.repeatFrequency !== undefined) setRepeatFrequency(updates.repeatFrequency);
+      if (updates.repeatInterval !== undefined) setRepeatInterval(updates.repeatInterval);
+      // Ô tick "đã xong" và trạng thái là một thứ: tick = Xong, bỏ tick = Cần làm.
+      // Chỉ khi đó là thao tác tick riêng, không phải khi đang sửa cả nhóm ngày.
+      const done = updates.dueComplete ?? updates.completed;
+      if (done !== undefined) {
+        setDueComplete(done);
+        setCompleted(done);
+        const isDoneToggle = updates.dueAt === undefined && updates.startDate === undefined;
+        if (isDoneToggle) setStatusPick(done ? "done" : "todo");
       }
 
-      // Update local state immediately for optimistic UI
-      onUpdate?.({ ...card, ...updates });
+      // 2. Phần tự lưu ngay.
+      const live: Partial<Card> = {};
+      if (updates.labels !== undefined) live.labels = updates.labels;
+      if (updates.members !== undefined) live.members = updates.members;
+      if (updates.coverColor !== undefined) live.coverColor = updates.coverColor;
+      if (updates.coverUrl !== undefined) live.coverUrl = updates.coverUrl;
+      if (updates.isTemplate !== undefined) live.isTemplate = updates.isTemplate;
+      if (Object.keys(live).length === 0) return;
 
+      if (isCreateMode) {
+        if (live.labels !== undefined) setLabels(live.labels || []);
+        if (live.members !== undefined) setMembers(live.members || []);
+        if (live.isTemplate !== undefined) setIsTemplate(!!live.isTemplate);
+        return;
+      }
+
+      onUpdate?.({ ...card, ...live });
       if (boardId) {
-        const isDueCompleteOnly =
-          updates.dueComplete !== undefined &&
-          updates.dueAt === undefined &&
-          updates.startDate === undefined &&
-          updates.reminderMinutes === undefined &&
-          updates.repeatFrequency === undefined &&
-          updates.repeatInterval === undefined;
-
-        if (isDueCompleteOnly) {
-          updateDue({
-            boardId,
-            cardId: card.id,
-            dueComplete: updates.dueComplete,
-          });
-          return;
-        }
-
-        // Sync with backend if boardId is available
-        const { title: updateTitle, ...otherUpdates } = updates;
-        updateCard({
-          boardId,
-          cardId: card.id,
-          name: updateTitle, // Map title to name for backend
-          ...otherUpdates,
-        });
+        updateCard({ boardId, cardId: card.id, ...live });
       }
     },
     [card, boardId, onUpdate, updateCard, isCreateMode]
   );
 
+  const savedDueTime = timeOf(card.dueAt ?? card.dueDate);
+  const datesChanged =
+    timeOf(startDate) !== timeOf(card.startDate) ||
+    timeOf(dueAt) !== savedDueTime ||
+    (reminderMinutes ?? null) !== (card.reminderMinutes ?? null) ||
+    (repeatFrequency ?? null) !== (card.repeatFrequency ?? null) ||
+    (repeatInterval ?? null) !== (card.repeatInterval ?? null);
+
+  /** Cùng bộ câu báo lỗi với form task ở "Việc của tôi" (`features/tasks/logic.ts`). */
+  const validateDraft = (): FieldErrors => {
+    const found: FieldErrors = {};
+    const name = title.trim();
+    if (!name) found.title = "Hãy nhập tiêu đề cho task.";
+    else if (name.length > 200) found.title = "Tiêu đề tối đa 200 ký tự.";
+    if (description.length > 2000) found.description = "Mô tả tối đa 2000 ký tự.";
+    if (startDate && dueAt && startDate.getTime() > dueAt.getTime()) {
+      found.dueAt = "Ngày bắt đầu không được sau hạn chót.";
+    } else if (dueAt && timeOf(dueAt) !== savedDueTime && dueAt.getTime() < Date.now()) {
+      // Chỉ chặn hạn quá khứ khi người dùng vừa đổi hạn (spec 001 §79.2).
+      found.dueAt = "Hạn chót phải từ bây giờ trở đi.";
+    }
+    return found;
+  };
+
+  /** Tìm (hoặc tạo) danh sách ứng với trạng thái — trạng thái của thẻ là tên list. */
+  const listIdForStatus = async (next: Status): Promise<string> => {
+    const sorted = [...(lists.data ?? [])].sort((a, b) => a.order - b.order);
+    const found = sorted.find((l) => statusFromList(l.name) === next);
+    if (found) return found.id;
+    const created = await request<ListRow>("POST", `/boards/${boardId}/lists`, {
+      id: crypto.randomUUID(),
+      name: STATUS_LABEL[next],
+      order: sorted.length,
+    });
+    return created.id;
+  };
+
+  /** Lưu cả năm trường trong một request; ngày đi cùng vì backend nhận chung. */
+  const handleSaveChanges = async () => {
+    const found = validateDraft();
+    setErrors(found);
+    if (Object.keys(found).length > 0) return;
+    if (!boardId || !card.id) return;
+
+    const isDone = status === "done";
+    setIsSavingFields(true);
+    try {
+      const body: Record<string, unknown> = {
+        name: title.trim(),
+        description: description.trim() || null,
+        priority,
+        completed: isDone,
+        dueComplete: isDone,
+      };
+      if (status !== savedStatus) body.listId = await listIdForStatus(status);
+      if (datesChanged) {
+        body.dueAt = dueAt ? dueAt.toISOString() : null;
+        body.deadline = dueAt ? dueAt.toISOString() : null;
+        body.startDate = startDate ? startDate.toISOString() : null;
+        body.reminderMinutes = reminderMinutes;
+        body.repeatFrequency = repeatFrequency;
+        body.repeatInterval = repeatInterval;
+      }
+
+      await request("PUT", `/boards/${boardId}/cards/${card.id}`, body);
+
+      onUpdate?.({
+        ...card,
+        title: title.trim(),
+        description: description.trim() || undefined,
+        startDate,
+        dueAt,
+        dueDate: dueAt,
+        dueComplete: isDone,
+        completed: isDone,
+        reminderMinutes,
+        repeatFrequency,
+        repeatInterval,
+      });
+      queryClient.invalidateQueries({ queryKey: ["board", boardId] });
+      queryClient.invalidateQueries({ queryKey: ["board-lists", boardId] });
+      queryClient.invalidateQueries({ queryKey: ["card-detail", boardId, card.id] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      toast.success("Đã lưu thay đổi");
+      onClose();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Không lưu được thay đổi");
+    } finally {
+      setIsSavingFields(false);
+    }
+  };
+
   const handleCreateCard = async () => {
     if (!listId) return;
 
+    const found = validateDraft();
+    setErrors(found);
+    if (Object.keys(found).length > 0) return;
+
     setIsCreating(true);
 
-    // Use default name if no title provided
-    const cardName = localCard.title?.trim() || "Untitled Card";
+    const cardName = title.trim();
 
     try {
       // Get background data first
@@ -489,18 +625,22 @@ function InnerDialog({
   };
 
   const resetForm = () => {
-    setTitle("Untitled Card");
+    setTitle("");
     setDescription("");
     setLabels([]);
     setMembers([]);
-    
+
     // Reset dates
     setStartDate(undefined);
-    setDueAt(new Date()); // Reset to today's date
+    setDueAt(undefined); // Task mới không có hạn chót
     setDueComplete(false);
+    setCompleted(false);
     setReminderMinutes(null);
     setRepeatFrequency(null);
     setRepeatInterval(null);
+    setPriorityPick(null);
+    setStatusPick(null);
+    setErrors({});
 
     setIsCreating(false);
     resetBackground();
@@ -686,9 +826,11 @@ function InnerDialog({
       <DialogContent
         className="!flex !flex-col !p-0 !gap-0"
         style={{
+          // Cao theo nội dung, chỉ chặn trên: hộp thoại ít nội dung không để lại lỗ trống.
           maxWidth: isVertical ? '920px' : '1200px',
           width: 'calc(100vw - 2rem)',
-          height: isVertical ? 'min(85svh, 760px)' : 'min(640px, 90svh)',
+          height: 'auto',
+          maxHeight: isVertical ? 'min(85svh, 760px)' : 'min(640px, 90svh)',
         }}
         showCloseButton={false}
       >
@@ -711,15 +853,17 @@ function InnerDialog({
         {/* Top-right action buttons */}
         <div className="absolute top-2 right-2 z-10 flex gap-2">
           {/* Edit cover button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Đổi ảnh bìa"
-            title="Đổi ảnh bìa"
-            onClick={() => setIsCoverPickerOpen(true)}
-          >
-            <Wallpaper className="h-4 w-4" />
-          </Button>
+          {SHOW_COVER_UPLOAD && (
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Đổi ảnh bìa"
+              title="Đổi ảnh bìa"
+              onClick={() => setIsCoverPickerOpen(true)}
+            >
+              <Wallpaper className="h-4 w-4" />
+            </Button>
+          )}
 
           {/* Close button */}
           <Button variant="ghost" size="icon" aria-label="Đóng" title="Đóng" onClick={handleClose}>
@@ -742,7 +886,7 @@ function InnerDialog({
           ></div>
         )}
         {/* Main content area - Horizontal flex layout */}
-        <div className={`flex ${isVertical ? "flex-col" : "flex-row"} h-full w-full overflow-hidden`}>
+        <div className={`flex ${isVertical ? "flex-col" : "flex-row"} min-h-0 flex-1 w-full overflow-hidden`}>
           {/* Left column - Main content */}
           <div
             className="flex-1 space-y-6 p-6 overflow-y-auto max-h-full overscroll-contain"
@@ -755,16 +899,74 @@ function InnerDialog({
               e.stopPropagation();
             }}
           >
-            {/* Header with title */}
-            <CardHeader card={localCard} onUpdate={handleUpdate} />
+            {/* Tiêu đề */}
+            <CardHeader card={localCard} onUpdate={handleUpdate} error={errors.title} />
 
+            {/* Mô tả */}
+            <CardDescription card={localCard} onUpdate={handleUpdate} error={errors.description} />
+
+            {/* Hạn chót */}
+            <CardField label="Hạn chót" error={errors.dueAt}>
+              <div className="flex flex-wrap gap-2">
+                <CardDates
+                  card={localCard}
+                  boardId={boardId}
+                  onUpdate={handleUpdate}
+                  isOpen={isDatePopoverOpen}
+                  onOpenChange={setIsDatePopoverOpen}
+                  // Lịch chỉ ghi vào bản nháp; cả hộp thoại dùng một nút Lưu.
+                  createMode
+                  triggerButton={
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      aria-invalid={!!errors.dueAt}
+                      className="h-8 px-3 flex items-center gap-2"
+                    >
+                      <Clock className="h-3.5 w-3.5" />
+                      {localCard.dueAt ? (
+                        <span className="text-sm tabular">{formatDueDateVN(localCard.dueAt)}</span>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">Chọn ngày</span>
+                      )}
+                      {localCard.repeatFrequency && <Repeat className="h-3.5 w-3.5 opacity-70" />}
+                      <ChevronDown className="h-3.5 w-3.5 ml-1" />
+                    </Button>
+                  }
+                />
+                {localCard.startDate && (
+                  <span className="self-center text-sm tabular text-muted-foreground">
+                    Bắt đầu {formatDueDateVN(localCard.startDate)}
+                  </span>
+                )}
+              </div>
+            </CardField>
+
+            {/* Độ ưu tiên + Trạng thái: chỉ sửa được khi thẻ đã có trên backend */}
             {!isCreateMode && localCard.id && boardId && (
-              <CardMetaControls
-                boardId={boardId}
-                cardId={localCard.id}
-                listId={localCard.listId}
-                priority={(card as { priority?: "high" | "medium" | "low" | null } | undefined)?.priority}
-              />
+              isMetaLoading ? (
+                <div className="grid gap-3 sm:grid-cols-2" aria-busy="true">
+                  {["Độ ưu tiên", "Trạng thái"].map((label) => (
+                    <div key={label} className="grid gap-1.5">
+                      <span className="text-sm font-medium">{label}</span>
+                      <div className="h-10 rounded-md bg-muted" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <CardPriorityField value={priority} onChange={setPriorityPick} />
+                  <CardStatusField
+                    value={status}
+                    onChange={(next) => {
+                      // Trạng thái và ô tick "đã xong" là một thứ.
+                      setStatusPick(next);
+                      setDueComplete(next === "done");
+                      setCompleted(next === "done");
+                    }}
+                  />
+                </div>
+              )
             )}
 
             {/* Action buttons row */}
@@ -796,21 +998,7 @@ function InnerDialog({
                   </Button>
                 }
               />}
-              {!localCard.startDate && !localCard.dueAt && (
-                <CardDates
-                  card={localCard}
-                  boardId={boardId}
-                  onUpdate={handleUpdate}
-                  isOpen={isDatePopoverOpen}
-                  onOpenChange={setIsDatePopoverOpen}
-                  triggerButton={
-                    <Button variant="outline" size="sm" className="h-8">
-                      <Clock className="h-4 w-4 mr-1" />
-                      Ngày
-                    </Button>
-                  }
-                />
-              )}
+              {SHOW_ATTACHMENTS && (
               <Popover open={isAttachmentPopoverOpen} onOpenChange={setIsAttachmentPopoverOpen}>
                 <PopoverTrigger asChild>
                   <Button variant="outline" size="sm" className="h-8">
@@ -903,6 +1091,7 @@ function InnerDialog({
                   </div>
                 </PopoverContent>
               </Popover>
+              )}
 
               {/* Template Toggle */}
               {SHOW_CARD_TEMPLATES && (
@@ -931,54 +1120,6 @@ function InnerDialog({
             {localCard.members && localCard.members.length > 0 && (
               <CardMembers card={localCard} onUpdate={handleUpdate} boardId={boardId || ""} ownerInfo={ownerInfo} />
             )}
-
-            {(localCard.startDate || localCard.dueAt) && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Ngày</label>
-                <div className="flex flex-wrap gap-2">
-                  {localCard.startDate && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 px-3 flex items-center gap-2"
-                      onClick={() => setIsPillButtonDateOpen(true)}
-                    >
-                      <Clock className="h-3.5 w-3.5" />
-                      <span className="text-sm">Bắt đầu: {formatDueDateVN(localCard.startDate)}</span>
-                      <ChevronDown className="h-3.5 w-3.5 ml-1" />
-                    </Button>
-                  )}
-                  {localCard.dueAt && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 px-3 flex items-center gap-2"
-                      onClick={() => setIsPillButtonDateOpen(true)}
-                    >
-                      <Clock className="h-3.5 w-3.5" />
-                      <span className="text-sm">Hạn: {formatDueDateVN(localCard.dueAt)}</span>
-                      {localCard.repeatFrequency && <Repeat className="h-3.5 w-3.5 opacity-70" />}
-                      <ChevronDown className="h-3.5 w-3.5 ml-1" />
-                    </Button>
-                  )}
-                </div>
-                <div className="hidden">
-                   <CardDates
-                      card={localCard}
-                      boardId={boardId}
-                      onUpdate={handleUpdate}
-                      isOpen={isPillButtonDateOpen}
-                      onOpenChange={setIsPillButtonDateOpen}
-                      createMode={isCreateMode}
-                      triggerButton={null} 
-                    />
-                </div>
-              </div>
-            )}
-
-
-            {/* Description */}
-            <CardDescription card={localCard} onUpdate={handleUpdate} />
 
             {/* CheckList */}
             <CheckList card={localCard} boardId={boardId} onUpdate={handleUpdate} ownerInfo={ownerInfo} />
@@ -1028,7 +1169,7 @@ function InnerDialog({
                           <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                             {attachment.uploadedAt && (
                               <span>
-                                Added {new Date(attachment.uploadedAt).toLocaleDateString()}
+                                Thêm {new Date(attachment.uploadedAt).toLocaleDateString("vi-VN")}
                               </span>
                             )}
                             {attachment.size > 0 && (
@@ -1066,10 +1207,11 @@ function InnerDialog({
           {/* Right column - Comments and activity */}
           {!hideCommentsActivity && (
             <div
-              className={`flex-shrink-0 overflow-y-auto overscroll-contain ${
+              // `self-start` để cột bình luận cao theo nội dung, không bị kéo bằng cột trái.
+              className={`flex-shrink-0 self-start max-h-full overflow-y-auto overscroll-contain ${
                 isVertical
                   ? "w-full border-t bg-muted/30 p-6"
-                  : "w-96 border-l bg-muted/30 p-12"
+                  : "w-96 border-l bg-muted/30 p-6"
               }`}
               style={{
                 touchAction: 'auto',
@@ -1097,23 +1239,34 @@ function InnerDialog({
                   pendingComments={pendingComments}
                   onAddPendingComment={(comment) => setPendingComments(prev => [...prev, comment])}
                 />
-
-                {/* Footer with Create button for create mode */}
-                {isCreateMode && (
-                  <div className="flex justify-end gap-2 pt-4 border-t mt-auto">
-                    <Button variant="outline" onClick={handleClose}>
-                      Huỷ
-                    </Button>
-                    <Button onClick={handleCreateCard} disabled={isSubmitting}>
-                      {isSubmitting ? "Creating..." : "Create Card"}
-                    </Button>
-                  </div>
-                )}
               </div>
             </div>
           )}
         </div>
+
+        {/* Một nút Lưu cho cả hộp thoại, như form task ở "Việc của tôi" */}
+        <div className="flex shrink-0 items-center justify-end gap-2 border-t px-6 py-4">
+          <Button type="button" variant="outline" onClick={handleClose}>
+            Huỷ
+          </Button>
+          {isCreateMode ? (
+            <Button onClick={handleCreateCard} disabled={isSubmitting} className="min-w-28">
+              {isSubmitting && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+              {isSubmitting ? "Đang tạo…" : "Tạo task"}
+            </Button>
+          ) : (
+            <Button
+              onClick={handleSaveChanges}
+              disabled={isSavingFields || isMetaLoading}
+              className="min-w-28"
+            >
+              {isSavingFields && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+              Lưu thay đổi
+            </Button>
+          )}
+        </div>
         {/* Cover picker dialog */}
+        {SHOW_COVER_UPLOAD && (
         <Popover
           open={isCoverPickerOpen}
           onOpenChange={async (open) => {
@@ -1149,16 +1302,6 @@ function InnerDialog({
             <CardCoverPicker card={localCard} onRemoveCover={handleRemoveCover} />
           </PopoverContent>
         </Popover>
-
-        {(card.startDate || card.dueAt) && (
-          <CardDates
-            card={card}
-            boardId={boardId}
-            onUpdate={handleUpdate}
-            isOpen={isPillButtonDateOpen}
-            onOpenChange={setIsPillButtonDateOpen}
-            triggerButton={null}
-          />
         )}
       </DialogContent>
     </Dialog>

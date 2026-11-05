@@ -7,6 +7,15 @@
     <title>DailyDesk</title>
   </head>
   <body>
+    <!-- Gắn class giao diện trước khi React chạy, nếu không người dùng chế độ tối
+         sẽ thấy nền giấy loé lên mỗi lần tải trang. -->
+    <script>
+      try {
+        var t = localStorage.getItem("dailydesk-theme") || "system";
+        var d = t === "dark" || (t === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.add(d ? "dark" : "light");
+      } catch (e) {}
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

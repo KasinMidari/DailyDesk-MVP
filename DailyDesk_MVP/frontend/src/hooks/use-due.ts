@@ -27,7 +27,19 @@ export function useUpdateDue() {
           startDate: params.startDate,
           dueAt: params.dueAt,
           dueComplete: params.dueComplete,
-          reminderMinutes: params.reminderMinutes?.toString() as "5" | "10" | "15" | "30" | "60" | "120" | "1440" | undefined,
+          // Backend nhận số phút dạng số hoặc chuỗi; `null` để bỏ nhắc trước.
+          reminderMinutes:
+            params.reminderMinutes === null
+              ? null
+              : (params.reminderMinutes?.toString() as
+                  | "5"
+                  | "10"
+                  | "15"
+                  | "30"
+                  | "60"
+                  | "120"
+                  | "1440"
+                  | undefined),
           repeatFrequency: params.repeatFrequency,
           repeatInterval: params.repeatInterval,
         },

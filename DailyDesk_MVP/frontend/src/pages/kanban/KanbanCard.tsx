@@ -3,7 +3,6 @@ import {
   KanbanBoardCard,
   KanbanBoardCardTitle,
   KanbanBoardColumnListItem,
-  type KanbanBoardCircleColor,
   type KanbanBoardDropDirection,
 } from "@/components/kanban";
 import {
@@ -37,7 +36,6 @@ import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 type NormalizedCard = CardType & {
   title: string;
   description?: string;
-  color?: KanbanBoardCircleColor;
   isTemplate?: boolean;
 };
 
@@ -67,7 +65,6 @@ interface KanbanCardProps {
     activities?: ActivityLog[];
     createdAt?: Date;
     updatedAt?: Date;
-    color?: KanbanBoardCircleColor;
     completed?: boolean;
     isTemplate?: boolean;
   };
@@ -128,7 +125,6 @@ export function KanbanCard({
     activities: card.activities || [],
     createdAt: card.createdAt || new Date(),
     updatedAt: card.updatedAt || new Date(),
-    color: card.color,
     completed: card.completed,
     isTemplate: card.isTemplate,
   };
@@ -259,7 +255,7 @@ export function KanbanCard({
             {normalizedCard.coverUrl ? (
               <div className="relative w-full rounded-md hidden-cover-fix">
                 {normalizedCard.isTemplate && (
-                  <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-card/90 text-[10px] font-medium text-foreground">
+                  <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-card/90 text-[11px] font-medium text-foreground">
                     <LayoutTemplate className="h-3 w-3" />
                     Mẫu
                   </div>
@@ -276,7 +272,7 @@ export function KanbanCard({
                         <TooltipTrigger asChild>
                           <div
                             onClick={handleToggleComplete}
-                            className={`flex-shrink-0 cursor-pointer transition-opacity ${isDone ? "opacity-100" : "opacity-60 group-hover:opacity-100"}`}
+                            className="flex-shrink-0 cursor-pointer"
                             role="checkbox"
                             aria-checked={isDone}
                             aria-label={isDone ? "Chuyển về Todo" : "Đánh dấu xong (chuyển sang Done)"}
@@ -316,7 +312,7 @@ export function KanbanCard({
               <div className="relative flex w-full flex-col overflow-hidden rounded-md">
                 <div aria-hidden="true" className="-mx-3 -mt-3 mb-1 h-8" style={{ backgroundColor: normalizedCard.coverColor }} />
                 {normalizedCard.isTemplate && (
-                  <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-card/90 text-[10px] font-medium text-foreground">
+                  <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-card/90 text-[11px] font-medium text-foreground">
                     <LayoutTemplate className="h-3 w-3" />
                     Mẫu
                   </div>
@@ -328,7 +324,7 @@ export function KanbanCard({
                         <TooltipTrigger asChild>
                           <div
                             onClick={handleToggleComplete}
-                            className={`flex-shrink-0 cursor-pointer transition-opacity ${isDone ? "opacity-100" : "opacity-60 group-hover:opacity-100"}`}
+                            className="flex-shrink-0 cursor-pointer"
                             role="checkbox"
                             aria-checked={isDone}
                             aria-label={isDone ? "Chuyển về Todo" : "Đánh dấu xong (chuyển sang Done)"}
@@ -367,7 +363,7 @@ export function KanbanCard({
             ) : (
               <div className="flex flex-col gap-1 pt-1">
                  {normalizedCard.isTemplate && (
-                  <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-muted text-muted-foreground text-[10px] font-medium max-w-fit mb-0.5">
+                  <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-muted text-muted-foreground text-[11px] font-medium max-w-fit mb-0.5">
                     <LayoutTemplate className="h-3 w-3" />
                     Mẫu
                   </div>
@@ -378,7 +374,7 @@ export function KanbanCard({
                       <TooltipTrigger asChild>
                         <div
                           onClick={handleToggleComplete}
-                          className={`flex-shrink-0 cursor-pointer transition-opacity ${isDone ? "opacity-100" : "opacity-60 group-hover:opacity-100"}`}
+                          className="flex-shrink-0 cursor-pointer"
                           role="checkbox"
                           aria-checked={isDone}
                           aria-label={isDone ? "Chuyển về Todo" : "Đánh dấu xong (chuyển sang Done)"}
@@ -409,8 +405,11 @@ export function KanbanCard({
                     {normalizedCard.title}
                   </KanbanBoardCardTitle>
                 </div>
-                {isDone && <span className="stamp absolute right-2.5 bottom-2.5">XONG</span>}
-                <div className="flex flex-wrap items-center gap-1">{shouldShowDateRow && <DateRow className="text-muted-foreground px-6" />}<PriorityMark className="text-muted-foreground px-6" /></div>
+                {/* Không đóng dấu XONG ở đây: thẻ đã có ô tick, tiêu đề gạch ngang và nền
+                    status-done nói cùng một điều. Dấu đỏ chỉ dành cho khoảnh khắc vừa tick
+                    ở màn danh sách, nếu lặp trên mọi thẻ thì đỏ thành hoạ tiết. */}
+                {/* Hàng meta thẳng với tiêu đề: ô tick 20px + gap 8px = 28px. */}
+                <div className="flex flex-wrap items-center gap-1">{shouldShowDateRow && <DateRow className="text-muted-foreground pl-7" />}<PriorityMark className="text-muted-foreground pl-7" /></div>
               </div>
             )}
             <DropdownMenu>

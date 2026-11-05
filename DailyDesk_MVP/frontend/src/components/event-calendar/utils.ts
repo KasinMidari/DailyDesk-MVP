@@ -3,6 +3,7 @@ import { isSameDay, addHours } from "date-fns";
 import type { CalendarEvent, EventColor, Label, Member } from "@/components/event-calendar";
 import type { Card, RecurrenceType } from "@/types/card";
 import { generateRecurringInstances, getCalendarRange } from "@/lib/recurring-calendar-utils";
+import { listDisplayName } from "@/features/tasks/api";
 
 function getEventStartEnd(dueDate: Date): { start: Date; end: Date } {
   // If due date is exactly midnight, keep event on the same day.
@@ -56,11 +57,11 @@ export function getEventColorClasses(color?: EventColor | string): string {
     case "amber":
       return "bg-status-doing-soft hover:brightness-[0.97] text-foreground ring-1 ring-inset ring-status-doing/40";
     case "violet":
-      return "bg-ink-soft hover:brightness-[0.97] text-ink";
+      return "bg-transparent hover:bg-muted/50 text-muted-foreground";
     case "rose":
       return "bg-red-ink/12 hover:bg-red-ink/18 text-red-ink font-semibold ring-1 ring-inset ring-red-ink/40";
     case "emerald":
-      return "bg-ink-soft hover:brightness-[0.97] text-ink/80";
+      return "bg-transparent hover:bg-muted/50 text-muted-foreground";
     case "orange":
       return "bg-status-doing-soft hover:brightness-[0.97] text-foreground";
     default:
@@ -362,7 +363,7 @@ export function listsCardsToCalendarEvents(
     : { start: new Date(), end: addHours(new Date(), 24 * 90) }; // Default 90 days
   
   for (const list of lists) {
-    const listName = list.name || list.title || "Untitled List";
+    const listName = listDisplayName(list.name || list.title || "Danh sách không tên");
     
     for (const card of list.cards) {
       // Get the recurrence info from the card

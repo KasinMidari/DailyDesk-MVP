@@ -38,6 +38,8 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { formatWeekdayDate } from "@/lib/date";
+import { cn } from "@/lib/utils";
 import { BoardFilterPopover, type FilterState } from "@/components/board-filter-popover";
 import { BoardSortPopover } from "@/components/board-sort-popover";
 import { BoardMembersManager } from "@/components/board-members-manager";
@@ -56,6 +58,7 @@ import {
   Search,
   X,
   KeyRound,
+  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -79,7 +82,13 @@ interface BoardHeaderBarProps {
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
   onEditBoard: () => void;
-  progress?: number;
+  /** Câu dữ liệu dưới H1: bao nhiêu task đã xong, bao nhiêu quá hạn. */
+  doneCards: number;
+  totalCards: number;
+  overdueCards: number;
+  viewMode: "kanban" | "calendar";
+  onViewModeChange: (mode: "kanban" | "calendar") => void;
+  onAddTask: () => void;
 }
 
 // Avatar colors for members
@@ -118,7 +127,12 @@ export function BoardHeaderBar({
   filters,
   onFiltersChange,
   onEditBoard,
-  progress = 0,
+  doneCards,
+  totalCards,
+  overdueCards,
+  viewMode,
+  onViewModeChange,
+  onAddTask,
 }: BoardHeaderBarProps) {
   const [isMembersSheetOpen, setIsMembersSheetOpen] = useState(false);
   const [isLabelsSheetOpen, setIsLabelsSheetOpen] = useState(false);
@@ -169,146 +183,103 @@ export function BoardHeaderBar({
     }
   }
 
+  const today = formatWeekdayDate(new Date());
+
   return (
     <>
-      <div className="z-10 mb-4 flex items-center justify-between gap-3 border-b px-1 pt-2 pb-3">
-        {/* Left Section - Board Name */}
-        <div className="flex items-center gap-2">
-          <h1 className="font-planner text-[1.75rem] leading-tight font-semibold text-foreground">{boardName}</h1>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6 text-foreground/70 hover:text-foreground hover:bg-muted"
-                onClick={onEditBoard}
-              >
-                <Pencil className="h-3.5 w-3.5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Sửa board</TooltipContent>
-          </Tooltip>
+      {/* Title row: cùng cấu trúc với màn "Việc của tôi" — ngày, H1, câu dữ liệu, nút chính. */}
+      <header className="z-10 shrink-0 flex-wrap items-end justify-between gap-4 pt-1 sm:flex">
+        <div className="min-w-0">
+          <p className="text-sm text-muted-foreground">{today}</p>
+          <div className="mt-1 flex items-center gap-2">
+            <h1 className="font-planner truncate text-[1.75rem] leading-tight font-semibold text-foreground">
+              {boardName}
+            </h1>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Sửa board ${boardName}`}
+                  className="size-8 shrink-0 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  onClick={onEditBoard}
+                >
+                  <Pencil className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Sửa board</TooltipContent>
+            </Tooltip>
+          </div>
+          <p className="mt-1.5 text-sm text-muted-foreground tabular">
+            {totalCards === 0 ? "Board này chưa có task nào." : `${doneCards}/${totalCards} task đã xong`}
+            {overdueCards > 0 && (
+              <>
+                {" · "}
+                <span className="font-medium text-overdue">{overdueCards} quá hạn</span>
+              </>
+            )}
+          </p>
         </div>
 
-        {/* Right Section - Members, Actions, Share */}
-        <div className="flex items-center gap-3">
-          {/* Member Avatars */}
-          <TooltipProvider>
-            <Sheet open={isMembersSheetOpen} onOpenChange={setIsMembersSheetOpen}>
-              <SheetTrigger asChild>
-                <div className="flex items-center cursor-pointer group hidden lg:flex">
-                  <div className={SHOW_COLLABORATION ? "flex -space-x-2" : "hidden"}>
-                    {allMembers.slice(0, 5).map((member, index) => {
-                      const colorClass = AVATAR_COLORS[index % AVATAR_COLORS.length];
-                      const initials = getInitials(member.name);
-                      const isOwnerMember = ownerInfo?.userId === member.userId;
+        <div className="mt-3 flex items-center gap-2 sm:mt-0">
+          {/* Chế độ xem: segmented control cạnh nút chính, không còn nút nổi ở đáy canvas. */}
+          <div
+            role="group"
+            aria-label="Chế độ xem"
+            className="inline-flex h-9 shrink-0 items-center gap-1 rounded-md border border-input bg-muted p-1"
+          >
+            {([
+              { key: "kanban", label: "Kanban" },
+              { key: "calendar", label: "Lịch" },
+            ] as const).map((v) => (
+              <button
+                key={v.key}
+                type="button"
+                aria-pressed={viewMode === v.key}
+                onClick={() => onViewModeChange(v.key)}
+                className={cn(
+                  "h-7 rounded-sm px-3 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                  viewMode === v.key
+                    ? "bg-card font-medium text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {v.label}
+              </button>
+            ))}
+          </div>
+          <Button className="h-9 shrink-0 gap-1.5 px-4" onClick={onAddTask}>
+            <Plus className="size-4" aria-hidden="true" />
+            Thêm task
+          </Button>
+        </div>
+      </header>
 
-                      return (
-                        <Tooltip key={member.id}>
-                          <TooltipTrigger asChild>
-                            <div className="relative">
-                              <Avatar
-                                className={`h-8 w-8 border-2 border-black/30 ring-2 ring-transparent group-hover:ring-white/30 transition-all ${colorClass}`}
-                              >
-                                {member.avatar ? (
-                                  <AvatarImage src={member.avatar} alt={member.name} />
-                                ) : null}
-                                <AvatarFallback
-                                  className={`${colorClass} text-white text-xs font-semibold`}
-                                >
-                                  {initials}
-                                </AvatarFallback>
-                              </Avatar>
-                              {isOwnerMember && (
-                                <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-400 text-amber-950 shadow-sm ring-2 ring-black/40">
-                                  <KeyRound className="h-2.5 w-2.5" />
-                                </span>
-                              )}
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{member.name}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      );
-                    })}
-                    {allMembers.length > 5 && (
-                      <Avatar className="h-8 w-8 border-2 border-black/30 bg-gray-600">
-                        <AvatarFallback className="bg-gray-600 text-white text-xs font-semibold">
-                          +{allMembers.length - 5}
-                        </AvatarFallback>
-                      </Avatar>
-                    )}
-                  </div>
-                  {/* Progress Bar under avatars */}
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div
-                          role="progressbar"
-                          aria-label="Tỉ lệ task đã xong"
-                          aria-valuenow={Math.round(progress)}
-                          aria-valuemin={0}
-                          aria-valuemax={100}
-                          className="ml-1 h-1.5 w-14 overflow-hidden rounded-full bg-muted"
-                        >
-                          <div
-                            className="h-full rounded-full bg-status-done transition-[width] duration-500 ease-out"
-                            style={{ width: `${progress}%` }}
-                          />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Đã xong {Math.round(progress)}% task</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>Quản lý thành viên</SheetTitle>
-                  <SheetDescription>
-                    Add or remove members from <b>{boardName}</b>
-                  </SheetDescription>
-                </SheetHeader>
-                <div className="py-6 p-4">
-                  <BoardMembersManager 
-                    boardId={boardId} 
-                    isOwner={isOwner} 
-                    isAdmin={isAdmin}
-                    currentUserRole={currentUserRole}
-                    ownerInfo={ownerInfo}
-                  />
-                </div>
-              </SheetContent>
-            </Sheet>
-          </TooltipProvider>
-
-          {/* Separator */}
-          <div className="h-6 w-px bg-border" />
-
+      {/* Hàng lọc: cùng chiều cao control (36px) như màn "Việc của tôi". */}
+      <div className="z-10 mb-4 flex shrink-0 flex-wrap items-center justify-between gap-2 border-b py-3">
           {/* Action Icons */}
           <TooltipProvider>
-            <div className="flex items-center gap-1">
-              {/* Search Bar - Always visible, compact */}
-              <div className="flex items-center gap-1.5 bg-transparent rounded-md px-2 py-1 border border-border">
-                <Search className="h-3.5 w-3.5 text-foreground/60 shrink-0" />
+            <div className="flex flex-wrap items-center gap-1">
+              {/* Ô tìm: cao 36px, chữ 14px — đúng dải control của title/filter row. */}
+              <div className="flex h-9 items-center gap-1.5 rounded-md border border-input bg-card px-3">
+                <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
                 <Input
                   type="text"
-                  placeholder="Tìm…"
+                  placeholder="Tìm task…"
+                  aria-label="Tìm task trong board"
                   value={filters.searchQuery}
                   onChange={(e) => onFiltersChange({ ...filters, searchQuery: e.target.value })}
-                  className="h-5 w-20 md:w-40 bg-transparent border-none text-foreground placeholder:text-muted-foreground text-xs focus-visible:ring-0 focus-visible:ring-offset-0 px-0"
+                  className="h-7 w-40 border-none bg-transparent px-0 text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 md:w-56"
                 />
                 {filters.searchQuery && (
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-4 w-4 text-foreground/60 hover:text-foreground hover:bg-muted rounded-sm shrink-0"
+                    aria-label="Xoá từ khoá"
+                    className="size-6 shrink-0 rounded-sm text-muted-foreground hover:bg-muted hover:text-foreground"
                     onClick={() => onFiltersChange({ ...filters, searchQuery: "" })}
                   >
-                    <X className="h-2.5 w-2.5" />
+                    <X className="size-3.5" />
                   </Button>
                 )}
               </div>
@@ -318,12 +289,14 @@ export function BoardHeaderBar({
                 boardId={boardId}
                 filters={filters}
                 onFiltersChange={onFiltersChange}
+                triggerClassName="size-9"
               />
 
               {/* Sort Popover */}
               <BoardSortPopover
                 sortBy={filters.sortBy}
                 onSortChange={(sortBy) => onFiltersChange({ ...filters, sortBy })}
+                triggerClassName="size-9"
               />
 
               {/* Labels Manager */}
@@ -334,9 +307,10 @@ export function BoardHeaderBar({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-foreground/70 hover:text-foreground hover:bg-muted hidden md:flex"
+                        aria-label="Quản lý nhãn"
+                        className="hidden size-9 text-muted-foreground hover:bg-muted hover:text-foreground md:flex"
                       >
-                        <Tags className="h-4 w-4" />
+                        <Tags className="size-4" />
                       </Button>
                     </SheetTrigger>
                   </TooltipTrigger>
@@ -346,7 +320,7 @@ export function BoardHeaderBar({
                   <SheetHeader>
                     <SheetTitle>Nhãn của board</SheetTitle>
                     <SheetDescription>
-                      Create and manage labels for <b>{boardName}</b>
+                      Tạo và quản lý nhãn cho <b>{boardName}</b>
                     </SheetDescription>
                   </SheetHeader>
                   <div className="py-4">
@@ -367,9 +341,10 @@ export function BoardHeaderBar({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-foreground/70 hover:text-foreground hover:bg-muted"
+                        aria-label="Thêm tuỳ chọn cho board"
+                        className="size-9 text-muted-foreground hover:bg-muted hover:text-foreground"
                       >
-                        <MoreHorizontal className="h-4 w-4" />
+                        <MoreHorizontal className="size-4" />
                       </Button>
                     </DropdownMenuTrigger>
                   </TooltipTrigger>
@@ -402,15 +377,81 @@ export function BoardHeaderBar({
             </div>
           </TooltipProvider>
 
-          {/* Share Button */}
-          {SHOW_COLLABORATION && <Button
-            className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 h-8 px-3"
-            onClick={() => setIsMembersSheetOpen(true)}
-          >
-            <Share2 className="h-4 w-4" />
-            <span>Chia sẻ</span>
-          </Button>}
-        </div>
+        {/* Thành viên + Chia sẻ: chỉ hiện khi bật cộng tác. */}
+        {SHOW_COLLABORATION && (
+          <div className="flex items-center gap-2">
+            <TooltipProvider>
+              <Sheet open={isMembersSheetOpen} onOpenChange={setIsMembersSheetOpen}>
+                <SheetTrigger asChild>
+                  <button type="button" aria-label="Quản lý thành viên" className="hidden items-center lg:flex">
+                    <span className="flex -space-x-2">
+                      {allMembers.slice(0, 5).map((member, index) => {
+                        const colorClass = AVATAR_COLORS[index % AVATAR_COLORS.length];
+                        const initials = getInitials(member.name);
+                        const isOwnerMember = ownerInfo?.userId === member.userId;
+
+                        return (
+                          <Tooltip key={member.id}>
+                            <TooltipTrigger asChild>
+                              <span className="relative">
+                                {/* Viền giấy để các avatar chồng nhau vẫn đọc rời. */}
+                                <Avatar className={`size-8 border-2 border-card ${colorClass}`}>
+                                  {member.avatar ? (
+                                    <AvatarImage src={member.avatar} alt={member.name} />
+                                  ) : null}
+                                  <AvatarFallback className={`${colorClass} text-xs font-semibold text-white`}>
+                                    {initials}
+                                  </AvatarFallback>
+                                </Avatar>
+                                {isOwnerMember && (
+                                  <span className="absolute -right-1 -bottom-1 flex size-4 items-center justify-center rounded-full bg-status-doing-soft text-status-doing ring-1 ring-card">
+                                    <KeyRound className="size-2.5" />
+                                  </span>
+                                )}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>{member.name}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        );
+                      })}
+                      {allMembers.length > 5 && (
+                        <Avatar className="size-8 border-2 border-card bg-muted">
+                          <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
+                            +{allMembers.length - 5}
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                    </span>
+                  </button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Quản lý thành viên</SheetTitle>
+                    <SheetDescription>
+                      Thêm hoặc bớt thành viên của <b>{boardName}</b>
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="p-4 py-6">
+                    <BoardMembersManager
+                      boardId={boardId}
+                      isOwner={isOwner}
+                      isAdmin={isAdmin}
+                      currentUserRole={currentUserRole}
+                      ownerInfo={ownerInfo}
+                    />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </TooltipProvider>
+
+            <Button variant="outline" className="h-9 gap-1.5 px-3" onClick={() => setIsMembersSheetOpen(true)}>
+              <Share2 className="size-4" aria-hidden="true" />
+              <span>Chia sẻ</span>
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Delete Confirmation Dialog */}
@@ -419,8 +460,8 @@ export function BoardHeaderBar({
           <AlertDialogHeader>
             <AlertDialogTitle>Xoá board</AlertDialogTitle>
             <AlertDialogDescription>
-              Bạn chắc chắn muốn xoá <strong>"{boardName}"</strong>? This action cannot be undone. 
-              All lists, cards, and data in this board will be permanently deleted.
+              Bạn chắc chắn muốn xoá <strong>"{boardName}"</strong>? Thao tác này không hoàn tác được.
+              Mọi danh sách, task và dữ liệu trong board sẽ bị xoá vĩnh viễn.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

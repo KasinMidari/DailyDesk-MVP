@@ -12,7 +12,8 @@ export default function Layout() {
     <Providers>
       <SidebarProvider>
         <AppSidebar />
-        <main className="flex h-screen w-full flex-col overflow-hidden bg-background">
+        {/* h-dvh: thanh công cụ động của Safari/Chrome mobile không cắt mất đáy. */}
+        <main className="flex h-dvh w-full flex-col overflow-hidden bg-background">
           {/* Chỉ trên màn hẹp: nút mở bìa sổ */}
           <div className="flex items-center gap-2 border-b bg-background px-3 py-2 md:hidden">
             <SidebarTrigger aria-label="Mở menu" />

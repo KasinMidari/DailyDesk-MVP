@@ -5,7 +5,8 @@
  */
 import getConfig from "@/lib/config";
 
-export const USE_MOCK = import.meta.env.VITE_USE_MOCK !== "false";
+/** Mặc định dùng backend thật; backend giả chỉ bật khi xin rõ (demo offline). */
+export const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
 
 const LATENCY_MS = 250;
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -70,5 +71,5 @@ if (USE_MOCK && typeof window !== "undefined") {
     return json(result.body, result.status);
   };
 
-  console.info("[DailyDesk] Đang chạy với dữ liệu mock (VITE_USE_MOCK=false để tắt).");
+  console.info("[DailyDesk] Đang chạy với dữ liệu mock (bỏ VITE_USE_MOCK=true để dùng backend thật).");
 }

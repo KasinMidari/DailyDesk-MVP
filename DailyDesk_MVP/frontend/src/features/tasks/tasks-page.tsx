@@ -36,7 +36,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   PRIORITY_LABEL,
-  STATUS_LABEL,
+  STATUS_TEXT,
   STATUS_ORDER,
   useBoardsSummary,
   useCreateTask,
@@ -120,7 +120,7 @@ function PlannerTabs({
 }) {
   const tabs: { key: Filters["status"]; label: string }[] = [
     { key: "all", label: "Tất cả" },
-    ...STATUS_ORDER.map((s) => ({ key: s, label: STATUS_LABEL[s] })),
+    ...STATUS_ORDER.map((s) => ({ key: s, label: STATUS_TEXT[s] })),
   ];
   return (
     <div role="tablist" aria-label="Lọc theo trạng thái" className="flex gap-1 overflow-x-auto border-b sm:gap-4">
@@ -185,7 +185,7 @@ function StatusBox({ task, onChange }: { task: Task; onChange: (s: Status) => vo
   return (
     <button
       type="button"
-      aria-label={done ? `Mở lại "${task.name}"` : `Đánh dấu "${task.name}" là Done`}
+      aria-label={done ? `Mở lại "${task.name}"` : `Đánh dấu "${task.name}" là ${STATUS_TEXT.done}`}
       title={done ? "Mở lại" : "Đánh dấu xong"}
       onClick={(e) => {
         e.stopPropagation();
@@ -203,7 +203,8 @@ function StatusBox({ task, onChange }: { task: Task; onChange: (s: Status) => vo
 const STATUS_INK: Record<Status, string> = {
   todo: "text-muted-foreground",
   doing: "text-status-doing",
-  done: "text-ink",
+  // Done là trạng thái yên nhất: than chì nhạt, không phải màu mực.
+  done: "text-status-done",
 };
 
 function StatusMenu({ task, onChange }: { task: Task; onChange: (s: Status) => void }) {
@@ -212,14 +213,14 @@ function StatusMenu({ task, onChange }: { task: Task; onChange: (s: Status) => v
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          aria-label={`Trạng thái: ${STATUS_LABEL[task.status]}. Bấm để đổi`}
+          aria-label={`Trạng thái: ${STATUS_TEXT[task.status]}. Bấm để đổi`}
           onClick={(e) => e.stopPropagation()}
           className={cn(
             "-mx-1.5 inline-flex h-8 items-center gap-0.5 rounded-md px-1.5 text-[13px] font-semibold outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:bg-accent",
             STATUS_INK[task.status],
           )}
         >
-          {STATUS_LABEL[task.status]}
+          {STATUS_TEXT[task.status]}
           <ChevronDown className="size-3.5 opacity-60" aria-hidden="true" />
         </button>
       </DropdownMenuTrigger>
@@ -230,7 +231,7 @@ function StatusMenu({ task, onChange }: { task: Task; onChange: (s: Status) => v
             <span className="status-box scale-75" data-status={s} aria-hidden="true">
               {s === "done" && <Tick />}
             </span>
-            {STATUS_LABEL[s]}
+            {STATUS_TEXT[s]}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
@@ -282,7 +283,8 @@ function TaskRow({
         <StatusBox task={task} onChange={onStatus} />
       </div>
 
-      <div className="min-w-0 pl-3 sm:pl-4">
+      {/* Cột tiêu đề bắt đầu đúng tại đường lề đỏ + một gutter, như tiêu đề nhóm ngày. */}
+      <div className="min-w-0 pl-3">
         <div className="flex min-w-0 items-center gap-2.5">
           <button
             type="button"
@@ -297,7 +299,8 @@ function TaskRow({
           >
             {task.name}
           </button>
-          {done && <span className={cn("stamp shrink-0", flash && "stamp-press")}>XONG</span>}
+          {/* Con dấu chỉ đóng một lần, lúc vừa tick; dòng Done lúc nghỉ chỉ còn ô tick + gạch ngang. */}
+          {done && flash && <span className="stamp stamp-press shrink-0">XONG</span>}
         </div>
         {task.description && <p className="line-clamp-1 text-sm text-muted-foreground">{task.description}</p>}
         {/* Thông tin phụ trên màn hẹp */}
@@ -322,7 +325,8 @@ function TaskRow({
       <span className="hidden lg:block">
         <PriorityTag priority={task.priority} />
       </span>
-      <span className="hidden lg:block">
+      {/* Ngày là thứ người dùng so dọc theo cột: một mép phải chung, chữ số tabular. */}
+      <span className="hidden text-right lg:block">
         {task.dueAt ? (
           <span className={cn("block text-sm tabular", overdue ? "font-medium text-overdue" : done ? "text-muted-foreground" : "")}>
             {dueText(task.dueAt)}
@@ -363,14 +367,29 @@ function TaskRow({
   );
 }
 
-function SkeletonRows() {
+/** Khung chờ: đúng lưới, pitch và số cột của TaskRow, mỗi giá trị là một thanh xám ở cỡ thật. */
+function SkeletonRows({ showBoard }: { showBoard: boolean }) {
   return (
     <ul aria-hidden="true" className="divide-y">
       {Array.from({ length: 5 }).map((_, i) => (
-        <li key={i} className="flex items-center gap-4 px-5 py-4">
-          <span className="size-5 animate-pulse rounded bg-muted" />
-          <span className="ml-4 h-4 flex-1 animate-pulse rounded bg-muted" style={{ maxWidth: `${60 - i * 7}%` }} />
-          <span className="hidden h-4 w-24 animate-pulse rounded bg-muted md:block" />
+        <li
+          key={i}
+          className={cn(
+            "grid grid-cols-[1.25rem_minmax(0,1fr)_auto] items-start gap-x-3 px-4 py-3 sm:px-5 lg:items-center lg:py-2.5",
+            showBoard ? ROW_COLS_BOARD : ROW_COLS,
+          )}
+        >
+          <span className="size-5 rounded bg-muted" />
+          <div className="min-w-0 pl-3">
+            <span className="block h-[15px] rounded bg-muted" style={{ width: `${70 - i * 8}%` }} />
+            {/* Hàng thông tin phụ của màn hẹp cũng chiếm chỗ, để lưới không nhảy khi data về. */}
+            <span className="mt-1.5 block h-8 w-44 max-w-full rounded bg-muted lg:hidden" />
+          </div>
+          <span className="hidden h-[13px] w-14 rounded bg-muted lg:block" />
+          {showBoard && <span className="hidden h-[14px] w-20 rounded bg-muted lg:block" />}
+          <span className="hidden h-[14px] w-10 rounded bg-muted lg:block" />
+          <span className="hidden h-[14px] w-24 justify-self-end rounded bg-muted lg:block" />
+          <span />
         </li>
       ))}
     </ul>
@@ -382,7 +401,7 @@ function EmptyNote({ icon: Icon, title, body, children }: { icon: typeof Calenda
     <div className="flex flex-col items-start gap-3 py-14 pr-6 pl-16 sm:pl-20">
       <Icon className="size-7 text-ink" aria-hidden="true" />
       <div>
-        <p className="font-planner text-lg font-semibold">{title}</p>
+        <p className="text-lg font-semibold">{title}</p>
         <p className="mt-1 max-w-sm text-sm text-muted-foreground">{body}</p>
       </div>
       {children && <div className="flex flex-wrap gap-2">{children}</div>}
@@ -464,7 +483,7 @@ export default function TasksPage() {
     try {
       await updateTask.mutateAsync({ task, input: { status } });
       setFlashId(task.id);
-      toast.success(`Đã chuyển "${task.name}" sang ${STATUS_LABEL[status]}`);
+      toast.success(`Đã chuyển "${task.name}" sang ${STATUS_TEXT[status]}`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Không đổi được trạng thái");
     }
@@ -517,7 +536,7 @@ export default function TasksPage() {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-sm text-muted-foreground">{today}</p>
-          <h1 className="font-planner mt-1 text-[2rem] leading-tight font-semibold sm:text-[2.25rem]">Việc của tôi</h1>
+          <h1 className="font-planner mt-1 text-[1.75rem] leading-tight font-semibold">Việc của tôi</h1>
           {tasksQuery.isSuccess && (
             <p className="mt-1.5 text-sm text-muted-foreground">
               {openCount === 0 ? "Không còn việc nào đang chờ." : `${openCount} việc chưa xong`}
@@ -539,9 +558,16 @@ export default function TasksPage() {
             </p>
           )}
         </div>
-        <Button onClick={openNew} size="lg" className="h-10 gap-2 px-4" title="Phím tắt: N">
+        <Button onClick={openNew} size="lg" className="h-10 gap-2 px-4">
           <Plus className="size-4" aria-hidden="true" />
           Thêm task
+          {/* Phím tắt hiện ngay trên nút, không nằm trong tooltip. */}
+          <kbd
+            aria-hidden="true"
+            className="ml-0.5 hidden rounded bg-primary-foreground/20 px-1.5 py-px text-[11px] font-semibold sm:inline-block"
+          >
+            N
+          </kbd>
         </Button>
       </header>
 
@@ -558,9 +584,16 @@ export default function TasksPage() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Tìm theo tiêu đề hoặc mô tả"
               aria-label="Tìm task"
-              title="Phím tắt: /"
               className="h-9 w-full rounded-md border border-input bg-card pr-9 pl-9 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/25 [&::-webkit-search-cancel-button]:hidden"
             />
+            {!query && (
+              <kbd
+                aria-hidden="true"
+                className="pointer-events-none absolute top-1/2 right-2.5 hidden -translate-y-1/2 rounded bg-muted px-1.5 py-px text-[11px] font-medium text-muted-foreground sm:block"
+              >
+                /
+              </kbd>
+            )}
             {query && (
               <button
                 type="button"
@@ -606,7 +639,8 @@ export default function TasksPage() {
           </div>
         </div>
 
-        <div className="planner-page overflow-hidden rounded-md border shadow-[0_1px_2px_oklch(0.3_0.04_80/0.08),0_12px_28px_-18px_oklch(0.3_0.05_80/0.35)]">
+        {/* Ngăn kéo: một bóng duy nhất của app, nên không kèm viền (bậc nền --card đã tách khỏi giấy). */}
+        <div className="planner-page overflow-hidden rounded-md shadow-[0_1px_2px_oklch(0.3_0.04_80/0.08),0_12px_28px_-18px_oklch(0.3_0.05_80/0.35)]">
           <div
             className={cn(
               "hidden gap-x-3 border-b px-5 py-2 text-xs text-muted-foreground lg:grid",
@@ -614,16 +648,17 @@ export default function TasksPage() {
             )}
           >
             <span />
-            <span className="pl-4">Việc</span>
+            {/* pl-3 cho khớp mép chữ của hàng task, để nhãn cột không lệch khỏi tiêu đề ở sm. */}
+            <span className="pl-3">Việc</span>
             <span>Trạng thái</span>
             {showBoard && <span>Board</span>}
             <span>Ưu tiên</span>
-            <span>Hạn chót</span>
+            <span className="text-right">Hạn chót</span>
             <span />
           </div>
 
           {tasksQuery.isPending ? (
-            <SkeletonRows />
+            <SkeletonRows showBoard={showBoard} />
           ) : tasksQuery.isError ? (
             <div role="alert">
               <EmptyNote icon={CircleAlert} title="Không tải được danh sách task" body={tasksQuery.error.message}>
@@ -648,7 +683,7 @@ export default function TasksPage() {
               icon={SearchX}
               title={
                 filters.status !== "all" && !hasFilters
-                  ? `Không có task nào ở trạng thái ${STATUS_LABEL[filters.status]}`
+                  ? `Không có task nào ở trạng thái ${STATUS_TEXT[filters.status]}`
                   : "Không có task nào khớp bộ lọc"
               }
               body={filters.q ? `Không tìm thấy "${filters.q}".` : "Thử bỏ bớt điều kiện lọc."}
@@ -671,7 +706,7 @@ export default function TasksPage() {
                   {g.key && (
                     <h2
                       className={cn(
-                        "font-planner sticky top-0 z-[3] flex items-baseline gap-2 border-b bg-card pt-4 pr-5 pb-1.5 pl-[3.75rem] text-[15px] font-semibold sm:pl-[4.25rem]",
+                        "font-planner sticky top-0 z-[3] flex items-baseline gap-2 border-b bg-card pt-4 pr-5 pb-1.5 pl-[calc(var(--planner-margin)+0.75rem)] text-[15px] font-semibold",
                         g.key === "overdue" ? "text-overdue" : "text-foreground",
                       )}
                     >
@@ -701,8 +736,8 @@ export default function TasksPage() {
           )}
         </div>
         {tasksQuery.isSuccess && visible.length > 0 && (
-          <p className="mt-3 px-1 text-xs text-muted-foreground">
-            Hiển thị {visible.length}/{tasks.length} task · Bấm vào một dòng để sửa, bấm ô vuông để đánh dấu xong
+          <p className="mt-3 px-1 text-xs text-muted-foreground tabular">
+            Hiển thị {visible.length}/{tasks.length} task
           </p>
         )}
       </section>

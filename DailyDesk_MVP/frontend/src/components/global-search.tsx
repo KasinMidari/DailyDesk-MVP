@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/command";
 import { useNavigate } from "react-router";
 import { Badge } from "@/components/ui/badge";
+import { listDisplayName } from "@/features/tasks/api";
 import { cn } from "@/lib/utils";
 
 export function GlobalSearch({ trigger }: { trigger?: (open: () => void) => ReactNode } = {}) {
@@ -107,7 +108,7 @@ export function GlobalSearch({ trigger }: { trigger?: (open: () => void) => Reac
             <>
             {/* Boards */}
             {groupedResults.board && groupedResults.board.length > 0 && (
-              <CommandGroup heading="Boards">
+              <CommandGroup heading="Board">
                 {groupedResults.board.map((result: any) => (
                   <CommandItem
                     key={result.id}
@@ -136,7 +137,7 @@ export function GlobalSearch({ trigger }: { trigger?: (open: () => void) => Reac
 
             {/* Cards */}
             {groupedResults.card && groupedResults.card.length > 0 && (
-              <CommandGroup heading="Cards">
+              <CommandGroup heading="Task">
                 {groupedResults.card.map((result: any) => (
                   <CommandItem
                     key={result.id}
@@ -159,7 +160,7 @@ export function GlobalSearch({ trigger }: { trigger?: (open: () => void) => Reac
                         )}
                       </div>
                       <span className="text-xs text-muted-foreground">
-                        {result.boardName} • {result.listName}
+                        {result.boardName} • {listDisplayName(result.listName ?? "")}
                       </span>
                     </div>
                   </CommandItem>
@@ -169,16 +170,16 @@ export function GlobalSearch({ trigger }: { trigger?: (open: () => void) => Reac
 
             {/* Lists */}
             {groupedResults.list && groupedResults.list.length > 0 && (
-              <CommandGroup heading="Lists">
+              <CommandGroup heading="Danh sách">
                 {groupedResults.list.map((result: any) => (
                   <CommandItem
                     key={result.id}
                     onSelect={() => handleSelect("list", result.id, result.boardId)}
                   >
                     <div className="flex flex-col gap-1 w-full">
-                      <span className="font-medium truncate">{result.name}</span>
+                      <span className="font-medium truncate">{listDisplayName(result.name ?? "")}</span>
                       <span className="text-xs text-muted-foreground">
-                        {result.boardName} • {result.cardCount} cards
+                        {result.boardName} • {result.cardCount} task
                       </span>
                     </div>
                   </CommandItem>
@@ -188,7 +189,7 @@ export function GlobalSearch({ trigger }: { trigger?: (open: () => void) => Reac
 
             {/* Comments */}
             {groupedResults.comment && groupedResults.comment.length > 0 && (
-              <CommandGroup heading="Comments">
+              <CommandGroup heading="Bình luận">
                 {groupedResults.comment.map((result: any) => (
                   <CommandItem
                     key={result.id}
@@ -207,7 +208,7 @@ export function GlobalSearch({ trigger }: { trigger?: (open: () => void) => Reac
 
             {/* Labels */}
             {groupedResults.label && groupedResults.label.length > 0 && (
-              <CommandGroup heading="Labels">
+              <CommandGroup heading="Nhãn">
                 {groupedResults.label.map((result: any) => (
                   <CommandItem
                     key={result.id}
@@ -220,7 +221,7 @@ export function GlobalSearch({ trigger }: { trigger?: (open: () => void) => Reac
                       />
                       <span className="flex-1 truncate">{result.name}</span>
                       <span className="text-xs text-muted-foreground">
-                        {result.cardCount} cards
+                        {result.cardCount} task
                       </span>
                     </div>
                   </CommandItem>
@@ -230,7 +231,7 @@ export function GlobalSearch({ trigger }: { trigger?: (open: () => void) => Reac
 
             {/* Checklist Items */}
             {groupedResults.checklist && groupedResults.checklist.length > 0 && (
-              <CommandGroup heading="Checklist Items">
+              <CommandGroup heading="Việc con">
                 {groupedResults.checklist.map((result: any) => (
                   <CommandItem
                     key={result.id}

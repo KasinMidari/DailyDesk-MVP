@@ -587,7 +587,7 @@ export function CardDates({
             className="flex-1 h-8"
             disabled={!selectedDate || updateDueMutation.isPending}
           >
-            {updateDueMutation.isPending ? "Đang lưu…" : "Lưu"}
+            {updateDueMutation.isPending ? "Đang lưu…" : createMode ? "Xong" : "Lưu"}
           </Button>
           {card.dueAt && (
             <Button
@@ -895,7 +895,7 @@ export function CardDates({
               className="flex-1"
               disabled={updateDueMutation.isPending}
             >
-              {updateDueMutation.isPending ? "Đang lưu…" : "Lưu"}
+              {updateDueMutation.isPending ? "Đang lưu…" : createMode ? "Xong" : "Lưu"}
             </Button>
             <Button
               onClick={handleRemove}

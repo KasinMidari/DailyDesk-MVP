@@ -1,0 +1,4 @@
+# Skill cài từ ngoài (npx skills add) — 2.5MB, không cần theo repo
+.agents/
+.claude/skills/design-taste-frontend
+skills-lock.json

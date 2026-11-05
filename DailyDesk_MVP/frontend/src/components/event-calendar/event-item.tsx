@@ -14,8 +14,9 @@ import {
 } from "@/components/event-calendar";
 import { cn } from "@/lib/utils";
 
+// Đã xong là trạng thái yên nhất: không nền, chữ mờ, gạch ngang.
 const doneEventClasses =
-  "bg-ink-soft text-ink/80 line-through decoration-ink/50 hover:brightness-[0.97]";
+  "bg-transparent text-muted-foreground line-through decoration-muted-foreground/60 hover:bg-muted/50";
 
 // Using date-fns format with custom formatting:
 // 'h' - hours (1-12)
@@ -142,7 +143,7 @@ export function EventItem({
   }, [displayStart, displayEnd]);
 
   const getEventTime = () => {
-    if (event.allDay) return "All day";
+    if (event.allDay) return "Cả ngày";
 
     // For short events (less than 45 minutes), only show start time
     if (durationMinutes < 45) {
@@ -157,7 +158,7 @@ export function EventItem({
     return (
       <EventWrapper
         className={cn(
-          "mt-[var(--event-gap)] h-[var(--event-height)] items-center text-[10px] sm:text-xs",
+          "mt-[var(--event-gap)] h-[var(--event-height)] items-center text-[11px] sm:text-xs",
           className,
         )}
         currentTime={currentTime}
@@ -174,7 +175,7 @@ export function EventItem({
         {children || (
           <div className="flex items-center gap-1 truncate w-full">
             {event.isDone && (
-              <CheckCircle2 className="w-3 h-3 flex-shrink-0 text-ink" />
+              <CheckCircle2 className="w-3 h-3 flex-shrink-0" />
             )}
             {event.isRecurring && (
               <Repeat className="w-3 h-3 flex-shrink-0 opacity-70" />
@@ -199,7 +200,7 @@ export function EventItem({
         className={cn(
           "py-1",
           durationMinutes < 45 ? "items-center" : "flex-col",
-          view === "week" ? "text-[10px] sm:text-xs" : "text-xs",
+          view === "week" ? "text-[11px] sm:text-xs" : "text-xs",
           className,
         )}
         currentTime={currentTime}
@@ -217,7 +218,7 @@ export function EventItem({
           <div className="flex flex-col gap-0.5 w-full">
             <div className="truncate flex items-center gap-1">
               {event.isDone && (
-                <CheckCircle2 className="w-3 h-3 flex-shrink-0 text-ink" />
+                <CheckCircle2 className="w-3 h-3 flex-shrink-0" />
               )}
               {event.title}{" "}
               {showTime && (
@@ -231,7 +232,7 @@ export function EventItem({
           <>
             <div className="font-medium truncate flex items-center gap-1">
               {event.isDone && (
-                <CheckCircle2 className="w-3 h-3 flex-shrink-0 text-ink" />
+                <CheckCircle2 className="w-3 h-3 flex-shrink-0" />
               )}
               {event.title}
             </div>
@@ -264,7 +265,7 @@ export function EventItem({
     >
       <div className="text-sm font-medium flex items-center gap-1">
         {event.isDone && (
-          <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-ink" />
+          <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
         )}
         {event.title}
       </div>

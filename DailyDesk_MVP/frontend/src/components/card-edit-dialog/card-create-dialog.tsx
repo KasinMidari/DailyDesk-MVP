@@ -27,6 +27,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useUploadImage, useUploadConfig } from "@/hooks/use-image";
+import { SHOW_ATTACHMENTS, SHOW_COVER_UPLOAD } from "@/lib/features";
 import { queryClient } from "@/lib/query-client";
 import { toast } from "react-hot-toast";
 import api from "@/lib/api";
@@ -547,10 +548,11 @@ function InnerCardCreateDialog({
       <DialogContent
         className="!flex !flex-col !p-0 !gap-0"
         style={{
+          // Cao theo nội dung, chỉ chặn trên — không chừa lỗ trống ở đáy.
           maxWidth: compact ? '820px' : '1200px',
           width: compact ? '92vw' : '90vw',
-          height: compact ? '85vh' : (hasCover ? '650px' : '550px'),
-          minHeight: compact ? '600px' : '500px'
+          height: 'auto',
+          maxHeight: compact ? '85svh' : 'min(650px, 90svh)',
         }}
         showCloseButton={false}
       >
@@ -570,14 +572,14 @@ function InnerCardCreateDialog({
 
         {/* Loading overlay with progress */}
         {(isCreating || isBatchUploading) && (
-          <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center">
+          <div className="absolute inset-0 z-50 bg-background/90 flex items-center justify-center">
             <div className="flex flex-col items-center gap-4 bg-background p-6 rounded-lg shadow-lg border">
               <Loader2 className="h-10 w-10 animate-spin text-primary" />
               {isBatchUploading ? (
                 <>
                   <p className="text-sm font-medium">{uploadProgress.step}</p>
                   <p className="text-xs text-muted-foreground">
-                    Step {uploadProgress.current} of {uploadProgress.total}
+                    Bước {uploadProgress.current}/{uploadProgress.total}
                   </p>
                   <div className="w-64 h-2 bg-muted rounded-full overflow-hidden">
                     <div
@@ -623,7 +625,7 @@ function InnerCardCreateDialog({
         >
           {/* Title */}
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-muted-foreground">Card Title *</label>
+            <label className="text-sm font-medium">Tiêu đề</label>
             <Input
               autoFocus
               placeholder="Nhập tiêu đề task…"
@@ -635,7 +637,7 @@ function InnerCardCreateDialog({
 
           {lists && lists.length > 0 && (
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-muted-foreground">Danh sách</label>
+              <label className="text-sm font-medium">Danh sách</label>
               <Select
                 value={activeListId}
                 onValueChange={(nextListId) => {
@@ -659,6 +661,17 @@ function InnerCardCreateDialog({
               </Select>
             </div>
           )}
+
+          {/* Mô tả: ngay dưới tiêu đề, cùng thứ tự trường với form task */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium">Mô tả</label>
+            <Textarea
+              placeholder="Ghi chú thêm, đường link, các bước cần làm…"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="min-h-24 resize-y leading-relaxed"
+            />
+          </div>
 
           {/* Action buttons row */}
           <div className="flex flex-wrap gap-2">
@@ -703,6 +716,7 @@ function InnerCardCreateDialog({
                 }
               />
             )}
+            {SHOW_COVER_UPLOAD && (
             <Popover open={isCoverPopoverOpen} onOpenChange={setIsCoverPopoverOpen}>
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8">
@@ -730,6 +744,7 @@ function InnerCardCreateDialog({
                 </div>
               </PopoverContent>
             </Popover>
+            )}
             <Popover open={isChecklistPopoverOpen} onOpenChange={setIsChecklistPopoverOpen}>
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8">
@@ -770,6 +785,7 @@ function InnerCardCreateDialog({
                 </div>
               </PopoverContent>
             </Popover>
+            {SHOW_ATTACHMENTS && (
             <Popover open={isAttachmentPopoverOpen} onOpenChange={setIsAttachmentPopoverOpen}>
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8">
@@ -821,6 +837,7 @@ function InnerCardCreateDialog({
                 </div>
               </PopoverContent>
             </Popover>
+            )}
           </div>
 
           {/* Labels display */}
@@ -861,7 +878,7 @@ function InnerCardCreateDialog({
 
           {(startDate || dueAt) && (
             <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">Ngày</label>
+              <label className="text-sm font-medium">Hạn chót</label>
               <div className="flex flex-wrap gap-2">
                 {startDate && (
                   <Button
@@ -898,7 +915,7 @@ function InnerCardCreateDialog({
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold">Xem trước việc con</h3>
                 <span className="text-xs text-muted-foreground">
-                  {tempChecklistItems.filter(i => i.completed).length}/{tempChecklistItems.length} completed
+                  {tempChecklistItems.filter(i => i.completed).length}/{tempChecklistItems.length} đã xong
                 </span>
               </div>
               <div className="space-y-2">
@@ -959,26 +976,17 @@ function InnerCardCreateDialog({
             </div>
           )}
 
-          {/* Description */}
-          <div className="flex flex-col gap-2 flex-1">
-            <label className="text-sm font-medium text-muted-foreground">Mô tả</label>
-            <Textarea
-              placeholder="Thêm mô tả…"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="flex-1 resize-none min-h-[100px]"
-            />
-          </div>
+        </div>
 
-          {/* Footer with Create button */}
-          <div className="flex justify-end gap-2 pt-2 border-t">
-            <Button variant="outline" onClick={handleClose}>
-              Huỷ
-            </Button>
-            <Button onClick={handleCreate} disabled={!title.trim() || isSubmitting}>
-              {isSubmitting ? "Creating..." : "Create Card"}
-            </Button>
-          </div>
+        {/* Một nút Lưu cho cả hộp thoại, luôn thấy được */}
+        <div className="flex shrink-0 items-center justify-end gap-2 border-t px-6 py-4">
+          <Button type="button" variant="outline" onClick={handleClose}>
+            Huỷ
+          </Button>
+          <Button onClick={handleCreate} disabled={!title.trim() || isSubmitting} className="min-w-28">
+            {isSubmitting && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+            {isSubmitting ? "Đang tạo…" : "Tạo task"}
+          </Button>
         </div>
 
         {(startDate || dueAt) && (

@@ -8,6 +8,9 @@ import getConfig from "@/lib/config";
 import store from "@/stores/store";
 import { accessTokenAtom } from "@/stores/access-token";
 import { getAccessTokenFnAtom } from "@/stores/auth";
+import { ApiError, apiErrorFrom, fallbackMessage } from "@/lib/api-error";
+
+export { ApiError };
 
 export type Status = "todo" | "doing" | "done";
 export type Priority = "high" | "medium" | "low";
@@ -31,17 +34,15 @@ export type Task = {
 export type BoardSummary = { id: string; name: string; backgroundColor?: string | null };
 
 export const STATUS_ORDER: Status[] = ["todo", "doing", "done"];
+/**
+ * Tên danh sách gửi lên backend khi phải tạo list mới. Giữ tiếng Anh để khớp
+ * board seed sẵn có ("Todo" / "Doing" / "Done") — đây là dữ liệu, không phải nhãn.
+ */
 export const STATUS_LABEL: Record<Status, string> = { todo: "Todo", doing: "Doing", done: "Done" };
+/** Nhãn hiển thị trên giao diện. Tách khỏi tên list để đổi chữ không đổi dữ liệu. */
+export const STATUS_TEXT: Record<Status, string> = { todo: "Cần làm", doing: "Đang làm", done: "Xong" };
 export const PRIORITY_LABEL: Record<Priority, string> = { high: "Cao", medium: "Vừa", low: "Thấp" };
 export const PRIORITY_RANK: Record<Priority, number> = { high: 0, medium: 1, low: 2 };
-
-export class ApiError extends Error {
-  status: number;
-  constructor(status: number, message: string) {
-    super(message);
-    this.status = status;
-  }
-}
 
 async function token() {
   const current = store.get(accessTokenAtom);
@@ -62,14 +63,26 @@ export async function request<T>(method: string, path: string, body?: unknown): 
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch {
-    throw new ApiError(0, "Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.");
+    throw new ApiError(0, fallbackMessage(0));
   }
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new ApiError(res.status, data?.message ?? "Có lỗi xảy ra, vui lòng thử lại.");
-  return data as T;
+  if (!res.ok) throw await apiErrorFrom(res);
+  return (await res.json().catch(() => ({}))) as T;
 }
 
 /** Tên danh sách → trạng thái. Danh sách lạ được coi là Todo. */
+/**
+ * Tên list để hiển thị. Ba list mặc định mang tên tiếng Anh vì đó là dữ liệu
+ * theo data-model §41; màn hình thì nói tiếng Việt, nên đổi ngay chỗ in ra.
+ * List do người dùng tự đặt tên giữ nguyên.
+ */
+export function listDisplayName(name: string): string {
+  const n = name.trim().toLowerCase();
+  if (n === "todo") return STATUS_TEXT.todo;
+  if (n === "doing") return STATUS_TEXT.doing;
+  if (n === "done") return STATUS_TEXT.done;
+  return name;
+}
+
 export function statusFromList(name: string): Status {
   const n = name.trim().toLowerCase();
   if (["doing", "đang làm", "in progress"].includes(n)) return "doing";

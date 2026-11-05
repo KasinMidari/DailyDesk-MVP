@@ -38,6 +38,18 @@ export async function requireCard(db: Db, userId: string, boardId: string, cardI
 }
 
 /** Trạng thái suy ra từ tên danh sách (data-model.md). */
+/**
+ * Tên list dùng trong dòng nhật ký. Ba list mặc định mang tên tiếng Anh vì đó
+ * là dữ liệu (data-model §41), nhưng nhật ký là câu tiếng Việt người dùng đọc.
+ */
+export function listDisplayName(name: string): string {
+  const n = name.trim().toLowerCase();
+  if (n === "todo") return "Cần làm";
+  if (n === "doing") return "Đang làm";
+  if (n === "done") return "Xong";
+  return name;
+}
+
 export function statusFromList(name: string): "todo" | "doing" | "done" {
   const n = name.trim().toLowerCase();
   if (["doing", "đang làm", "in progress"].includes(n)) return "doing";

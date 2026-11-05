@@ -19,6 +19,7 @@ import {
   BackgroundPickerProvider,
   useBackgroundPickerContext,
 } from "@/components/background-picker-provider";
+import { SHOW_COVER_UPLOAD } from "@/lib/features";
 
 interface CreateBoardDialogProps {
   open: boolean;
@@ -132,7 +133,7 @@ function DialogForm({
         </div>
 
         <div className="grid gap-4">
-          <Label>Ảnh nền</Label>
+          <Label>{SHOW_COVER_UPLOAD ? "Ảnh nền" : "Màu nền"}</Label>
           <BackgroundPicker />
         </div>
 

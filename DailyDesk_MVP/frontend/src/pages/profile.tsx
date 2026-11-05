@@ -94,10 +94,10 @@ export default function ProfilePage() {
 
   return (
     <div className="w-full h-full overflow-auto">
-      <div className="container max-w-5xl mx-auto p-6 space-y-6">
+      <div className="mx-auto w-full max-w-6xl space-y-6 px-4 pt-8 pb-16 sm:px-6 lg:px-10">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-planner text-[2rem] leading-tight font-semibold sm:text-[2.25rem]">Hồ sơ cá nhân</h1>
+            <h1 className="font-planner text-[1.75rem] leading-tight font-semibold">Hồ sơ cá nhân</h1>
             <p className="text-muted-foreground">
               Quản lý thông tin cá nhân và cài đặt của bạn
             </p>
