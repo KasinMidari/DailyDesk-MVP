@@ -41,18 +41,18 @@ type ListSeed = { name: string; cards: CardSeed[] };
 type BoardSeed = { name: string; color: string; isDefault?: boolean; lists: ListSeed[] };
 
 const LABELS: { name: string; color: string }[] = [
-  { name: "Gấp", color: "#a8443c" },
-  { name: "Cá nhân", color: "#3f6b52" },
-  { name: "Học", color: "#5b4b8a" },
-  { name: "Công việc", color: "#3a5a7d" },
-  { name: "Chờ phản hồi", color: "#94701f" },
+  { name: "Gấp", color: "#e2483d" },
+  { name: "Cá nhân", color: "#1f845a" },
+  { name: "Học", color: "#8f7ee7" },
+  { name: "Công việc", color: "#0c66e4" },
+  { name: "Chờ phản hồi", color: "#e2b203" },
 ];
 
 /** Các list tên "Done"/"Đã xong" được coi là đã hoàn thành (statusFromList). */
 const PLAN: BoardSeed[] = [
   {
     name: "Việc của tôi",
-    color: "#3a5a7d",
+    color: "#0c66e4",
     isDefault: true,
     lists: [
       {
@@ -151,7 +151,7 @@ const PLAN: BoardSeed[] = [
   },
   {
     name: "Học tập",
-    color: "#5b4b8a",
+    color: "#8f7ee7",
     lists: [
       {
         name: "Chờ học",
@@ -191,7 +191,7 @@ const PLAN: BoardSeed[] = [
   },
   {
     name: "Dự án KITS",
-    color: "#3f6b52",
+    color: "#1f845a",
     lists: [
       {
         name: "Todo",

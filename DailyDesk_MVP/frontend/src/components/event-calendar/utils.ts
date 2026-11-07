@@ -53,22 +53,44 @@ export function getEventColorClasses(color?: EventColor | string): string {
 
   switch (eventColor) {
     case "sky":
-      return "bg-muted hover:bg-accent text-foreground ring-1 ring-inset ring-rule";
+      return "bg-sky-200/50 hover:bg-sky-200/40 text-sky-950/80 dark:bg-sky-400/25 dark:hover:bg-sky-400/20 dark:text-sky-200 shadow-sky-700/8";
     case "amber":
-      return "bg-status-doing-soft hover:brightness-[0.97] text-foreground ring-1 ring-inset ring-status-doing/40";
+      return "bg-amber-200/50 hover:bg-amber-200/40 text-amber-950/80 dark:bg-amber-400/25 dark:hover:bg-amber-400/20 dark:text-amber-200 shadow-amber-700/8";
     case "violet":
-      return "bg-transparent hover:bg-muted/50 text-muted-foreground";
+      return "bg-violet-200/50 hover:bg-violet-200/40 text-violet-950/80 dark:bg-violet-400/25 dark:hover:bg-violet-400/20 dark:text-violet-200 shadow-violet-700/8";
     case "rose":
-      // Quá hạn: nền đỏ nhạt, chữ mực đỏ đậm, một mép đỏ 3px. Chữ đỏ tươi in
-      // đậm trên hàng chục chip biến cả tháng thành màu đỏ.
-      return "bg-red-ink/10 hover:bg-red-ink/16 text-overdue-ink border-l-[3px] border-red-ink";
+return "bg-rose-200/50 hover:bg-rose-200/40 text-rose-950/80 dark:bg-rose-400/25 dark:hover:bg-rose-400/20 dark:text-rose-200 shadow-rose-700/8";
     case "emerald":
-      return "bg-transparent hover:bg-muted/50 text-muted-foreground";
+      return "bg-emerald-200/50 hover:bg-emerald-200/40 text-emerald-950/80 dark:bg-emerald-400/25 dark:hover:bg-emerald-400/20 dark:text-emerald-200 shadow-emerald-700/8";
     case "orange":
-      return "bg-status-doing-soft hover:brightness-[0.97] text-foreground";
+      return "bg-orange-200/50 hover:bg-orange-200/40 text-orange-950/80 dark:bg-orange-400/25 dark:hover:bg-orange-400/20 dark:text-orange-200 shadow-orange-700/8";
     default:
-      return "bg-muted hover:bg-accent text-foreground ring-1 ring-inset ring-rule";
+      return "bg-sky-200/50 hover:bg-sky-200/40 text-sky-950/80 dark:bg-sky-400/25 dark:hover:bg-sky-400/20 dark:text-sky-200 shadow-sky-700/8";
   }
+}
+
+/**
+ * Map label color to calendar event color
+ */
+function mapLabelColorToEventColor(labelColor?: string): EventColor {
+  if (!labelColor) return "sky";
+
+  const colorMap: Record<string, EventColor> = {
+    blue: "sky",
+    yellow: "amber",
+    purple: "violet",
+    red: "rose",
+    green: "emerald",
+    orange: "orange",
+  };
+
+  for (const [key, value] of Object.entries(colorMap)) {
+    if (labelColor.toLowerCase().includes(key)) {
+      return value;
+    }
+  }
+
+  return "sky";
 }
 
 /**
@@ -255,10 +277,11 @@ export function cardToCalendarEvent(card: CardInput, listName?: string, listId?:
   // Handle both 'name' (backend) and 'title' (frontend) fields
   const title = ('title' in card && card.title) || ('name' in card && card.name) || "Untitled";
   
-  // Màu chip nói TRẠNG THÁI, không nói nhãn. Màu nhãn là danh tính, đặt nó lên
-  // chip thì cả tháng thành bảy màu và không màu nào còn báo điều gì cần làm.
-  // Chỉ việc quá hạn mới có màu; còn lại là chip trung tính.
-  const isOverdueCard = !!dueDate && dueDate.getTime() < Date.now();
+  // Màu chip lấy từ nhãn đầu tiên của thẻ.
+  const color =
+    card.labels && card.labels.length > 0 && card.labels[0].color
+      ? mapLabelColorToEventColor(card.labels[0].color)
+      : "sky";
 
   const { start, end } = dueDate
     ? getEventStartEnd(dueDate)
@@ -287,7 +310,7 @@ export function cardToCalendarEvent(card: CardInput, listName?: string, listId?:
     start: start,
     end: end,
     allDay: false,
-    color: isOverdueCard && !isDone ? "rose" : "sky",
+    color: color,
     location: listName, // Use list name as location
     listId: listId || ('listId' in card ? card.listId : undefined),
     startDate: startDate ?? undefined,

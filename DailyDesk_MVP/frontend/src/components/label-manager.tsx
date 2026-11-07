@@ -41,20 +41,18 @@ interface LabelDialogData {
   color: string;
 }
 
-/** Hộp bút mực của cuốn sổ, không phải bảng màu mặc định của Tailwind.
- *  Cùng một độ sáng và độ bão hoà thấp, nên tám nhãn cạnh nhau vẫn đọc như
- *  tám màu mực chứ không như một cái cầu vồng. */
+// Predefined color palette for labels
 const LABEL_COLORS = [
-  "#5b4b8a", // mực tím
-  "#a8443c", // mực đỏ
-  "#3a5a7d", // mực xanh
-  "#3f6b52", // mực lá
-  "#94701f", // mực vàng đất
-  "#7a4b63", // mực mận
-  "#2f6b70", // mực lam
-  "#8a5a30", // mực nâu
-  "#4a5568", // than chì
-  "#6b6250", // mực đá
+  "#22c55e", // green
+  "#eab308", // yellow
+  "#f97316", // orange
+  "#ef4444", // red
+  "#a855f7", // purple
+  "#3b82f6", // blue
+  "#06b6d4", // cyan
+  "#ec4899", // pink
+  "#6366f1", // indigo
+  "#84cc16", // lime
 ];
 
 export function LabelManager({ members, creatorId, currentUserId }: LabelManagerProps) {

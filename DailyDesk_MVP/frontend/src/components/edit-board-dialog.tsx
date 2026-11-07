@@ -18,7 +18,6 @@ import {
   BackgroundPickerProvider,
   useBackgroundPickerContext,
 } from "@/components/background-picker-provider";
-import { SHOW_COVER_UPLOAD } from "@/lib/features";
 
 interface EditBoardDialogProps {
   open: boolean;
@@ -29,7 +28,8 @@ interface EditBoardDialogProps {
   onSave: (
     name: string,
     backgroundColor?: string,
-    backgroundImage?: File
+    backgroundImage?: File,
+    backgroundImageUrl?: string
   ) => Promise<void>;
 }
 
@@ -96,7 +96,7 @@ function EditDialogForm({
 }: {
   title: string;
   setTitle: (t: string) => void;
-  onSave: (title: string, color?: string, file?: File) => Promise<void>;
+  onSave: (title: string, color?: string, file?: File, imageUrl?: string) => Promise<void>;
   onClose: () => void;
   setIsSubmitting: (v: boolean) => void;
 }) {
@@ -107,7 +107,7 @@ function EditDialogForm({
     const trimmed = title.trim();
     if (!trimmed) return;
 
-    const { color, imageFile } = getBackgroundData();
+    const { color, imageFile, imageUrl } = getBackgroundData();
 
     if (imageFile?.type === "image/gif" && imageFile.size > 5 * 1024 * 1024) {
       alert(
@@ -118,7 +118,7 @@ function EditDialogForm({
 
     setIsSubmitting(true);
     try {
-      await onSave(trimmed, color, imageFile);
+      await onSave(trimmed, color, imageFile, imageUrl);
       onClose();
       setTimeout(() => {
         setIsSubmitting(false);
@@ -135,8 +135,7 @@ function EditDialogForm({
       <DialogHeader>
         <DialogTitle>Sửa board</DialogTitle>
         <DialogDescription>
-          Update your board's name and background. Changes will be saved
-          immediately.
+          Đổi tên và nền của board. Thay đổi được lưu ngay.
         </DialogDescription>
       </DialogHeader>
 
@@ -153,7 +152,7 @@ function EditDialogForm({
         </div>
 
         <div className="grid gap-4">
-          <Label>{SHOW_COVER_UPLOAD ? "Ảnh nền" : "Màu nền"}</Label>
+          <Label>Nền board</Label>
           <BackgroundPicker />
         </div>
 

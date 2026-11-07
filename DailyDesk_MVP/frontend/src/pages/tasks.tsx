@@ -181,13 +181,13 @@ export default function CalendarPage() {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 pt-8 pb-16 sm:px-6 lg:px-10">
       <header className="mb-6">
-        <h1 className="font-planner text-[1.75rem] leading-tight font-semibold">Lịch</h1>
+        <h1 className="text-2xl font-bold">Lịch</h1>
         {/* Một câu về dữ liệu của màn, không dạy cách bấm. */}
         {tasksQuery.isSuccess && (
           <p className="mt-1 text-sm text-muted-foreground">
             {overdue > 0 ? (
               <>
-                <Link to="/" className="font-medium text-overdue underline-offset-4 hover:underline">
+                <Link to="/" className="font-medium text-red-600 underline-offset-4 hover:underline dark:text-red-400">
                   {overdue} việc quá hạn
                 </Link>{" "}
                 nằm trước hôm nay.

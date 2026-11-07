@@ -89,7 +89,7 @@ export function MonthView({
       <div className="grid grid-cols-7 border-b border-border/70">
         {weekdays.map((day) => (
           <div
-            className="py-2 text-sm text-center text-muted-foreground tabular"
+            className="py-2 text-sm text-center text-muted-foreground/70"
             key={day}
           >
             {day}
@@ -125,7 +125,7 @@ export function MonthView({
 
               return (
                 <div
-                  className="border-r border-b last:border-r-0 group border-border/70 data-outside-cell:bg-muted/25 data-outside-cell:text-muted-foreground data-today:shadow-[inset_0_2px_0_var(--ink)]"
+                  className="border-r border-b last:border-r-0 group border-border/70 data-outside-cell:bg-muted/25 data-outside-cell:text-muted-foreground/70"
                   data-outside-cell={!isCurrentMonth || undefined}
                   data-today={isToday(day) || undefined}
                   key={day.toString()}
@@ -139,8 +139,7 @@ export function MonthView({
                       onEventCreate(startTime);
                     }}
                   >
-                    {/* Hôm nay: một vạch mực 1px trên ô + ngày in đậm, không phải đĩa màu. */}
-                    <div className="inline-flex justify-center items-center mt-1 text-sm size-6 tabular group-data-today:font-semibold group-data-today:text-ink">
+                    <div className="inline-flex justify-center items-center mt-1 text-sm rounded-full size-6 tabular group-data-today:bg-primary group-data-today:text-primary-foreground">
                       {format(day, "d")}
                     </div>
                     <div
@@ -209,7 +208,7 @@ export function MonthView({
                         <Popover modal>
                           <PopoverTrigger asChild>
                             <button
-                              className="flex overflow-hidden items-center px-1 w-full text-left transition outline-none select-none sm:px-2 mt-(--event-gap) h-(--event-height) text-[12px] text-muted-foreground hover:bg-muted/50 hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                              className="flex overflow-hidden items-center px-1 w-full text-left transition outline-none select-none sm:px-2 sm:text-xs mt-(--event-gap) h-(--event-height) text-[10px] text-muted-foreground backdrop-blur-md hover:bg-muted/50 hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
                               onClick={(e) => e.stopPropagation()}
                               type="button"
                             >

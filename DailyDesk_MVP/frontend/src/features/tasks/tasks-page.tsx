@@ -133,10 +133,15 @@ function PlannerTabs({
             type="button"
             aria-selected={active}
             onClick={() => onChange(t.key)}
-            className="planner-tab flex h-10 shrink-0 items-center gap-1.5 px-2 text-sm font-medium text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:px-1"
+            className={cn(
+              "flex h-10 shrink-0 items-center gap-1.5 border-b-2 px-2 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring sm:px-1",
+              active
+                ? "border-primary text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground",
+            )}
           >
             {t.label}
-            <span className={cn("text-xs tabular", active ? "text-ink" : "text-muted-foreground")}>{counts[t.key]}</span>
+            <span className={cn("text-xs tabular", active ? "text-foreground" : "text-muted-foreground")}>{counts[t.key]}</span>
           </button>
         );
       })}
@@ -191,20 +196,27 @@ function StatusBox({ task, onChange }: { task: Task; onChange: (s: Status) => vo
         e.stopPropagation();
         onChange(done ? "todo" : "done");
       }}
-      className="-m-2 grid place-items-center rounded-md p-2 outline-none hover:[&>span]:border-ink focus-visible:ring-2 focus-visible:ring-ring"
+      className="-m-2 grid place-items-center rounded-md p-2 outline-none hover:[&>span]:border-primary focus-visible:ring-2 focus-visible:ring-ring"
     >
-      <span className="status-box" data-status={task.status}>
-        {done && <Tick />}
-      </span>
+      <span className={cn(STATUS_BOX_BASE, STATUS_BOX[task.status])}>{done && <Tick />}</span>
     </button>
   );
 }
 
+/** Ô trạng thái: trống = Todo, viền vàng = Doing, tick xanh = Done. */
+const STATUS_BOX_BASE =
+  "grid size-5 shrink-0 place-items-center rounded-full border-2 text-white transition-colors";
+const STATUS_BOX: Record<Status, string> = {
+  todo: "border-primary/50 bg-transparent",
+  doing: "border-yellow-500 bg-yellow-500/20",
+  done: "border-green-500 bg-green-500",
+};
+
 const STATUS_INK: Record<Status, string> = {
   todo: "text-muted-foreground",
-  doing: "text-status-doing",
+  doing: "text-yellow-600 dark:text-yellow-400",
   // Done là trạng thái yên nhất: than chì nhạt, không phải màu mực.
-  done: "text-status-done",
+  done: "text-green-600 dark:text-green-400",
 };
 
 function StatusMenu({ task, onChange }: { task: Task; onChange: (s: Status) => void }) {
@@ -228,7 +240,7 @@ function StatusMenu({ task, onChange }: { task: Task; onChange: (s: Status) => v
         <DropdownMenuLabel className="text-xs text-muted-foreground">Chuyển sang</DropdownMenuLabel>
         {STATUS_ORDER.map((s) => (
           <DropdownMenuItem key={s} disabled={s === task.status} onSelect={() => onChange(s)}>
-            <span className="status-box scale-75" data-status={s} aria-hidden="true">
+            <span className={cn(STATUS_BOX_BASE, "scale-75", STATUS_BOX[s])} aria-hidden="true">
               {s === "done" && <Tick />}
             </span>
             {STATUS_TEXT[s]}
@@ -247,7 +259,7 @@ function PriorityTag({ priority }: { priority: Priority | null }) {
   if (priority === "medium") return <span className="text-sm">{PRIORITY_LABEL.medium}</span>;
   return (
     <span className="text-sm">
-      <span className="hl hl-high font-medium">{PRIORITY_LABEL.high}</span>
+      <span className="font-medium text-red-600 dark:text-red-400">{PRIORITY_LABEL.high}</span>
     </span>
   );
 }
@@ -278,7 +290,7 @@ function TaskRow({
       className={cn(
         "task-row group grid cursor-pointer grid-cols-[1.25rem_minmax(0,1fr)_auto] items-start gap-x-3 px-4 py-3 transition-colors hover:bg-accent/45 sm:px-5 lg:items-center lg:py-2.5",
         showBoard ? ROW_COLS_BOARD : ROW_COLS,
-        flash && "task-row-flash",
+        flash && "renew-flash",
       )}
       onClick={onOpen}
     >
@@ -287,7 +299,7 @@ function TaskRow({
       </div>
 
       {/* Cột tiêu đề bắt đầu đúng tại đường lề đỏ + một gutter, như tiêu đề nhóm ngày. */}
-      <div className="min-w-0 pl-3">
+      <div className="min-w-0">
         <div className="flex min-w-0 items-center gap-2.5">
           <button
             type="button"
@@ -303,15 +315,14 @@ function TaskRow({
             {task.name}
           </button>
           {/* Con dấu chỉ đóng một lần, lúc vừa tick; dòng Done lúc nghỉ chỉ còn ô tick + gạch ngang. */}
-          {done && flash && <span className="stamp stamp-press shrink-0">XONG</span>}
-        </div>
+                  </div>
         {task.description && <p className="line-clamp-1 text-sm text-muted-foreground">{task.description}</p>}
         {/* Thông tin phụ trên màn hẹp */}
         <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-foreground lg:hidden">
           <StatusMenu task={task} onChange={onStatus} />
           <PriorityTag priority={task.priority} />
           {task.dueAt && (
-            <span className={cn("tabular", overdue && "font-medium text-overdue")}>{dueText(task.dueAt)}</span>
+            <span className={cn("tabular", overdue && "font-medium text-red-600 dark:text-red-400")}>{dueText(task.dueAt)}</span>
           )}
           {showBoard && <span>{task.boardName}</span>}
         </div>
@@ -333,7 +344,7 @@ function TaskRow({
           nếu nó cũng đỏ thì đỏ thành nền chứ không còn là tín hiệu. */}
       <span className="hidden text-right lg:block">
         {task.dueAt ? (
-          <span className={cn("block text-sm tabular", overdue ? "font-medium text-overdue" : done ? "text-muted-foreground" : "")}>
+          <span className={cn("block text-sm tabular", overdue ? "font-medium text-red-600 dark:text-red-400" : done ? "text-muted-foreground" : "")}>
             {dueText(task.dueAt)}
             {overdue && (
               <span className="block text-xs font-normal text-muted-foreground">
@@ -403,8 +414,8 @@ function SkeletonRows({ showBoard }: { showBoard: boolean }) {
 
 function EmptyNote({ icon: Icon, title, body, children }: { icon: typeof CalendarClock; title: string; body: string; children?: React.ReactNode }) {
   return (
-    <div className="flex flex-col items-start gap-3 py-14 pr-6 pl-16 sm:pl-20">
-      <Icon className="size-7 text-ink" aria-hidden="true" />
+    <div className="flex flex-col items-start gap-3 px-6 py-14">
+      <Icon className="size-7 text-muted-foreground" aria-hidden="true" />
       <div>
         <p className="text-lg font-semibold">{title}</p>
         <p className="mt-1 max-w-sm text-sm text-muted-foreground">{body}</p>
@@ -541,7 +552,7 @@ export default function TasksPage() {
       <header className="flex items-end justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm text-muted-foreground">{today}</p>
-          <h1 className="font-planner mt-1 text-[1.75rem] leading-tight font-semibold">Việc của tôi</h1>
+          <h1 className="mt-1 text-2xl font-bold">Việc của tôi</h1>
         </div>
         <Button onClick={openNew} size="lg" className="h-10 shrink-0 gap-2 px-3.5 sm:px-4">
           <Plus className="size-4" aria-hidden="true" />
@@ -569,7 +580,7 @@ export default function TasksPage() {
               {" · "}
               <button
                 type="button"
-                className="font-medium text-overdue underline-offset-2 hover:underline"
+                className="font-medium text-red-600 underline-offset-2 hover:underline dark:text-red-400"
                 onClick={() => {
                   setSort("deadline");
                   setStatus("all");
@@ -653,7 +664,7 @@ export default function TasksPage() {
         {/* Trang sổ tách khỏi giấy bằng một bậc nền và một đường viền 1px —
             viền HOẶC bóng, không bao giờ cả hai, và chỉ thứ thật sự nổi lên
             (menu, hộp thoại) mới được đổ bóng. */}
-        <div className="planner-page overflow-hidden rounded-md border">
+        <div className="overflow-hidden rounded-xl border bg-card">
           <div
             className={cn(
               "hidden gap-x-3 border-b px-5 py-2 text-xs text-muted-foreground lg:grid",
@@ -719,12 +730,12 @@ export default function TasksPage() {
                   {g.key && (
                     <h2
                       className={cn(
-                        "font-planner sticky top-0 z-[3] flex items-baseline gap-2 border-b bg-card pt-4 pr-5 pb-1.5 pl-[calc(var(--planner-margin)+0.75rem)] text-[15px] font-semibold",
-                        g.key === "overdue" ? "text-overdue" : "text-foreground",
+                        "sticky top-0 z-[3] flex items-baseline gap-2 border-b bg-card px-5 pt-4 pb-1.5 text-[15px] font-semibold",
+                        g.key === "overdue" ? "text-red-600 dark:text-red-400" : "text-foreground",
                       )}
                     >
                       {GROUP_LABEL[g.key]}
-                      <span className="font-sans text-xs font-normal text-muted-foreground tabular">{g.tasks.length}</span>
+                      <span className="text-xs font-normal text-muted-foreground tabular">{g.tasks.length}</span>
                     </h2>
                   )}
                   <ul className="divide-y border-b last:border-b-0">

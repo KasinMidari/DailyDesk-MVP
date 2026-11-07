@@ -218,7 +218,13 @@ export function KanbanCard({
   const PriorityMark = ({ className = "" }: { className?: string }) =>
     priority ? (
       <span className={`inline-flex items-center px-1 py-0.5 text-xs ${className}`}>
-        <span className={priority === "high" ? "hl hl-high text-foreground" : "text-muted-foreground"}>
+        <span
+          className={
+            priority === "high"
+              ? "font-medium text-red-600 dark:text-red-400"
+              : "text-muted-foreground"
+          }
+        >
           {priority === "high" ? "Cao" : priority === "medium" ? "Vừa" : "Thấp"}
         </span>
       </span>
@@ -226,9 +232,9 @@ export function KanbanCard({
 
   const DateRow = ({ className }: { className: string }) => (
     <div
-      // Ngày không cần một ô nền riêng: chữ mờ là đủ, và 14 ô nền nhỏ trên một
-      // màn chính là dấu hiệu kinh điển của dashboard sinh ra tự động.
-      className={`relative flex items-center gap-1 text-xs ${className}`}
+      className={`relative flex items-center gap-1 text-xs rounded-sm px-1 py-0.5 ${className} ${
+        isDone && !normalizedCard.repeatFrequency ? "bg-green-500/20" : ""
+      }`}
     >
       {isRenewing && <span className="absolute inset-0 renew-flash rounded-sm" />}
       <Clock className="relative z-10 h-3 w-3" />
@@ -281,9 +287,9 @@ export function KanbanCard({
                               if (e.key === "Enter" || e.key === " ") handleToggleComplete(e);
                             }}
                           >
-                            <div className={`h-5 w-5 shrink-0 rounded-[4px] border-[1.5px] ${
+                            <div className={`h-5 w-5 shrink-0 rounded-full border-2 ${
                               isDone
-                                ? 'bg-status-done border-status-done flex items-center justify-center'
+                                ? 'bg-green-500 border-green-500 flex items-center justify-center'
                                 : 'border-white/70 hover:border-white'
                             }`}>
                               {isDone && (
@@ -309,15 +315,17 @@ export function KanbanCard({
                 </div>
               </div>
             ) : normalizedCard.coverColor ? (
-              <div className="relative flex w-full flex-col overflow-hidden rounded-md">
-                <div aria-hidden="true" className="-mx-3 -mt-3 mb-1 h-8" style={{ backgroundColor: normalizedCard.coverColor }} />
+              <div
+                className="relative w-full min-h-[100px] flex items-end rounded-md"
+                style={{ backgroundColor: normalizedCard.coverColor }}
+              >
                 {normalizedCard.isTemplate && (
                   <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-card/90 text-[11px] font-medium text-foreground">
                     <LayoutTemplate className="h-3 w-3" />
                     Mẫu
                   </div>
                 )}
-                <div className="w-full pt-1">
+                <div className="w-full bg-gradient-to-t from-black/70 to-transparent p-3 pt-8">
                   <div className="flex items-center gap-2">
                     <TooltipProvider>
                       <Tooltip>
@@ -333,10 +341,10 @@ export function KanbanCard({
                               if (e.key === "Enter" || e.key === " ") handleToggleComplete(e);
                             }}
                           >
-                            <div className={`h-5 w-5 shrink-0 rounded-[4px] border-[1.5px] ${
+                            <div className={`h-5 w-5 shrink-0 rounded-full border-2 ${
                               isDone
-                                ? 'bg-status-done border-status-done flex items-center justify-center'
-                                : 'border-foreground/50 bg-card hover:border-ink'
+                                ? 'bg-green-500 border-green-500 flex items-center justify-center'
+                                : 'border-primary/50 hover:border-primary'
                             }`}>
                               {isDone && (
                                 <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -352,18 +360,18 @@ export function KanbanCard({
                       </Tooltip>
                     </TooltipProvider>
                     <div className="flex flex-col gap-1 min-w-0">
-                      <KanbanBoardCardTitle className={`line-clamp-2 ${normalizedCard.completed ? "line-through opacity-75" : ""}`}>
+                      <KanbanBoardCardTitle className={`text-white drop-shadow-sm line-clamp-2 ${normalizedCard.completed ? "line-through opacity-75" : ""}`}>
                         {normalizedCard.title}
                       </KanbanBoardCardTitle>
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-1">{shouldShowDateRow && <DateRow className="text-muted-foreground" />}<PriorityMark className="text-muted-foreground" /></div>
+                  <div className="flex flex-wrap items-center gap-1">{shouldShowDateRow && <DateRow className="text-white/80" />}<PriorityMark className="text-white/80" /></div>
                 </div>
               </div>
             ) : (
               <div className="flex flex-col gap-1 pt-1">
                  {normalizedCard.isTemplate && (
-                  <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-muted text-muted-foreground text-[11px] font-medium max-w-fit mb-0.5">
+                  <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 text-[10px] font-medium max-w-fit mb-0.5">
                     <LayoutTemplate className="h-3 w-3" />
                     Mẫu
                   </div>
@@ -383,10 +391,10 @@ export function KanbanCard({
                             if (e.key === "Enter" || e.key === " ") handleToggleComplete(e);
                           }}
                         >
-                          <div className={`h-5 w-5 shrink-0 rounded-[4px] border-[1.5px] ring-offset-background ${
+                          <div className={`h-5 w-5 shrink-0 rounded-full border-2 ring-offset-background ${
                             isDone
-                              ? 'bg-status-done border-status-done flex items-center justify-center'
-                              : 'border-foreground/50 bg-card hover:border-ink'
+                              ? 'bg-green-500 border-green-500 flex items-center justify-center'
+                              : 'border-primary/50 hover:border-primary'
                           }`}>
                             {isDone && (
                               <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -401,15 +409,11 @@ export function KanbanCard({
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-                  <KanbanBoardCardTitle className={`line-clamp-2 ${isDone ? "!text-muted-foreground line-through" : ""}`}>
+                  <KanbanBoardCardTitle className={`line-clamp-2 ${isDone ? "!text-green-600" : ""}`}>
                     {normalizedCard.title}
                   </KanbanBoardCardTitle>
                 </div>
-                {/* Không đóng dấu XONG ở đây: thẻ đã có ô tick, tiêu đề gạch ngang và nền
-                    status-done nói cùng một điều. Dấu đỏ chỉ dành cho khoảnh khắc vừa tick
-                    ở màn danh sách, nếu lặp trên mọi thẻ thì đỏ thành hoạ tiết. */}
-                {/* Hàng meta thẳng với tiêu đề: ô tick 20px + gap 8px = 28px. */}
-                <div className="flex flex-wrap items-center gap-1">{shouldShowDateRow && <DateRow className="text-muted-foreground pl-7" />}<PriorityMark className="text-muted-foreground pl-7" /></div>
+                <div className="flex flex-wrap items-center gap-1">{shouldShowDateRow && <DateRow className="text-muted-foreground px-6" />}<PriorityMark className="text-muted-foreground px-6" /></div>
               </div>
             )}
             <DropdownMenu>

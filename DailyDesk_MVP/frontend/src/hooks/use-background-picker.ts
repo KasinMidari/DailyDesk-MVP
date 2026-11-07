@@ -28,6 +28,10 @@ export const useBackgroundPicker = (initialData?: {
     initialData?.imageUrl || null
   );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  // Ảnh từ bộ có sẵn chỉ là một URL: lưu nguyên URL, không tải lên đâu.
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(
+    initialData?.imageUrl || null,
+  );
   const [croppedFile, setCroppedFile] = useState<File | null>(null);
   const [showCropper, setShowCropper] = useState(false);
   const [coverMode, setCoverMode] = useState<CardCoverMode>(
@@ -37,6 +41,7 @@ export const useBackgroundPicker = (initialData?: {
   const handleFilePick = (file: File | null) => {
     if (!file) return;
     setSelectedFile(file);
+    setSelectedImageUrl(null);
     setSelectedColor(null);
     setCroppedFile(null);
     const reader = new FileReader();
@@ -44,8 +49,18 @@ export const useBackgroundPicker = (initialData?: {
     reader.readAsDataURL(file);
   };
 
+  /** Chọn một ảnh trong bộ có sẵn. */
+  const handleImageUrlPick = (url: string) => {
+    setSelectedImageUrl(url);
+    setImagePreview(url);
+    setSelectedColor(null);
+    setSelectedFile(null);
+    setCroppedFile(null);
+  };
+
   const handleColorPick = (color: string) => {
     setSelectedColor(color);
+    setSelectedImageUrl(null);
     setSelectedFile(null);
     setCroppedFile(null);
     setImagePreview(null);
@@ -53,6 +68,7 @@ export const useBackgroundPicker = (initialData?: {
 
   const handleCropComplete = async (croppedImage: string) => {
     setImagePreview(croppedImage);
+    setSelectedImageUrl(null);
     setCroppedFile(await imageUrlToFile(croppedImage));
     setShowCropper(false);
     return;
@@ -63,6 +79,7 @@ export const useBackgroundPicker = (initialData?: {
     setSelectedColor(null);
     setImagePreview(null);
     setSelectedFile(null);
+    setSelectedImageUrl(null);
     setCroppedFile(null);
     setShowCropper(false);
   };
@@ -76,10 +93,12 @@ export const useBackgroundPicker = (initialData?: {
     setCoverMode,
     coverMode,
     selectedFile,
+    selectedImageUrl,
     croppedFile,
     showCropper,
     setShowCropper,
     handleFilePick,
+    handleImageUrlPick,
     handleColorPick,
     handleCropComplete,
     reset,

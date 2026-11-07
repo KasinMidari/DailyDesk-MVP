@@ -19,7 +19,6 @@ import {
   BackgroundPickerProvider,
   useBackgroundPickerContext,
 } from "@/components/background-picker-provider";
-import { SHOW_COVER_UPLOAD } from "@/lib/features";
 
 interface CreateBoardDialogProps {
   open: boolean;
@@ -27,7 +26,8 @@ interface CreateBoardDialogProps {
   onCreate: (
     title: string,
     backgroundColor?: string,
-    backgroundImage?: File
+    backgroundImage?: File,
+    backgroundImageUrl?: string
   ) => Promise<void>;
 }
 
@@ -79,7 +79,7 @@ function DialogForm({
 }: {
   title: string;
   setTitle: (t: string) => void;
-  onCreate: (title: string, color?: string, file?: File) => Promise<void>;
+  onCreate: (title: string, color?: string, file?: File, imageUrl?: string) => Promise<void>;
   onClose: () => void;
   setIsSubmitting: (v: boolean) => void;
 }) {
@@ -90,7 +90,7 @@ function DialogForm({
     const trimmed = title.trim();
     if (!trimmed) return;
 
-    const { color, imageFile } = getBackgroundData();
+    const { color, imageFile, imageUrl } = getBackgroundData();
 
     if (imageFile?.type === "image/gif" && imageFile.size > 5 * 1024 * 1024) {
       alert(
@@ -100,7 +100,7 @@ function DialogForm({
       return;
     }
     setIsSubmitting(true);
-    await onCreate(trimmed, color, imageFile);
+    await onCreate(trimmed, color, imageFile, imageUrl);
     onClose();
 
     setTimeout(() => {
@@ -115,8 +115,7 @@ function DialogForm({
       <DialogHeader>
         <DialogTitle>Tạo board mới</DialogTitle>
         <DialogDescription>
-          Give your board a name and choose a background color or image. You can
-          change both later.
+          Đặt tên cho board và chọn màu hoặc ảnh nền. Cả hai đều sửa được sau.
         </DialogDescription>
       </DialogHeader>
 
@@ -125,7 +124,7 @@ function DialogForm({
           <Label htmlFor="board-title">Tên board</Label>
           <Input
             id="board-title"
-            placeholder="e.g. Marketing Campaign 2025"
+            placeholder="Ví dụ: Đồ án tốt nghiệp"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             autoFocus
@@ -133,7 +132,7 @@ function DialogForm({
         </div>
 
         <div className="grid gap-4">
-          <Label>{SHOW_COVER_UPLOAD ? "Ảnh nền" : "Màu nền"}</Label>
+          <Label>Nền board</Label>
           <BackgroundPicker />
         </div>
 

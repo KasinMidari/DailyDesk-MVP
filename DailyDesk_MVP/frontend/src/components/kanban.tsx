@@ -406,7 +406,7 @@ export function KanbanBoard({
     <div
       className={cn(
         "flex h-full flex-grow gap-x-2 overflow-x-auto py-1",
-        "[&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-muted-foreground/30 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-muted-foreground/45 ",
+        "[&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-white/30 ",
         className
       )}
       ref={ref}
@@ -443,9 +443,8 @@ export type KanbanBoardColumnProps = {
   index?: number;
 };
 
-/* Cột là một trang giấy mỏng hơn thẻ: nền giữa --card và --paper, không bóng. */
 export const kanbanBoardColumnClassNames =
-  "w-64 flex-shrink-0 rounded-lg border flex flex-col border-border bg-[color-mix(in_oklch,var(--card)_60%,var(--paper))] py-2 h-full min-h-0 transition-colors";
+  "w-64 flex-shrink-0 rounded-lg border flex flex-col border-border bg-sidebar py-2 h-full min-h-0 transition-colors";
 
 export function KanbanBoardColumn({
   className,
@@ -676,8 +675,7 @@ export function KanbanBoardColumnButton({
   return (
     <Button
       className={cn(
-        // Nút phụ ở chân cột là chrome: chữ mờ, không phải màu mực.
-        "bg-transparent text-muted-foreground hover:bg-accent hover:text-foreground w-full justify-start",
+        "bg-sidebar text-primary hover:text-primary/80 w-full justify-start",
         className
       )}
       variant="outline"
@@ -704,9 +702,8 @@ export type KanbanBoardCardProps<T extends { id: string } = { id: string }> = {
   isActive?: boolean;
 };
 
-/* Viền hoặc bóng, không cả hai: thẻ đứng yên nên giữ viền, bỏ bóng. */
 const kanbanBoardCardClassNames =
-  "rounded-lg border border-border bg-card p-3 text-start text-foreground";
+  "rounded-lg border border-border bg-background p-3 text-start text-foreground shadow-sm";
 
 export function KanbanBoardCard({
   className,
@@ -726,8 +723,7 @@ export function KanbanBoardCard({
       aria-roledescription="draggable"
       className={cn(
         kanbanBoardCardClassNames,
-        // Con trỏ mặc định trên mặt làm việc không bao giờ là bàn tay nắm.
-        "focus-visible:ring-ring inline-flex w-full cursor-pointer touch-manipulation flex-col gap-1 focus-visible:ring-1 focus-visible:outline-none",
+        "focus-visible:ring-ring inline-flex w-full cursor-grab touch-manipulation flex-col gap-1 focus-visible:ring-1 focus-visible:outline-none",
         isDragging
           ? "cursor-grabbing active:cursor-grabbing"
           : "group relative",

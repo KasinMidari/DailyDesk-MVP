@@ -97,7 +97,7 @@ export default function ProfilePage() {
       <div className="mx-auto w-full max-w-6xl space-y-6 px-4 pt-8 pb-16 sm:px-6 lg:px-10">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-planner text-[1.75rem] leading-tight font-semibold">Hồ sơ cá nhân</h1>
+            <h1 className="text-2xl font-bold">Hồ sơ cá nhân</h1>
             {/* Nói về TÀI KHOẢN, không mô tả giao diện. */}
             <p className="text-muted-foreground">{user?.email}</p>
           </div>

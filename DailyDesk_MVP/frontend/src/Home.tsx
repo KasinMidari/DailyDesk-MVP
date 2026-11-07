@@ -1,4 +1,5 @@
-import { Plus, Search, Users, Clock, ChevronRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Plus, Search, Clipboard, Users, Clock, ChevronRight } from "lucide-react";
 import { Suspense, useState, useEffect } from "react";
 import CreateBoardDialog from "@/components/create-board-dialog";
 import { BoardCard } from "@/components/board-card";
@@ -17,18 +18,9 @@ import {
 import PageLoader from "./components/full-page-loader";
 import { useUploadImage } from "@/hooks/use-image";
 import { useAuth0 } from "@/lib/auth";
-import { cn } from "@/lib/utils";
-import { statusFromList } from "@/features/tasks/api";
-import { nextDue } from "@/components/board-card";
 
-/** Số cột chọn theo số board, để một board không để lại ba ô mồ côi.
- *  Tối đa 3 cột: 4 cột làm card hẹp tới mức tên việc nào cũng bị cắt. */
-function boardGrid(count: number) {
-  return cn(
-    "grid gap-4",
-    count === 1 ? "max-w-md" : count === 2 ? "max-w-3xl sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3",
-  );
-}
+/** Lưới board: 4 cột ở màn rộng, như bản gốc. */
+const BOARD_GRID = "grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
 
 type BoardToEdit = {
   id: string;
@@ -59,7 +51,7 @@ function getRecentBoards(userId: string): string[] {
 // Helper to add a board to recently accessed (user-specific)
 function addToRecentBoards(userId: string, boardId: string) {
   try {
-    let recent = getRecentBoards(userId).filter(id => id !== boardId);
+    let recent = getRecentBoards(userId).filter((id) => id !== boardId);
     recent.unshift(boardId);
     recent = recent.slice(0, MAX_RECENT_BOARDS);
     localStorage.setItem(RECENT_BOARDS_KEY_PREFIX + userId, JSON.stringify(recent));
@@ -89,8 +81,6 @@ export default function Home() {
 
   const userId = user?.sub || "";
 
- 
-
   // Load recent boards from localStorage on mount and when userId changes
   useEffect(() => {
     if (userId) {
@@ -103,50 +93,32 @@ export default function Home() {
   // Combine all boards for search
   const allBoards = [...ownedBoards, ...invitedBoards];
 
-  // Số liệu cho câu dưới tiêu đề: đếm từ chính các list đang hiển thị, không
-  // gọi thêm API và không viết tay con số nào.
-  const openCards = allBoards.flatMap((b) =>
-    ((b as any).lists ?? [])
-      .filter((l: any) => statusFromList(l.name) !== "done")
-      .flatMap((l: any) => l.cards ?? []),
-  );
-  const openCount = openCards.length;
-  // Số dòng lấy theo board nhiều việc nhất, để không board nào bị cắt bớt việc
-  // chỉ vì board bên cạnh ít hơn. Card vẫn cao bằng nhau (Link giãn hết ô lưới)
-  // và dòng tổng neo xuống đáy, nên hàng card kết thúc trên một mép chung.
-  const shownBoards = ownedBoards.slice(0, 7);
-  const upcomingRows = Math.max(
-    1,
-    ...shownBoards.map((b: any) => Math.min(5, nextDue((b as any).lists ?? [], 5).length)),
-  );
-  const overdueCount = openCards.filter(
-    (c: any) => c?.dueAt && new Date(c.dueAt).getTime() < Date.now(),
-  ).length;
-
   // Filter boards by search term and sort by ID descending (newest first)
   const filteredOwnedBoards = ownedBoards
     .filter((board) => board.name.toLowerCase().includes(searchTerm.toLowerCase()))
     .sort((a, b) => b.id.localeCompare(a.id));
 
   const filteredInvitedBoards = invitedBoards.filter((board) =>
-    board.name.toLowerCase().includes(searchTerm.toLowerCase())
+    board.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Get recent boards that exist
   const recentBoards = recentBoardIds
-    .map(id => allBoards.find(b => b.id === id))
+    .map((id) => allBoards.find((b) => b.id === id))
     .filter(Boolean)
     .slice(0, MAX_RECENT_BOARDS);
 
   const handleCreateBoard = async (
     title: string,
     backgroundColor?: string,
-    backgroundImage?: File
+    backgroundImage?: File,
+    backgroundImageUrl?: string,
   ) => {
     const newBoard = await createBoard({
       name: title,
       backgroundColor,
-      backgroundUrl: "",
+      // Ảnh chọn từ bộ có sẵn chỉ là một URL: lưu thẳng, không cần tải lên.
+      backgroundUrl: backgroundImageUrl ?? "",
     });
 
     if (backgroundImage) {
@@ -166,7 +138,8 @@ export default function Home() {
   const handleEditBoard = async (
     name: string,
     backgroundColor?: string,
-    backgroundImage?: File
+    backgroundImage?: File,
+    backgroundImageUrl?: string,
   ) => {
     if (!boardToEdit) return;
 
@@ -174,6 +147,9 @@ export default function Home() {
       id: boardToEdit.id,
       name,
       backgroundColor,
+      // Gửi cả khi rỗng: chọn lại màu thì phải xoá ảnh nền cũ, không thì
+      // ảnh vẫn nằm đó và đè lên màu vừa chọn.
+      backgroundUrl: backgroundImageUrl ?? "",
       lists: [],
     });
 
@@ -201,8 +177,6 @@ export default function Home() {
   const handleBoardClick = (boardId: string) => {
     if (userId) {
       addToRecentBoards(userId, boardId);
-      // Don't update state here to avoid re-render before navigation
-      // setRecentBoardIds(getRecentBoards(userId));
     }
   };
 
@@ -221,62 +195,42 @@ export default function Home() {
 
   return (
     <Suspense fallback={<PageLoader />}>
-      <div className="flex flex-col w-full h-full mx-auto max-w-6xl px-4 pt-8 pb-16 gap-6 sm:px-6 lg:px-10 overflow-y-auto">
+      <div className="flex h-full w-full flex-col gap-6 overflow-y-auto p-6 pb-20">
         {/* Header with Search */}
-        {/* Cho phép xuống dòng và cho cột trái co lại: ở quãng 768px câu số liệu
-            (các cụm không tách) đẩy nhóm tìm kiếm + nút ra sát mép phải. */}
-        <header className="flex shrink-0 flex-col flex-wrap justify-between gap-4 md:flex-row md:items-center">
-          <div className="min-w-0">
-            <h1 className="font-planner text-[1.75rem] leading-tight font-semibold text-foreground">
-              Board
-            </h1>
-            {/* Câu dưới tiêu đề nói về DỮ LIỆU, không mô tả giao diện. */}
-            <p className="mt-1 text-muted-foreground tabular">
-              <span className="whitespace-nowrap">{allBoards.length} board</span>{" · "}
-              <span className="whitespace-nowrap">{openCount} việc chưa xong</span>
-              {overdueCount > 0 && (
-                <span className="whitespace-nowrap">
-                  {" · "}
-                  <span className="font-medium text-overdue">{overdueCount} quá hạn</span>
-                </span>
-              )}
-            </p>
+        <header className="flex shrink-0 flex-col justify-between gap-4 md:flex-row md:items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Board</h1>
+            <p className="mt-1 text-muted-foreground">Gom task theo môn học hoặc dự án</p>
           </div>
-          <div className="flex w-full min-w-0 shrink-0 items-center gap-2 md:w-auto">
-            <div className="relative flex-1 md:w-64">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
-              <Input
-                placeholder="Tìm board…"
-                aria-label="Tìm board"
-                className="pl-8"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <Button className="h-9 shrink-0 gap-1.5" onClick={() => setIsCreateDialogOpen(true)}>
-              <Plus className="size-4" aria-hidden="true" />
-              Tạo board
-            </Button>
+          <div className="relative w-full md:w-72">
+            <Search
+              className="absolute top-2.5 left-2 h-4 w-4 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              placeholder="Tìm board…"
+              aria-label="Tìm board"
+              className="pl-8"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
         </header>
 
         {/* Recent Boards Section (only show if there are recent boards) */}
         {!searchTerm && recentBoards.length > 0 && allBoards.length > MAX_RECENT_BOARDS && (
           <section className="w-full">
-            <div className="flex items-center gap-2 mb-3">
-              <Clock className="w-5 h-5 text-muted-foreground" />
-              <h2 className="text-base font-semibold text-foreground">
-                Mở gần đây
-              </h2>
+            <div className="mb-3 flex items-center gap-2">
+              <Clock className="h-5 w-5 text-muted-foreground" />
+              <h2 className="text-lg font-semibold">Mở gần đây</h2>
             </div>
-            <div className={boardGrid(recentBoards.length)}>
+            <div className={BOARD_GRID}>
               {recentBoards.map((board: any) => (
-                <div key={board.id}  onClick={() => handleBoardClick(board.id)}>
+                <div key={board.id} onClick={() => handleBoardClick(board.id)}>
                   <BoardCard
-                    upcomingRows={upcomingRows}
                     id={board.id}
                     name={board.name}
-                  lists={(board as any).lists}
+                    lists={(board as any).lists}
                     backgroundUrl={board.backgroundUrl ?? undefined}
                     backgroundColor={board.backgroundColor ?? undefined}
                     onEdit={() =>
@@ -303,12 +257,13 @@ export default function Home() {
 
         {/* My Boards Section */}
         <section>
-          <div className="flex items-center justify-between mb-3">
+          <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h2 className="text-base font-semibold text-foreground">
-                Board của tôi
-              </h2>
-              <span className="text-xs text-muted-foreground tabular">{filteredOwnedBoards.length}</span>
+              <Clipboard className="h-5 w-5 text-muted-foreground" />
+              <h2 className="text-lg font-semibold">Board của tôi</h2>
+              <Badge variant="secondary" className="ml-1 tabular">
+                {filteredOwnedBoards.length}
+              </Badge>
             </div>
             {filteredOwnedBoards.length > MAX_DISPLAYED_BOARDS && (
               <Button
@@ -322,34 +277,27 @@ export default function Home() {
               </Button>
             )}
           </div>
-          <div className={boardGrid(filteredOwnedBoards.length)}>
-            {filteredOwnedBoards.length === 0 && (
-              <div className="col-span-full rounded-xl border bg-card px-6 py-10 text-center">
-                <p className="font-medium">
-                  {searchTerm ? `Không có board nào tên "${searchTerm}"` : "Chưa có board nào"}
-                </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {searchTerm
-                    ? "Thử từ khoá khác hoặc xoá ô tìm kiếm."
-                    : "Board giúp gom task theo môn học hoặc dự án."}
-                </p>
-                {searchTerm ? (
-                  <Button variant="outline" className="mt-4" onClick={() => setSearchTerm("")}>
-                    Xoá tìm kiếm
-                  </Button>
-                ) : (
-                  <Button className="mt-4 gap-1.5" onClick={() => setIsCreateDialogOpen(true)}>
-                    <Plus className="size-4" aria-hidden="true" />
-                    Tạo board đầu tiên
-                  </Button>
-                )}
-              </div>
+          <div className={BOARD_GRID}>
+            {/* Create New Board Card - Always visible */}
+            <Card
+              className="flex w-full min-h-[120px] cursor-pointer flex-col items-start justify-center border-2 border-dashed border-gray-500 transition-all hover:border-gray-400 hover:bg-gray-300/20"
+              onClick={() => setIsCreateDialogOpen(true)}
+            >
+              <CardContent className="flex w-full flex-col items-center gap-2">
+                <Plus className="mb-2 h-8 w-8 text-gray-500" />
+                <p className="text-sm font-medium text-gray-700 dark:text-white">Tạo board mới</p>
+              </CardContent>
+            </Card>
+
+            {searchTerm && filteredOwnedBoards.length === 0 && (
+              <p className="self-center text-sm text-muted-foreground">
+                Không có board nào tên “{searchTerm}”.
+              </p>
             )}
 
             {filteredOwnedBoards.slice(0, MAX_DISPLAYED_BOARDS).map((board) => (
               <div key={board.id} onClick={() => handleBoardClick(board.id)}>
                 <BoardCard
-                  upcomingRows={upcomingRows}
                   id={board.id}
                   name={board.name}
                   lists={(board as any).lists}
@@ -379,13 +327,11 @@ export default function Home() {
         {/* Invited Boards Section */}
         {filteredInvitedBoards.length > 0 && (
           <section>
-            <div className="flex items-center justify-between mb-3">
+            <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-muted-foreground" />
-                <h2 className="text-base font-semibold text-foreground">
-                  Board được mời
-                </h2>
-                <Badge variant="secondary" className="ml-1">
+                <Users className="h-5 w-5 text-muted-foreground" />
+                <h2 className="text-lg font-semibold">Board được mời</h2>
+                <Badge variant="secondary" className="ml-1 tabular">
                   {filteredInvitedBoards.length}
                 </Badge>
               </div>
@@ -401,14 +347,17 @@ export default function Home() {
                 </Button>
               )}
             </div>
-            <div className={boardGrid(filteredInvitedBoards.length)}>
+            <div className={BOARD_GRID}>
               {filteredInvitedBoards.slice(0, 8).map((board: any) => (
-                <div key={board.id} className="relative" onClick={() => handleBoardClick(board.id)}>
+                <div
+                  key={board.id}
+                  className="relative"
+                  onClick={() => handleBoardClick(board.id)}
+                >
                   <BoardCard
-                    upcomingRows={upcomingRows}
                     id={board.id}
                     name={board.name}
-                  lists={(board as any).lists}
+                    lists={(board as any).lists}
                     backgroundUrl={board.backgroundUrl ?? undefined}
                     backgroundColor={board.backgroundColor ?? undefined}
                     onEdit={() =>
@@ -442,13 +391,11 @@ export default function Home() {
         {/* Empty state for invited boards when searching */}
         {searchTerm && filteredInvitedBoards.length === 0 && invitedBoards.length > 0 && (
           <section>
-            <div className="flex items-center gap-2 mb-3">
-              <Users className="w-5 h-5 text-muted-foreground" />
-              <h2 className="text-base font-semibold text-foreground">
-                Board được mời
-              </h2>
+            <div className="mb-3 flex items-center gap-2">
+              <Users className="h-5 w-5 text-muted-foreground" />
+              <h2 className="text-lg font-semibold">Board được mời</h2>
             </div>
-            <p className="text-muted-foreground text-sm">Không có board được mời nào khớp.</p>
+            <p className="text-sm text-muted-foreground">Không có board được mời nào khớp.</p>
           </section>
         )}
 

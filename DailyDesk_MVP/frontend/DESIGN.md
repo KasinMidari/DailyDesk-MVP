@@ -183,6 +183,13 @@ components:
 
 # Design System: DailyDesk
 
+> **KHÔNG CÒN ĐÚNG VỚI CODE (07/11/2026).**
+> Giao diện đã được đưa về bản gốc của repo `DailyDesk/` theo yêu cầu:
+> theme shadcn trung tính, nền board là ảnh/màu phủ kín, thanh công cụ kính mờ,
+> card board kiểu bìa hồ sơ. Mọi thứ viết ở dưới về "sổ kế hoạch giấy",
+> mực tím, bút dạ quang hay con dấu XONG không còn trong code nữa.
+> Giữ lại làm hồ sơ quá trình.
+
 > Tài liệu này mô tả **giao diện đang chạy**, không mô tả ý định. Mọi giá trị dưới đây
 > đọc ra từ `src/index.css` và từ ảnh chụp bản chạy thật. Nếu mã đổi, sửa file này;
 > đừng sửa mã cho khớp một mô tả đã cũ.

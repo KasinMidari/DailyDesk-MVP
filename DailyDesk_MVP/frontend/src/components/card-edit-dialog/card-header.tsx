@@ -90,12 +90,12 @@ export function CardHeader({ card, onUpdate, error }: CardHeaderProps) {
             onKeyDown={handleKeyDown}
             aria-invalid={!!error}
             aria-label="Tiêu đề"
-            className="font-planner font-semibold text-xl resize-none min-h-0 p-2 -ml-2"
+            className="font-semibold text-xl resize-none min-h-0 p-2 -ml-2"
             rows={1}
           />
         ) : (
           <h2
-            className={`font-planner font-semibold text-xl cursor-pointer hover:bg-muted rounded px-2 py-1 -mx-2 -my-1 break-words ${
+            className={`font-semibold text-xl cursor-pointer hover:bg-muted rounded px-2 py-1 -mx-2 -my-1 break-words ${
               isDone ? "line-through text-muted-foreground" : ""
             } ${card.title ? "" : "text-muted-foreground"}`}
             onClick={() => setIsEditing(true)}

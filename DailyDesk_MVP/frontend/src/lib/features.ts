@@ -19,5 +19,11 @@ export const SHOW_TEMPLATES = USE_MOCK;
 export const SHOW_ATTACHMENTS = USE_MOCK;
 export const SHOW_COVER_UPLOAD = USE_MOCK;
 
+/**
+ * Bộ ảnh nền có sẵn: chỉ là URL lưu vào `background_url`, không qua
+ * `/media/image/*`, nên chạy được cả với backend thật.
+ */
+export const SHOW_COVER_PRESETS = true;
+
 /** Backend thật không có luồng SSE `/boards/:id/sse`. */
 export const SHOW_REALTIME = false;

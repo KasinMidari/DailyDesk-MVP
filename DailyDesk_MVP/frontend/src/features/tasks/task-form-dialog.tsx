@@ -119,7 +119,7 @@ export function Segmented<T extends string>({
         const v = o.value as string;
         const isStatus = v === "todo" || v === "doing" || v === "done";
         // Chỉ "Cao" được tô dạ quang, giống hệt lúc hiện trên danh sách.
-        const hl = v === "high" ? "hl hl-high" : "";
+        const hl = v === "high" ? "font-semibold text-red-600 dark:text-red-400" : "";
         return (
           <button
             key={o.value}
@@ -129,11 +129,21 @@ export function Segmented<T extends string>({
             onClick={() => onChange(o.value)}
             className={cn(
               "flex h-8 items-center justify-center gap-2 rounded px-4 text-sm font-medium text-muted-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              active ? "bg-card text-foreground ring-1 ring-ink/40" : "hover:text-foreground",
+              active ? "bg-card text-foreground ring-1 ring-ring/40" : "hover:text-foreground",
             )}
           >
             {isStatus && (
-              <span className="status-box scale-[0.8]" data-status={v} aria-hidden="true">
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "grid size-4 shrink-0 place-items-center rounded-full border-2 text-white",
+                  v === "done"
+                    ? "border-green-500 bg-green-500"
+                    : v === "doing"
+                      ? "border-yellow-500 bg-yellow-500/20"
+                      : "border-primary/50 bg-transparent",
+                )}
+              >
                 {v === "done" && (
                   <svg viewBox="0 0 16 16" className="size-3" fill="none">
                     <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
@@ -150,14 +160,14 @@ export function Segmented<T extends string>({
 }
 
 export const STATUS_DOT: Record<Status, string> = {
-  todo: "bg-status-todo",
-  doing: "bg-status-doing",
-  done: "bg-status-done",
+  todo: "bg-gray-400",
+  doing: "bg-yellow-500",
+  done: "bg-green-500",
 };
 export const PRIORITY_DOT: Record<Priority, string> = {
-  high: "bg-prio-high",
-  medium: "bg-prio-medium",
-  low: "bg-prio-low",
+  high: "bg-red-500",
+  medium: "bg-yellow-500",
+  low: "bg-gray-400",
 };
 
 export default function TaskFormDialog({
@@ -348,7 +358,9 @@ export default function TaskFormDialog({
               />
             </Field>
 
-            {isNew && boards.length > 1 && (
+            {/* Luôn hiện, kể cả khi chỉ có một board: task nào cũng phải nằm trong
+                một board, nên lúc tạo phải thấy nó vào đâu. */}
+            {isNew && boards.length > 0 && (
               <Field label="Lưu vào board" htmlFor={`${id}-board`} error={errors.boardId}>
                 {/* Mũi tên vẽ bằng icon theo currentColor, không phải SVG mã cứng một màu. */}
                 <div className="relative">

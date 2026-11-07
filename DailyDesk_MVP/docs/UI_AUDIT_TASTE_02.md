@@ -1,5 +1,12 @@
 # UI AUDIT — vòng 2 (đo thật)
 
+> **KHÔNG CÒN ĐÚNG VỚI CODE (07/11/2026).**
+> Giao diện đã được đưa về bản gốc của repo `DailyDesk/` theo yêu cầu:
+> theme shadcn trung tính, nền board là ảnh/màu phủ kín, thanh công cụ kính mờ,
+> card board kiểu bìa hồ sơ. Mọi thứ viết ở dưới về "sổ kế hoạch giấy",
+> mực tím, bút dạ quang hay con dấu XONG không còn trong code nữa.
+> Giữ lại làm hồ sơ quá trình.
+
 Ngày: 2026-11-07 · Skill: `design-taste-frontend`, bộ quy tắc **app screens**
 Căn cứ: `references/app-screens.md` (chưng cất từ 23 màn sản phẩm thật), `references/critique.md`, `references/tells.md`
 Mốc tham chiếu: hai style skill chia cho brief này — `achromatic-ledger` và `editorial-greeting` (seed 1796905216)

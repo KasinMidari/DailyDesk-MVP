@@ -18,18 +18,16 @@ export function DueBadge({ card, onClick, className }: DueBadgeProps) {
   const { label, color } = getDueStatus(dueAt, dueComplete);
   const formattedDate = formatDueDate(dueAt);
 
-  // Nhãn hạn chót đi theo token của hệ, không mượn bảng màu Tailwind:
-  // chỉ quá hạn (đỏ) và đang tới hạn (hổ phách) được tô, đã xong là yên nhất.
   const getBadgeClassName = () => {
     switch (color) {
       case "success":
-        return "bg-muted text-muted-foreground";
+        return "bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-200";
       case "destructive":
-        return "bg-[color-mix(in_oklch,var(--red-ink)_12%,transparent)] text-overdue ring-1 ring-inset ring-[color-mix(in_oklch,var(--red-ink)_40%,transparent)]";
+        return "bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900 dark:text-red-200";
       case "warning":
-        return "bg-status-doing-soft text-status-doing";
+        return "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-200";
       case "secondary":
-        return "bg-muted text-muted-foreground";
+        return "bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200";
       default:
         return "";
     }

@@ -24,6 +24,7 @@ import {
   selectedCardAtom,
 } from "./atoms";
 import { KanbanColumn } from "./KanbanColumn";
+import { Button } from "@/components/ui/button";
 import { BoardHeaderBar } from "./BoardHeaderBar";
 import { EditBoardDialog } from "@/components/edit-board-dialog";
 import { cardMatchesFilters, emptyFilterState, type FilterState } from "@/components/board-filter-popover";
@@ -619,6 +620,8 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
     );
   }, 0);
 
+  const progress = totalCards === 0 ? 0 : (doneCards / totalCards) * 100;
+
   const isCalendarView = viewMode === "calendar";
 
   /** Nút chính của màn: thêm task vào danh sách đầu tiên. */
@@ -635,15 +638,17 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
     <BoardEventsProvider boardId={boardId || ""}>
       <KanbanBoardProvider>
       <div
-        className="relative flex h-full w-full flex-1 flex-col overflow-hidden bg-background"
+        className={`relative flex h-full w-full flex-1 flex-col overflow-hidden ${isCalendarView ? "" : "p-4"}`}
           style={{
-            // Màu của board chỉ còn là mép bìa sổ ở trên cùng; nền luôn là trang
-            // giấy. 4px là đủ để nhận ra board, 6px thì nó thành thứ to tiếng nhất màn.
-            boxShadow: `inset 0 4px 0 ${board.backgroundColor || "var(--ink)"}`,
+            // Ảnh nền hoặc màu của board phủ kín mặt làm việc.
+            backgroundImage: board.backgroundUrl ? `url(${board.backgroundUrl})` : undefined,
+            backgroundColor: board.backgroundColor ?? undefined,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
           }}
         >
-          {/* Lề canvas dùng chung với màn "Việc của tôi"; board cao hết khung nên đáy chỉ cần một nhịp. */}
-          <div className="mx-auto flex w-full max-w-6xl min-h-0 flex-1 flex-col overflow-hidden px-4 pt-8 pb-6 sm:px-6 lg:px-10">
+          {!isCalendarView && (
             <BoardHeaderBar
               boardId={boardId || ""}
               boardName={board.name}
@@ -657,15 +662,36 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
               filters={filters}
               onFiltersChange={setFilters}
               onEditBoard={() => setIsEditBoardOpen(true)}
-              doneCards={doneCards}
-              totalCards={totalCards}
-              overdueCards={overdueCards}
-              viewMode={viewMode}
-              onViewModeChange={setViewMode}
+              progress={progress}
               onAddTask={handleOpenAddTask}
             />
+          )}
+
+          {/* Đổi chế độ xem: nút nổi giữa đáy canvas, như bản gốc */}
+          <div className="fixed bottom-4 left-1/2 z-30 -translate-x-1/2">
+            <div className="inline-flex items-center gap-1 rounded-xl border border-border bg-background/80 p-1 shadow-lg backdrop-blur">
+              <Button
+                variant={viewMode === "kanban" ? "default" : "ghost"}
+                size="sm"
+                className="h-8 px-3 text-sm"
+                onClick={() => setViewMode("kanban")}
+              >
+                Kanban
+              </Button>
+              <Button
+                variant={viewMode === "calendar" ? "default" : "ghost"}
+                size="sm"
+                className="h-8 px-3 text-sm"
+                onClick={() => setViewMode("calendar")}
+              >
+                Lịch
+              </Button>
+            </div>
+          </div>
+
           {isCalendarView ? (
-            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+            <div className="absolute inset-0 z-20 overflow-y-auto">
+              <div className="min-h-full w-full bg-background">
               <EventCalendar
                 events={calendarEvents}
                 initialView="month"
@@ -678,9 +704,10 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
                 onCreateClick={handleOpenCalendarCreate}
                 onEventSelect={handleCalendarEventSelect}
               />
+              </div>
             </div>
           ) : (
-            <KanbanBoard ref={scrollRef} {...dragEvents} className="min-h-0 flex-1 items-stretch overflow-x-auto overflow-y-hidden">
+            <KanbanBoard ref={scrollRef} {...dragEvents} className="cursor-grab active:cursor-grabbing pb-24 flex-1 overflow-x-auto overflow-y-auto items-start">
               {filteredLists.map((column, index) => (
                 <KanbanColumn
                   key={column.id}
@@ -709,7 +736,6 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
               <KanbanBoardExtraMargin />
             </KanbanBoard>
           )}
-          </div>
 
           <CardEditDialog
             card={selectedCard}

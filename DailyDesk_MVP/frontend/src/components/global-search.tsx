@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { useState, useCallback, useEffect, type ReactNode } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useGroupedSearch } from "@/hooks/use-search";
 import { useDebounce } from "use-debounce"
 import {
@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { listDisplayName } from "@/features/tasks/api";
 import { cn } from "@/lib/utils";
 
-export function GlobalSearch({ trigger }: { trigger?: (open: () => void) => ReactNode } = {}) {
+export function GlobalSearch() {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery] = useDebounce(searchQuery, 300);
@@ -64,18 +64,21 @@ export function GlobalSearch({ trigger }: { trigger?: (open: () => void) => Reac
 
   return (
     <>
-      {trigger ? (
-        trigger(() => setOpen(true))
-      ) : (
-        <button
-          onClick={() => setOpen(true)}
-          aria-label="Tìm kiếm"
-          className="flex h-9 min-w-0 items-center gap-2 rounded-md border border-input bg-card px-3 text-left text-sm text-muted-foreground outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          <Search className="size-4 shrink-0" />
-          <span className="truncate">Tìm trong sổ…</span>
-        </button>
-      )}
+      {/* Thanh tìm kiếm ở header */}
+      <button
+        onClick={() => setOpen(true)}
+        className="relative h-10 min-w-0 flex-1 max-w-2xl rounded-md border border-input bg-background px-3 py-2 text-left text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+      >
+        <div className="flex min-w-0 items-center gap-2">
+          <Search className="h-4 w-4 text-muted-foreground" />
+          <span className="text-muted-foreground truncate">
+            Tìm board, task, danh sách…
+          </span>
+          <kbd className="pointer-events-none ml-auto hidden h-5 shrink-0 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground sm:inline-flex">
+            <span className="text-xs">Ctrl</span>K
+          </kbd>
+        </div>
+      </button>
 
       {/* Command Dialog */}
       <CommandDialog

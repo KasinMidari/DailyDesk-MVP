@@ -14,9 +14,8 @@ import {
 } from "@/components/event-calendar";
 import { cn } from "@/lib/utils";
 
-// Đã xong là trạng thái yên nhất: không nền, chữ mờ, gạch ngang.
 const doneEventClasses =
-  "bg-transparent text-muted-foreground line-through decoration-muted-foreground/60 hover:bg-muted/50";
+  "bg-emerald-200/60 hover:bg-emerald-200/50 text-emerald-950/90 dark:bg-emerald-400/30 dark:hover:bg-emerald-400/25 dark:text-emerald-200 shadow-emerald-700/12";
 
 // Using date-fns format with custom formatting:
 // 'h' - hours (1-12)
@@ -69,7 +68,7 @@ function EventWrapper({
   return (
     <button
       className={cn(
-        "flex size-full select-none overflow-hidden px-1 text-left font-medium outline-none transition focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-dragging:cursor-grabbing data-dragging:shadow-lg sm:px-2",
+        "flex size-full select-none overflow-hidden px-1 text-left font-medium outline-none backdrop-blur-md transition focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-dragging:cursor-grabbing data-past-event:line-through data-dragging:shadow-lg sm:px-2",
         event.isDone ? doneEventClasses : getEventColorClasses(event.color),
         getBorderRadiusClasses(isFirstDay, isLastDay),
         className,
@@ -158,7 +157,7 @@ export function EventItem({
     return (
       <EventWrapper
         className={cn(
-          "mt-[var(--event-gap)] h-[var(--event-height)] items-center text-[12px]",
+          "mt-[var(--event-gap)] h-[var(--event-height)] items-center text-[10px] sm:text-xs",
           className,
         )}
         currentTime={currentTime}
@@ -175,20 +174,19 @@ export function EventItem({
         {children || (
           <div className="flex items-center gap-1 truncate w-full">
             {event.isDone && (
-              <CheckCircle2 className="w-3 h-3 flex-shrink-0" />
+              <CheckCircle2 className="w-3 h-3 flex-shrink-0 text-emerald-700 dark:text-emerald-300" />
             )}
             {event.isRecurring && (
               <Repeat className="w-3 h-3 flex-shrink-0 opacity-70" />
             )}
-            {/* Tên việc giữ chỗ trước, giờ lùi về mép phải trong một làn cố định.
-                Để giờ đứng trước thì nó ăn mất chỗ của chính cái tên — mà tên
-                mới là thứ người ta đọc để nhận ra việc. */}
-            <span className="truncate flex-1">{event.title}</span>
-            {!event.allDay && (
-              <span className="shrink-0 tabular font-normal opacity-70">
-                {formatTimeWithOptionalMinutes(displayStart)}
-              </span>
-            )}
+            <span className="truncate flex-1">
+              {!event.allDay && (
+                <span className="font-normal opacity-70 truncate tabular sm:text-[11px]">
+                  {formatTimeWithOptionalMinutes(displayStart)}{" "}
+                </span>
+              )}
+              {event.title}
+            </span>
           </div>
         )}
       </EventWrapper>
@@ -201,7 +199,7 @@ export function EventItem({
         className={cn(
           "py-1",
           durationMinutes < 45 ? "items-center" : "flex-col",
-          view === "week" ? "text-[11px] sm:text-xs" : "text-xs",
+          view === "week" ? "text-[10px] sm:text-xs" : "text-xs",
           className,
         )}
         currentTime={currentTime}
@@ -219,7 +217,7 @@ export function EventItem({
           <div className="flex flex-col gap-0.5 w-full">
             <div className="truncate flex items-center gap-1">
               {event.isDone && (
-                <CheckCircle2 className="w-3 h-3 flex-shrink-0" />
+                <CheckCircle2 className="w-3 h-3 flex-shrink-0 text-emerald-700 dark:text-emerald-300" />
               )}
               {event.title}{" "}
               {showTime && (
@@ -233,7 +231,7 @@ export function EventItem({
           <>
             <div className="font-medium truncate flex items-center gap-1">
               {event.isDone && (
-                <CheckCircle2 className="w-3 h-3 flex-shrink-0" />
+                <CheckCircle2 className="w-3 h-3 flex-shrink-0 text-emerald-700 dark:text-emerald-300" />
               )}
               {event.title}
             </div>
@@ -252,7 +250,7 @@ export function EventItem({
   return (
     <button
       className={cn(
-        "flex w-full flex-col gap-1 rounded p-2 text-left outline-none transition focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-past-event:opacity-90",
+        "flex w-full flex-col gap-1 rounded p-2 text-left outline-none transition focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-past-event:line-through data-past-event:opacity-90",
         event.isDone ? doneEventClasses : getEventColorClasses(eventColor),
         className,
       )}
@@ -266,7 +264,7 @@ export function EventItem({
     >
       <div className="text-sm font-medium flex items-center gap-1">
         {event.isDone && (
-          <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+          <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-700 dark:text-emerald-300" />
         )}
         {event.title}
       </div>

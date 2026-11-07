@@ -15,16 +15,19 @@ interface BackgroundPickerContextValue {
   setCoverMode: (mode: CardCoverModeValue) => void;
   imagePreview: string | null;
   selectedFile: File | null;
+  selectedImageUrl: string | null;
   croppedFile: File | null;
   showCropper: boolean;
   setShowCropper: (open: boolean) => void;
   handleFilePick: (file: File | null) => void;
+  handleImageUrlPick: (url: string) => void;
   handleCropComplete: (croppedImage: string) => void;
   handleColorPick: (color: string) => void;
   reset: () => void;
   getBackgroundData: () => {
     color?: string;
     imageFile?: File;
+    imageUrl?: string;
   };
 }
 
@@ -48,6 +51,7 @@ export const BackgroundPickerProvider = ({
   const getBackgroundData = () => ({
     color: picker.selectedColor || undefined,
     imageFile: picker.croppedFile || picker.selectedFile || undefined,
+    imageUrl: picker.selectedImageUrl || undefined,
   });
 
   const value: BackgroundPickerContextValue = {
