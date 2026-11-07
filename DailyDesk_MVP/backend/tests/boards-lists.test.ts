@@ -70,7 +70,7 @@ describe("US2: board và danh sách", () => {
 
     const res = await call("DELETE", `/boards/${me.board.id}/lists/${me.done.id}`, { token: me.token });
     expect(res.status).toBe(400);
-    expect(res.body.message).toContain("Xong");
+    expect(res.body.message).toContain("Done");
 
     // Có danh sách khác cùng trạng thái thì xoá được.
     await call("POST", `/boards/${me.board.id}/lists`, { token: me.token, body: { name: "Đã xong" } });

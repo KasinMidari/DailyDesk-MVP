@@ -170,7 +170,7 @@ const PLAN: BoardSeed[] = [
         ],
       },
       {
-        name: "Đang làm",
+        name: "Doing",
         cards: [
           {
             name: "Học TypeScript nâng cao",

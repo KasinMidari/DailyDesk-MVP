@@ -92,4 +92,4 @@ async function requireAnotherListWithSameStatus(
   );
 }
 
-const STATUS_LABEL = { todo: "Cần làm", doing: "Đang làm", done: "Xong" } as const;
+const STATUS_LABEL = { todo: "To-do", doing: "Doing", done: "Done" } as const;

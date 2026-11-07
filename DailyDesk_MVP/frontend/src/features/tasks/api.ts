@@ -40,7 +40,7 @@ export const STATUS_ORDER: Status[] = ["todo", "doing", "done"];
  */
 export const STATUS_LABEL: Record<Status, string> = { todo: "Todo", doing: "Doing", done: "Done" };
 /** Nhãn hiển thị trên giao diện. Tách khỏi tên list để đổi chữ không đổi dữ liệu. */
-export const STATUS_TEXT: Record<Status, string> = { todo: "Cần làm", doing: "Đang làm", done: "Xong" };
+export const STATUS_TEXT: Record<Status, string> = { todo: "To-do", doing: "Doing", done: "Done" };
 export const PRIORITY_LABEL: Record<Priority, string> = { high: "Cao", medium: "Vừa", low: "Thấp" };
 export const PRIORITY_RANK: Record<Priority, number> = { high: 0, medium: 1, low: 2 };
 

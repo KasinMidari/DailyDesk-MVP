@@ -39,14 +39,17 @@ export async function requireCard(db: Db, userId: string, boardId: string, cardI
 
 /** Trạng thái suy ra từ tên danh sách (data-model.md). */
 /**
- * Tên list dùng trong dòng nhật ký. Ba list mặc định mang tên tiếng Anh vì đó
- * là dữ liệu (data-model §41), nhưng nhật ký là câu tiếng Việt người dùng đọc.
+ * Tên ba list mặc định khi hiện cho người dùng đọc.
+ *
+ * Dữ liệu vẫn là "Todo"/"Doing"/"Done" theo data-model §41; đây chỉ là cách
+ * viết trên màn hình, thống nhất một chỗ để nhật ký, thông báo và tên cột
+ * không mỗi nơi một kiểu.
  */
 export function listDisplayName(name: string): string {
   const n = name.trim().toLowerCase();
-  if (n === "todo") return "Cần làm";
-  if (n === "doing") return "Đang làm";
-  if (n === "done") return "Xong";
+  if (n === "todo") return "To-do";
+  if (n === "doing") return "Doing";
+  if (n === "done") return "Done";
   return name;
 }
 
