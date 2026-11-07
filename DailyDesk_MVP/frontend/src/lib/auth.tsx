@@ -44,6 +44,8 @@ type AuthContextValue = {
   loginWithDev: (email: string, name?: string) => Promise<void>;
   /** Callback của Google thất bại (nút chính thức không ném lỗi ra ngoài). */
   authFailed: boolean;
+  /** Lý do đăng nhập hỏng, lấy từ máy chủ. */
+  authError: string | null;
 };
 
 const SESSION_KEY = "dailydesk-session";
@@ -139,6 +141,7 @@ function MockAuthProvider({ children }: { children: ReactNode }) {
       devLoginEnabled: false,
       loginWithDev: async () => {},
       authFailed: false,
+      authError: null,
     }),
     [user, isLoading, loginWithRedirect, logout, getAccessTokenSilently],
   );
@@ -257,6 +260,7 @@ function RealAuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | undefined>(() => readSession());
   const [isLoading, setIsLoading] = useState(true);
   const [authFailed, setAuthFailed] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   // Lời hứa của lần bấm đăng nhập đang chờ callback của Google.
   const pending = useRef<{ resolve: () => void; reject: (e: Error) => void } | null>(null);
   const googleId = useRef<Promise<GoogleId> | null>(null);
@@ -304,10 +308,14 @@ function RealAuthProvider({ children }: { children: ReactNode }) {
       writeSession(next);
       setSession(next);
       setAuthFailed(false);
+      setAuthError(null);
       waiting?.resolve();
     } catch (e) {
       console.error("Đổi Google ID token thất bại", e);
       setAuthFailed(true);
+      // Thông báo của máy chủ mới nói được hỏng ở đâu; nuốt nó đi thì người
+      // dùng chỉ thấy một câu chung chung và không ai biết phải sửa gì.
+      setAuthError(e instanceof Error && e.message ? e.message : null);
       waiting?.reject(e instanceof Error ? e : new Error("Đăng nhập không thành công"));
     }
   }, []);
@@ -404,11 +412,13 @@ function RealAuthProvider({ children }: { children: ReactNode }) {
       devLoginEnabled: DEV_LOGIN,
       loginWithDev,
       authFailed,
+      authError,
     }),
     [
       session,
       isLoading,
       authFailed,
+      authError,
       loginWithRedirect,
       logout,
       getAccessTokenSilently,

@@ -43,6 +43,7 @@ export default function SignInScreen() {
     devLoginEnabled,
     loginWithDev,
     authFailed,
+    authError,
   } = useAuth();
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
@@ -192,7 +193,7 @@ export default function SignInScreen() {
                 className="flex items-start gap-2 rounded-md bg-destructive/10 px-3 py-2.5 text-sm text-destructive"
               >
                 <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                {failed ?? "Không đăng nhập được. Thử lại sau giây lát."}
+                {failed ?? authError ?? "Không đăng nhập được. Thử lại sau giây lát."}
               </p>
             )}
 

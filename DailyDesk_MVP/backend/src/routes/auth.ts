@@ -12,10 +12,20 @@ export const authRoutes = new Hono<AppEnv>();
 
 authRoutes.post("/google", async (c) => {
   const { credential } = parse(z.object({ credential: z.string().min(1) }), await c.req.json().catch(() => ({})));
+  // Thiếu cấu hình là lỗi của máy chủ, không phải token người dùng gửi sai:
+  // trả 401 cho cả hai thì ai cũng tưởng tại Google và không ai đi sửa env.
+  if (!c.var.env.GOOGLE_CLIENT_ID) {
+    console.error("GOOGLE_CLIENT_ID chưa được đặt trên máy chủ, không xác minh được token Google");
+    throw new HttpError(500, "Máy chủ chưa cấu hình GOOGLE_CLIENT_ID");
+  }
   let profile;
   try {
     profile = await verifyGoogleIdToken(credential, c.var.env.GOOGLE_CLIENT_ID);
-  } catch {
+  } catch (e) {
+    // Lý do thật chỉ ghi ở log máy chủ: nói ra ngoài thì thành chỉ đường cho
+    // người dò token. Sai audience là trường hợp hay gặp nhất khi deploy —
+    // Client ID ở frontend và ở backend không phải cùng một cái.
+    console.error("Xác minh Google ID token thất bại:", e instanceof Error ? e.message : e);
     throw new HttpError(401, "Đăng nhập Google không hợp lệ hoặc đã hết hạn");
   }
   const user = await upsertUser(c.var.db, {
