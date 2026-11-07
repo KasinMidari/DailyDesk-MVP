@@ -23,5 +23,8 @@ services:
         sync: false
       - key: CORS_ORIGIN
         sync: false
+      # Phải là "false" trên bản chạy thật: khi bật, POST /auth/dev cấp phiên
+      # cho bất kỳ email nào mà không cần mật khẩu — ai biết email của người
+      # khác là đăng nhập được vào tài khoản đó.
       - key: AUTH_DEV_LOGIN
-        value: "true"
+        value: "false"
