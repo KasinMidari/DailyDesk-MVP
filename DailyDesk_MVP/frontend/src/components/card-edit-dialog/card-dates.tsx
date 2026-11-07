@@ -225,7 +225,7 @@ export function CardDates({
       setIsOpen(false);
     } catch (error) {
       toast.error("Không cập nhật được ngày");
-      console.error("❌ Update dates error:", error);
+      console.error("Update dates error:", error);
     }
   };
 

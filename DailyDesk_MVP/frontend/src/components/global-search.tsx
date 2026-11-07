@@ -128,7 +128,7 @@ export function GlobalSearch({ trigger }: { trigger?: (open: () => void) => Reac
                         />
                       )}
                       <span className="flex-1 truncate">{result.name}</span>
-                      {result.isFavorite && <Badge variant="secondary">★</Badge>}
+                      {result.isFavorite && <Badge variant="secondary">Ghim</Badge>}
                     </div>
                   </CommandItem>
                 ))}

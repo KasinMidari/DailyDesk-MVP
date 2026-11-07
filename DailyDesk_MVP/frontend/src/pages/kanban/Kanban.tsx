@@ -637,8 +637,9 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
       <div
         className="relative flex h-full w-full flex-1 flex-col overflow-hidden bg-background"
           style={{
-            // Màu của board chỉ còn là mép bìa sổ ở trên cùng; nền luôn là trang giấy.
-            boxShadow: `inset 0 6px 0 ${board.backgroundColor || "var(--ink)"}`,
+            // Màu của board chỉ còn là mép bìa sổ ở trên cùng; nền luôn là trang
+            // giấy. 4px là đủ để nhận ra board, 6px thì nó thành thứ to tiếng nhất màn.
+            boxShadow: `inset 0 4px 0 ${board.backgroundColor || "var(--ink)"}`,
           }}
         >
           {/* Lề canvas dùng chung với màn "Việc của tôi"; board cao hết khung nên đáy chỉ cần một nhịp. */}

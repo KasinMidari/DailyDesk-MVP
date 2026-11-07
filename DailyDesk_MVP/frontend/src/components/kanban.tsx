@@ -676,7 +676,8 @@ export function KanbanBoardColumnButton({
   return (
     <Button
       className={cn(
-        "bg-transparent text-ink hover:bg-accent w-full justify-start",
+        // Nút phụ ở chân cột là chrome: chữ mờ, không phải màu mực.
+        "bg-transparent text-muted-foreground hover:bg-accent hover:text-foreground w-full justify-start",
         className
       )}
       variant="outline"

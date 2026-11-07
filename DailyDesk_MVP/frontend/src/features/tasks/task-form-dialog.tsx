@@ -118,7 +118,8 @@ export function Segmented<T extends string>({
         const active = o.value === value;
         const v = o.value as string;
         const isStatus = v === "todo" || v === "doing" || v === "done";
-        const hl = v === "high" ? "hl hl-high" : v === "medium" ? "hl hl-medium" : "";
+        // Chỉ "Cao" được tô dạ quang, giống hệt lúc hiện trên danh sách.
+        const hl = v === "high" ? "hl hl-high" : "";
         return (
           <button
             key={o.value}

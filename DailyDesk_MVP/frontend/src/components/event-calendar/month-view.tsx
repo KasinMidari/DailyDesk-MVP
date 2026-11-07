@@ -89,7 +89,7 @@ export function MonthView({
       <div className="grid grid-cols-7 border-b border-border/70">
         {weekdays.map((day) => (
           <div
-            className="py-2 text-sm text-center text-muted-foreground"
+            className="py-2 text-sm text-center text-muted-foreground tabular"
             key={day}
           >
             {day}
@@ -140,7 +140,7 @@ export function MonthView({
                     }}
                   >
                     {/* Hôm nay: một vạch mực 1px trên ô + ngày in đậm, không phải đĩa màu. */}
-                    <div className="inline-flex justify-center items-center mt-1 text-sm size-6 group-data-today:font-semibold group-data-today:text-ink">
+                    <div className="inline-flex justify-center items-center mt-1 text-sm size-6 tabular group-data-today:font-semibold group-data-today:text-ink">
                       {format(day, "d")}
                     </div>
                     <div
@@ -209,7 +209,7 @@ export function MonthView({
                         <Popover modal>
                           <PopoverTrigger asChild>
                             <button
-                              className="flex overflow-hidden items-center px-1 w-full text-left transition outline-none select-none sm:px-2 sm:text-xs mt-(--event-gap) h-(--event-height) text-[11px] text-muted-foreground hover:bg-muted/50 hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                              className="flex overflow-hidden items-center px-1 w-full text-left transition outline-none select-none sm:px-2 mt-(--event-gap) h-(--event-height) text-[12px] text-muted-foreground hover:bg-muted/50 hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
                               onClick={(e) => e.stopPropagation()}
                               type="button"
                             >

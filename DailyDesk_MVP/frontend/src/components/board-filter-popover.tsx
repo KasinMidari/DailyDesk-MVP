@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { useBoardLabels } from "@/hooks/use-label";
 import { useMembers } from "@/hooks/use-member";
 import { cn } from "@/lib/utils";
+import { avatarTint } from "@/lib/avatar-colors";
 
 export type SortOption = "none" | "name-asc" | "name-desc" | "dueDate-asc" | "dueDate-desc" | "createdAt-asc" | "createdAt-desc";
 
@@ -182,17 +183,7 @@ export function BoardFilterPopover({
             {members.length > 0 ? (
               <div className="space-y-1">
                 {members.map((member, index) => {
-                  const colors = [
-                    "bg-blue-500",
-                    "bg-yellow-500",
-                    "bg-orange-500",
-                    "bg-red-500",
-                    "bg-purple-500",
-                    "bg-green-500",
-                    "bg-pink-500",
-                    "bg-cyan-500",
-                  ];
-                  const colorClass = colors[index % colors.length];
+                  const colorClass = avatarTint(member.id || member.name || String(index));
                   const initials = member.name
                     ?.split(" ")
                     .map((n) => n[0])

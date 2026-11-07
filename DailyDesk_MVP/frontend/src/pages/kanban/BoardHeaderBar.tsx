@@ -40,6 +40,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { formatWeekdayDate } from "@/lib/date";
 import { cn } from "@/lib/utils";
+import { avatarTint } from "@/lib/avatar-colors";
 import { BoardFilterPopover, type FilterState } from "@/components/board-filter-popover";
 import { BoardSortPopover } from "@/components/board-sort-popover";
 import { BoardMembersManager } from "@/components/board-members-manager";
@@ -90,18 +91,6 @@ interface BoardHeaderBarProps {
   onViewModeChange: (mode: "kanban" | "calendar") => void;
   onAddTask: () => void;
 }
-
-// Avatar colors for members
-const AVATAR_COLORS = [
-  "bg-blue-500",
-  "bg-yellow-500",
-  "bg-orange-500",
-  "bg-red-500",
-  "bg-purple-500",
-  "bg-green-500",
-  "bg-pink-500",
-  "bg-cyan-500",
-];
 
 // Get initials from name
 function getInitials(name?: string): string {
@@ -386,7 +375,7 @@ export function BoardHeaderBar({
                   <button type="button" aria-label="Quản lý thành viên" className="hidden items-center lg:flex">
                     <span className="flex -space-x-2">
                       {allMembers.slice(0, 5).map((member, index) => {
-                        const colorClass = AVATAR_COLORS[index % AVATAR_COLORS.length];
+                        const colorClass = avatarTint(member.id || member.name || String(index));
                         const initials = getInitials(member.name);
                         const isOwnerMember = ownerInfo?.userId === member.userId;
 

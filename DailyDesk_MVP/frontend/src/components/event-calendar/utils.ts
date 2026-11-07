@@ -59,7 +59,9 @@ export function getEventColorClasses(color?: EventColor | string): string {
     case "violet":
       return "bg-transparent hover:bg-muted/50 text-muted-foreground";
     case "rose":
-      return "bg-red-ink/12 hover:bg-red-ink/18 text-red-ink font-semibold ring-1 ring-inset ring-red-ink/40";
+      // Quá hạn: nền đỏ nhạt, chữ mực đỏ đậm, một mép đỏ 3px. Chữ đỏ tươi in
+      // đậm trên hàng chục chip biến cả tháng thành màu đỏ.
+      return "bg-red-ink/10 hover:bg-red-ink/16 text-overdue-ink border-l-[3px] border-red-ink";
     case "emerald":
       return "bg-transparent hover:bg-muted/50 text-muted-foreground";
     case "orange":
@@ -195,38 +197,6 @@ export function addHoursToDate(date: Date, hours: number): Date {
   return result;
 }
 
-/**
- * Map label color to calendar event color
- * 
- * @param labelColor - The color string from a card label (e.g., "red", "blue", "bg-red-500")
- * @returns The corresponding EventColor for the calendar
- * 
- * @example
- * mapLabelColorToEventColor("red") // Returns "rose"
- * mapLabelColorToEventColor("blue") // Returns "sky"
- * mapLabelColorToEventColor("bg-green-500") // Returns "emerald"
- */
-function mapLabelColorToEventColor(labelColor?: string): EventColor {
-  if (!labelColor) return "sky";
-  
-  const colorMap: Record<string, EventColor> = {
-    blue: "sky",
-    yellow: "amber",
-    purple: "violet",
-    red: "rose",
-    green: "emerald",
-    orange: "orange",
-  };
-
-  // Check if the label color matches any of our mappings
-  for (const [key, value] of Object.entries(colorMap)) {
-    if (labelColor.toLowerCase().includes(key)) {
-      return value;
-    }
-  }
-
-  return "sky"; // Default color
-}
 
 /**
  * Convert a Card to a CalendarEvent
@@ -285,10 +255,10 @@ export function cardToCalendarEvent(card: CardInput, listName?: string, listId?:
   // Handle both 'name' (backend) and 'title' (frontend) fields
   const title = ('title' in card && card.title) || ('name' in card && card.name) || "Untitled";
   
-  // Determine color based on card labels
-  const color = card.labels && card.labels.length > 0 && card.labels[0].color
-    ? mapLabelColorToEventColor(card.labels[0].color)
-    : "sky";
+  // Màu chip nói TRẠNG THÁI, không nói nhãn. Màu nhãn là danh tính, đặt nó lên
+  // chip thì cả tháng thành bảy màu và không màu nào còn báo điều gì cần làm.
+  // Chỉ việc quá hạn mới có màu; còn lại là chip trung tính.
+  const isOverdueCard = !!dueDate && dueDate.getTime() < Date.now();
 
   const { start, end } = dueDate
     ? getEventStartEnd(dueDate)
@@ -317,7 +287,7 @@ export function cardToCalendarEvent(card: CardInput, listName?: string, listId?:
     start: start,
     end: end,
     allDay: false,
-    color: color,
+    color: isOverdueCard && !isDone ? "rose" : "sky",
     location: listName, // Use list name as location
     listId: listId || ('listId' in card ? card.listId : undefined),
     startDate: startDate ?? undefined,

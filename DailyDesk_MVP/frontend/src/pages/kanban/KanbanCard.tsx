@@ -218,7 +218,7 @@ export function KanbanCard({
   const PriorityMark = ({ className = "" }: { className?: string }) =>
     priority ? (
       <span className={`inline-flex items-center px-1 py-0.5 text-xs ${className}`}>
-        <span className={priority === "high" ? "hl hl-high text-foreground" : priority === "medium" ? "hl hl-medium text-foreground" : ""}>
+        <span className={priority === "high" ? "hl hl-high text-foreground" : "text-muted-foreground"}>
           {priority === "high" ? "Cao" : priority === "medium" ? "Vừa" : "Thấp"}
         </span>
       </span>
@@ -226,9 +226,9 @@ export function KanbanCard({
 
   const DateRow = ({ className }: { className: string }) => (
     <div
-      className={`relative flex items-center gap-1 text-xs rounded-sm px-1 py-0.5 ${className} ${
-        isDone && !normalizedCard.repeatFrequency ? "bg-status-done-soft" : ""
-      }`}
+      // Ngày không cần một ô nền riêng: chữ mờ là đủ, và 14 ô nền nhỏ trên một
+      // màn chính là dấu hiệu kinh điển của dashboard sinh ra tự động.
+      className={`relative flex items-center gap-1 text-xs ${className}`}
     >
       {isRenewing && <span className="absolute inset-0 renew-flash rounded-sm" />}
       <Clock className="relative z-10 h-3 w-3" />
@@ -419,7 +419,10 @@ export function KanbanCard({
                   aria-label={`Thao tác với task ${normalizedCard.title}`}
                   onClick={(e) => e.stopPropagation()}
                   onPointerDown={(e) => e.stopPropagation()}
-                  className="absolute top-1.5 right-1.5 z-20 grid size-7 place-items-center rounded-md bg-card/80 text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                  // Nút "..." chỉ hiện khi rê chuột hoặc khi được focus. Mười bốn
+                  // ô nhỏ có nền nằm sẵn trên màn là chrome thừa; bàn phím vẫn
+                  // tới được vì focus-visible kéo nó hiện lên.
+                  className="absolute top-1.5 right-1.5 z-20 grid size-7 place-items-center rounded-md text-muted-foreground opacity-0 outline-none transition-opacity hover:bg-accent hover:text-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring group-hover:opacity-100 max-sm:opacity-100"
                 >
                   <MoreHorizontal className="size-4" />
                 </button>

@@ -158,7 +158,7 @@ export function EventItem({
     return (
       <EventWrapper
         className={cn(
-          "mt-[var(--event-gap)] h-[var(--event-height)] items-center text-[11px] sm:text-xs",
+          "mt-[var(--event-gap)] h-[var(--event-height)] items-center text-[12px]",
           className,
         )}
         currentTime={currentTime}
@@ -180,14 +180,15 @@ export function EventItem({
             {event.isRecurring && (
               <Repeat className="w-3 h-3 flex-shrink-0 opacity-70" />
             )}
-            <span className="truncate flex-1">
-              {!event.allDay && (
-                <span className="font-normal opacity-70 truncate sm:text-[11px]">
-                  {formatTimeWithOptionalMinutes(displayStart)}{" "}
-                </span>
-              )}
-              {event.title}
-            </span>
+            {/* Tên việc giữ chỗ trước, giờ lùi về mép phải trong một làn cố định.
+                Để giờ đứng trước thì nó ăn mất chỗ của chính cái tên — mà tên
+                mới là thứ người ta đọc để nhận ra việc. */}
+            <span className="truncate flex-1">{event.title}</span>
+            {!event.allDay && (
+              <span className="shrink-0 tabular font-normal opacity-70">
+                {formatTimeWithOptionalMinutes(displayStart)}
+              </span>
+            )}
           </div>
         )}
       </EventWrapper>

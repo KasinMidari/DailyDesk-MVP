@@ -1,5 +1,9 @@
 # UI AUDIT — DailyDesk MVP (soi bằng `design-taste-frontend`, bộ quy tắc **app screens**)
 
+> **Đã có bản mới: [`UI_AUDIT_TASTE_02.md`](UI_AUDIT_TASTE_02.md) (07/11/2026, đo thật bằng `inspect.mjs`).**
+> Hai phát hiện nặng nhất của bản này — sidebar tối trên màn sáng, và dark mode nhuộm tím cả nền —
+> **không còn đúng**: token đã được sửa từ trước khi đo lại. Xem mục 1 của bản vòng 2.
+
 Ngày: 2026-11-05 · Người soi: agent audit (chỉ đọc, không sửa file nào)
 Căn cứ: `references/app-screens.md`, `references/tells.md`, `references/critique.md`, `references/type.md`
 Bằng chứng: 7 ảnh trong `frontend/.impeccable/review/planner/` + mã nguồn `frontend/src/`

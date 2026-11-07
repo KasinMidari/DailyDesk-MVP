@@ -239,12 +239,15 @@ function StatusMenu({ task, onChange }: { task: Task; onChange: (s: Status) => v
   );
 }
 
+/* Chỉ "Cao" được tô dạ quang. "Vừa" là chữ thường, "Thấp" là chữ mờ: nếu mọi
+   mức đều có màu thì không mức nào còn nổi lên. */
 function PriorityTag({ priority }: { priority: Priority | null }) {
   if (!priority) return <span className="text-sm text-muted-foreground">—</span>;
   if (priority === "low") return <span className="text-sm text-muted-foreground">{PRIORITY_LABEL.low}</span>;
+  if (priority === "medium") return <span className="text-sm">{PRIORITY_LABEL.medium}</span>;
   return (
     <span className="text-sm">
-      <span className={cn("hl font-medium", priority === "high" ? "hl-high" : "hl-medium")}>{PRIORITY_LABEL[priority]}</span>
+      <span className="hl hl-high font-medium">{PRIORITY_LABEL.high}</span>
     </span>
   );
 }
@@ -325,13 +328,15 @@ function TaskRow({
       <span className="hidden lg:block">
         <PriorityTag priority={task.priority} />
       </span>
-      {/* Ngày là thứ người dùng so dọc theo cột: một mép phải chung, chữ số tabular. */}
+      {/* Ngày là thứ người dùng so dọc theo cột: một mép phải chung, chữ số tabular.
+          Một dấu đỏ cho mỗi dòng: chính cái ngày. Dòng "Trễ …" bên dưới là chữ mờ,
+          nếu nó cũng đỏ thì đỏ thành nền chứ không còn là tín hiệu. */}
       <span className="hidden text-right lg:block">
         {task.dueAt ? (
           <span className={cn("block text-sm tabular", overdue ? "font-medium text-overdue" : done ? "text-muted-foreground" : "")}>
             {dueText(task.dueAt)}
             {overdue && (
-              <span className="block text-xs font-normal">
+              <span className="block text-xs font-normal text-muted-foreground">
                 Trễ {formatDistanceToNowStrict(new Date(task.dueAt), { locale: vi })}
               </span>
             )}
@@ -533,32 +538,12 @@ export default function TasksPage() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 pt-8 pb-16 sm:px-6 lg:px-10">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
+      <header className="flex items-end justify-between gap-3">
+        <div className="min-w-0">
           <p className="text-sm text-muted-foreground">{today}</p>
           <h1 className="font-planner mt-1 text-[1.75rem] leading-tight font-semibold">Việc của tôi</h1>
-          {tasksQuery.isSuccess && (
-            <p className="mt-1.5 text-sm text-muted-foreground">
-              {openCount === 0 ? "Không còn việc nào đang chờ." : `${openCount} việc chưa xong`}
-              {overdueCount > 0 && (
-                <>
-                  {" · "}
-                  <button
-                    type="button"
-                    className="font-medium text-overdue underline-offset-2 hover:underline"
-                    onClick={() => {
-                      setSort("deadline");
-                      setStatus("all");
-                    }}
-                  >
-                    {overdueCount} việc quá hạn
-                  </button>
-                </>
-              )}
-            </p>
-          )}
         </div>
-        <Button onClick={openNew} size="lg" className="h-10 gap-2 px-4">
+        <Button onClick={openNew} size="lg" className="h-10 shrink-0 gap-2 px-3.5 sm:px-4">
           <Plus className="size-4" aria-hidden="true" />
           Thêm task
           {/* Phím tắt hiện ngay trên nút, không nằm trong tooltip. */}
@@ -570,6 +555,32 @@ export default function TasksPage() {
           </kbd>
         </Button>
       </header>
+      {/* Câu số liệu đứng riêng một dòng dưới cả hàng header: ở màn hẹp tiêu
+          đề và nút đã chiếm hết hàng trên, nên để chung cột với tiêu đề thì nó
+          bị nút đè lên hoặc phải cắt ngang giữa một cụm từ.
+          Mỗi vế là một cụm không tách, dấu "·" đi liền vế sau. */}
+      {tasksQuery.isSuccess && (
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          <span className="whitespace-nowrap">
+            {openCount === 0 ? "Không còn việc nào đang chờ." : `${openCount} việc chưa xong`}
+          </span>
+          {overdueCount > 0 && (
+            <span className="whitespace-nowrap">
+              {" · "}
+              <button
+                type="button"
+                className="font-medium text-overdue underline-offset-2 hover:underline"
+                onClick={() => {
+                  setSort("deadline");
+                  setStatus("all");
+                }}
+              >
+                {overdueCount} việc quá hạn
+              </button>
+            </span>
+          )}
+        </p>
+      )}
 
       <section className="mt-6" aria-label="Danh sách task">
         <PlannerTabs value={filters.status} counts={counts} onChange={(v) => setStatus(v)} />
@@ -605,7 +616,7 @@ export default function TasksPage() {
               </button>
             )}
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex min-w-0 gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:overflow-visible">
             <SelectPill
               label="Ưu tiên"
               value={filters.priority}
@@ -639,8 +650,10 @@ export default function TasksPage() {
           </div>
         </div>
 
-        {/* Ngăn kéo: một bóng duy nhất của app, nên không kèm viền (bậc nền --card đã tách khỏi giấy). */}
-        <div className="planner-page overflow-hidden rounded-md shadow-[0_1px_2px_oklch(0.3_0.04_80/0.08),0_12px_28px_-18px_oklch(0.3_0.05_80/0.35)]">
+        {/* Trang sổ tách khỏi giấy bằng một bậc nền và một đường viền 1px —
+            viền HOẶC bóng, không bao giờ cả hai, và chỉ thứ thật sự nổi lên
+            (menu, hộp thoại) mới được đổ bóng. */}
+        <div className="planner-page overflow-hidden rounded-md border">
           <div
             className={cn(
               "hidden gap-x-3 border-b px-5 py-2 text-xs text-muted-foreground lg:grid",

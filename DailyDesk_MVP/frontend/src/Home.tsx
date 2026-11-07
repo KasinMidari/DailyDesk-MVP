@@ -18,12 +18,15 @@ import PageLoader from "./components/full-page-loader";
 import { useUploadImage } from "@/hooks/use-image";
 import { useAuth0 } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { statusFromList } from "@/features/tasks/api";
+import { nextDue } from "@/components/board-card";
 
-/** Số cột chọn theo số board, để một board không để lại ba ô mồ côi. */
+/** Số cột chọn theo số board, để một board không để lại ba ô mồ côi.
+ *  Tối đa 3 cột: 4 cột làm card hẹp tới mức tên việc nào cũng bị cắt. */
 function boardGrid(count: number) {
   return cn(
     "grid gap-4",
-    count === 1 ? "max-w-sm" : count === 2 ? "max-w-2xl sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
+    count === 1 ? "max-w-md" : count === 2 ? "max-w-3xl sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3",
   );
 }
 
@@ -99,6 +102,26 @@ export default function Home() {
 
   // Combine all boards for search
   const allBoards = [...ownedBoards, ...invitedBoards];
+
+  // Số liệu cho câu dưới tiêu đề: đếm từ chính các list đang hiển thị, không
+  // gọi thêm API và không viết tay con số nào.
+  const openCards = allBoards.flatMap((b) =>
+    ((b as any).lists ?? [])
+      .filter((l: any) => statusFromList(l.name) !== "done")
+      .flatMap((l: any) => l.cards ?? []),
+  );
+  const openCount = openCards.length;
+  // Số dòng lấy theo board nhiều việc nhất, để không board nào bị cắt bớt việc
+  // chỉ vì board bên cạnh ít hơn. Card vẫn cao bằng nhau (Link giãn hết ô lưới)
+  // và dòng tổng neo xuống đáy, nên hàng card kết thúc trên một mép chung.
+  const shownBoards = ownedBoards.slice(0, 7);
+  const upcomingRows = Math.max(
+    1,
+    ...shownBoards.map((b: any) => Math.min(5, nextDue((b as any).lists ?? [], 5).length)),
+  );
+  const overdueCount = openCards.filter(
+    (c: any) => c?.dueAt && new Date(c.dueAt).getTime() < Date.now(),
+  ).length;
 
   // Filter boards by search term and sort by ID descending (newest first)
   const filteredOwnedBoards = ownedBoards
@@ -200,16 +223,26 @@ export default function Home() {
     <Suspense fallback={<PageLoader />}>
       <div className="flex flex-col w-full h-full mx-auto max-w-6xl px-4 pt-8 pb-16 gap-6 sm:px-6 lg:px-10 overflow-y-auto">
         {/* Header with Search */}
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
-          <div>
+        {/* Cho phép xuống dòng và cho cột trái co lại: ở quãng 768px câu số liệu
+            (các cụm không tách) đẩy nhóm tìm kiếm + nút ra sát mép phải. */}
+        <header className="flex shrink-0 flex-col flex-wrap justify-between gap-4 md:flex-row md:items-center">
+          <div className="min-w-0">
             <h1 className="font-planner text-[1.75rem] leading-tight font-semibold text-foreground">
               Board
             </h1>
-            <p className="mt-1 text-muted-foreground">
-              Sắp xếp việc học, việc làm và việc nhà
+            {/* Câu dưới tiêu đề nói về DỮ LIỆU, không mô tả giao diện. */}
+            <p className="mt-1 text-muted-foreground tabular">
+              <span className="whitespace-nowrap">{allBoards.length} board</span>{" · "}
+              <span className="whitespace-nowrap">{openCount} việc chưa xong</span>
+              {overdueCount > 0 && (
+                <span className="whitespace-nowrap">
+                  {" · "}
+                  <span className="font-medium text-overdue">{overdueCount} quá hạn</span>
+                </span>
+              )}
             </p>
           </div>
-          <div className="flex w-full items-center gap-2 md:w-auto">
+          <div className="flex w-full min-w-0 shrink-0 items-center gap-2 md:w-auto">
             <div className="relative flex-1 md:w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
               <Input
@@ -240,6 +273,7 @@ export default function Home() {
               {recentBoards.map((board: any) => (
                 <div key={board.id}  onClick={() => handleBoardClick(board.id)}>
                   <BoardCard
+                    upcomingRows={upcomingRows}
                     id={board.id}
                     name={board.name}
                   lists={(board as any).lists}
@@ -315,6 +349,7 @@ export default function Home() {
             {filteredOwnedBoards.slice(0, MAX_DISPLAYED_BOARDS).map((board) => (
               <div key={board.id} onClick={() => handleBoardClick(board.id)}>
                 <BoardCard
+                  upcomingRows={upcomingRows}
                   id={board.id}
                   name={board.name}
                   lists={(board as any).lists}
@@ -370,6 +405,7 @@ export default function Home() {
               {filteredInvitedBoards.slice(0, 8).map((board: any) => (
                 <div key={board.id} className="relative" onClick={() => handleBoardClick(board.id)}>
                   <BoardCard
+                    upcomingRows={upcomingRows}
                     id={board.id}
                     name={board.name}
                   lists={(board as any).lists}

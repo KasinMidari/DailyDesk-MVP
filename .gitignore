@@ -2,3 +2,6 @@
 .agents/
 .claude/skills/design-taste-frontend
 skills-lock.json
+
+# Ảnh đo + dữ liệu chạy của taste skill — 3.6MB, không cần theo repo
+.taste-skill/

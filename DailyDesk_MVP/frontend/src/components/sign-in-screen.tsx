@@ -3,6 +3,7 @@ import { AlertCircle, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { USE_MOCK } from "@/mocks/install";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { BrandMark } from "@/components/brand-mark";
 
 function GoogleMark() {
   return (
@@ -75,7 +76,7 @@ function PlannerPreview() {
                 {/* Con dấu chỉ đóng một lần, ở đúng việc vừa được tick. */}
                 {t.stampIn && <span className="stamp signin-stamp">XONG</span>}
                 {t.prio && !t.stampIn && (
-                  <span className={`hl text-xs font-medium ${t.prio === "high" ? "hl-high" : "hl-medium"}`}>
+                  <span className={t.prio === "high" ? "hl hl-high text-xs font-medium" : "text-xs text-muted-foreground"}>
                     {t.prio === "high" ? "Cao" : "Vừa"}
                   </span>
                 )}
@@ -153,7 +154,7 @@ export default function SignInScreen() {
       <section className="flex flex-col px-6 py-6 sm:px-10 lg:px-16">
         <header className="flex items-center justify-between">
           <span className="flex items-center gap-2">
-            <img src="/logo-dailydesk.png" alt="" className="size-8 object-contain" />
+            <BrandMark className="size-8 text-ink" />
             <span className="font-planner text-lg font-semibold">DailyDesk</span>
           </span>
           <ThemeToggle />

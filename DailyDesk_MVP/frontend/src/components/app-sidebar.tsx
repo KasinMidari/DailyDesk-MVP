@@ -17,6 +17,7 @@ import { GlobalSearch } from "@/components/global-search";
 import { useTheme } from "@/components/theme-provider";
 import { useAuth0 } from "@/lib/auth";
 import { SHOW_TEMPLATES } from "@/lib/features";
+import { BrandMark } from "@/components/brand-mark";
 
 const main = [
   { title: "Việc của tôi", url: "/", match: (p: string) => p === "/" },
@@ -24,10 +25,11 @@ const main = [
   { title: "Board", url: "/boards", match: (p: string) => p.startsWith("/boards") || p.startsWith("/board/") },
 ];
 
-/* Mục đang mở: nền giấy đậm hơn một bậc cộng một vạch mực bên trái,
-   thay cho cả ô tô kín màu mực. */
+/* Mục đang mở: nền giấy đậm hơn một bậc, chữ đậm hơn — không màu, không vạch
+   bên trái. Vạch mực bên trái chỉ xuất hiện 1 lần trong 23 màn sản phẩm thật;
+   điều hướng phải lùi lại để màu còn dành cho dữ liệu. */
 const itemClass =
-  "h-9 rounded-md px-3 text-[14px] font-medium text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-ink data-[active=true]:font-semibold data-[active=true]:shadow-[inset_3px_0_0_var(--ink)]";
+  "h-9 rounded-md px-3 text-[14px] font-medium text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-semibold";
 
 /** Gáy sổ: điều hướng, tìm kiếm, tài khoản và đổi giao diện. */
 export function AppSidebar() {
@@ -40,9 +42,10 @@ export function AppSidebar() {
     theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
   const close = () => setOpenMobile(false);
 
-  // Vạch mực 4px ở mép phải là "gáy sổ" — thay cho cả bìa tô kín màu mực.
+  // Gáy sổ là một bậc giấy đậm hơn ở mép phải, không phải vạch mực: màu nhấn
+  // để dành cho dữ liệu, còn gáy thì đọc ra từ cấu trúc.
   return (
-    <Sidebar className="shadow-[inset_-4px_0_0_var(--ink)]">
+    <Sidebar className="shadow-[inset_-3px_0_0_var(--rule)]">
       <SidebarHeader className="px-4 pt-5 pb-3">
         {/* Nhãn vở dán trên gáy */}
         <Link
@@ -51,7 +54,7 @@ export function AppSidebar() {
           className="block rounded-md border border-sidebar-border bg-card px-3 py-2.5 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
         >
           <span className="flex items-center gap-2">
-            <img src="/logo-dailydesk.png" alt="" className="size-7 rounded-sm object-contain" />
+            <BrandMark className="size-7 text-ink" />
             <span className="text-[17px] font-semibold leading-none text-ink">DailyDesk</span>
           </span>
           {user?.name && (

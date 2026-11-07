@@ -98,9 +98,8 @@ export default function ProfilePage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-planner text-[1.75rem] leading-tight font-semibold">Hồ sơ cá nhân</h1>
-            <p className="text-muted-foreground">
-              Quản lý thông tin cá nhân và cài đặt của bạn
-            </p>
+            {/* Nói về TÀI KHOẢN, không mô tả giao diện. */}
+            <p className="text-muted-foreground">{user?.email}</p>
           </div>
         </div>
 
@@ -116,24 +115,21 @@ export default function ProfilePage() {
           <Card>
             <CardHeader>
               <CardTitle>Thông tin cá nhân</CardTitle>
-              <CardDescription>
-                Cập nhật thông tin hiển thị của bạn
-              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Avatar Section */}
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-4">
                 <div className="relative">
-                  <Avatar className="h-24 w-24">
+                  <Avatar className="h-16 w-16">
                     <AvatarImage src={user?.picture} alt={user?.name} />
-                    <AvatarFallback className="text-2xl">
+                    <AvatarFallback className="text-xl">
                       {user?.name?.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <Button
                     size="icon"
                     variant="secondary"
-                    className="absolute bottom-0 right-0 h-8 w-8 rounded-full"
+                    className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full"
                     onClick={() => toast.info("Chức năng đổi ảnh đại diện đang được phát triển")}
                   >
                     <Camera className="h-4 w-4" />
@@ -147,13 +143,11 @@ export default function ProfilePage() {
 
               <Separator />
 
-              {/* Form Fields */}
-              <div className="space-y-4">
+              {/* Ô nhập một dòng không kéo hết 1000px: mắt phải chạy từ nhãn
+                  sang tận mép phải để biết mình đang gõ vào đâu. */}
+              <div className="max-w-xl space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="displayName">
-                    <User className="inline h-4 w-4 mr-2" />
-                    Tên hiển thị
-                  </Label>
+                  <Label htmlFor="displayName">Tên hiển thị</Label>
                   <Input
                     id="displayName"
                     value={displayName}
@@ -163,10 +157,7 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">
-                    <Mail className="inline h-4 w-4 mr-2" />
-                    Email
-                  </Label>
+                  <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
                     type="email"
@@ -194,10 +185,7 @@ export default function ProfilePage() {
                 <Button variant="outline" onClick={() => setDisplayName(user?.name || "")}>
                   Hủy
                 </Button>
-                <Button onClick={handleSaveProfile}>
-                  <Save className="h-4 w-4 mr-2" />
-                  Lưu thay đổi
-                </Button>
+                <Button onClick={handleSaveProfile}>Lưu thay đổi</Button>
               </div>
             </CardContent>
           </Card>
