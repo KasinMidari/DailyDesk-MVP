@@ -661,9 +661,6 @@ export default function TasksPage() {
           </div>
         </div>
 
-        {/* Trang sổ tách khỏi giấy bằng một bậc nền và một đường viền 1px —
-            viền HOẶC bóng, không bao giờ cả hai, và chỉ thứ thật sự nổi lên
-            (menu, hộp thoại) mới được đổ bóng. */}
         <div className="overflow-hidden rounded-xl border bg-card">
           <div
             className={cn(
@@ -694,7 +691,7 @@ export default function TasksPage() {
           ) : tasks.length === 0 ? (
             <EmptyNote
               icon={CalendarClock}
-              title="Trang sổ còn trống"
+              title="Chưa có task nào"
               body="Ghi việc đầu tiên, đặt hạn chót và mức ưu tiên để biết nên làm gì trước."
             >
               <Button onClick={openNew} className="gap-2">

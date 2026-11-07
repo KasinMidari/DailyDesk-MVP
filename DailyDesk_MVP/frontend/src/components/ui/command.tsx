@@ -29,7 +29,7 @@ function Command({
 
 function CommandDialog({
   title = "Tìm nhanh",
-  description = "Gõ để tìm trong sổ.",
+  description = "Gõ để tìm kiếm.",
   children,
   className,
   showCloseButton = true,

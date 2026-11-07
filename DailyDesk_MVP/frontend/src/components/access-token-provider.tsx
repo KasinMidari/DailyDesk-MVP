@@ -3,6 +3,7 @@ import { getAccessTokenFnAtom } from "@/stores/auth";
 import { useAuth0 } from "@/lib/auth";
 import { useAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
+import { queryClient } from "@/lib/query-client";
 import SignInScreen from "./sign-in-screen";
 
 export default function AccessTokenProvider({
@@ -18,6 +19,21 @@ export default function AccessTokenProvider({
   const [accessToken, setAccessToken] = useAtom(accessTokenAtom);
 
   const getAccessTokenFnRef = useRef<(() => Promise<string>) | null>(null);
+  const lastToken = useRef<string | null>(null);
+
+  /*
+   * Đổi tài khoản: bỏ hết dữ liệu đã cache rồi gọi lại API.
+   *
+   * Phải đặt ở đây chứ không phải trong hàm đăng nhập: lúc đăng nhập xong thì
+   * token gắn vào request vẫn còn là token cũ, nên nếu nạp lại ngay sẽ lấy đúng
+   * dữ liệu của người trước một lần nữa. Đợi token đổi mới chắc ăn.
+   */
+  useEffect(() => {
+    if (!accessToken) return;
+    const previous = lastToken.current;
+    lastToken.current = accessToken;
+    if (previous && previous !== accessToken) void queryClient.resetQueries();
+  }, [accessToken]);
 
   useEffect(() => {
     if (auth.isAuthenticated) {

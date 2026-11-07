@@ -17,6 +17,7 @@ import {
   type ReactNode,
 } from "react";
 import getConfig from "@/lib/config";
+import { queryClient } from "@/lib/query-client";
 import { USE_MOCK } from "@/mocks/install";
 
 export type AuthUser = {
@@ -108,6 +109,7 @@ function MockAuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback((options?: LogoutOptions) => {
+    clearUserData();
     try {
       localStorage.removeItem(SESSION_KEY);
       localStorage.removeItem("accessToken");
@@ -242,6 +244,15 @@ function loadGsiScript() {
   return gsiScript;
 }
 
+/**
+ * Xoá cache của React Query khi đăng xuất, để không để lại dữ liệu cho
+ * người đăng nhập sau trên cùng máy. Việc làm mới khi đổi tài khoản nằm ở
+ * AccessTokenProvider: phải đợi token mới rồi mới gọi lại API.
+ */
+function clearUserData() {
+  queryClient.clear();
+}
+
 function RealAuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | undefined>(() => readSession());
   const [isLoading, setIsLoading] = useState(true);
@@ -361,6 +372,7 @@ function RealAuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback((options?: LogoutOptions) => {
+    clearUserData();
     writeSession(undefined);
     try {
       localStorage.removeItem("accessToken");

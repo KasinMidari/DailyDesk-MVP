@@ -28,6 +28,13 @@ function GoogleMark() {
   );
 }
 
+/** Các tài khoản `pnpm db:seed` tạo sẵn. Gõ email khác vẫn vào được. */
+const DEV_ACCOUNTS = [
+  { email: "dev@dailydesk.local", name: "Người dùng thử nghiệm" },
+  { email: "an@dailydesk.local", name: "Nguyễn Văn An" },
+  { email: "binh@dailydesk.local", name: "Trần Thị Bình" },
+] as const;
+
 export default function SignInScreen() {
   const {
     loginWithRedirect,
@@ -39,6 +46,7 @@ export default function SignInScreen() {
   } = useAuth();
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
+  const [devEmail, setDevEmail] = useState<string>(DEV_ACCOUNTS[0].email);
   const googleSlot = useRef<HTMLDivElement | null>(null);
 
   // Không có Client ID thì nút Google chỉ có thể hỏng. Bản demo dùng dữ liệu
@@ -76,11 +84,13 @@ export default function SignInScreen() {
   }
 
   async function signInDev() {
+    const email = devEmail.trim() || DEV_ACCOUNTS[0]!.email;
     setPending(true);
     setFailed(null);
     try {
-      // Trùng tài khoản của `pnpm db:seed` ở backend để thấy luôn dữ liệu mẫu.
-      await loginWithDev("dev@dailydesk.local", "Người dùng thử nghiệm");
+      // Email có trong `pnpm db:seed` thì vào thấy dữ liệu mẫu ngay; email lạ
+      // thì backend tạo tài khoản mới kèm board "Việc của tôi" rỗng.
+      await loginWithDev(email, DEV_ACCOUNTS.find((a) => a.email === email)?.name);
     } catch (e) {
       setFailed(reasonOf(e));
       setPending(false);
@@ -138,14 +148,42 @@ export default function SignInScreen() {
             )}
 
             {devLoginEnabled && (
-              <button
-                type="button"
-                onClick={signInDev}
-                disabled={pending}
-                className="flex h-10 w-full items-center justify-center rounded-md border border-dashed border-input px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-wait disabled:opacity-80"
-              >
-                Đăng nhập tài khoản thử nghiệm
-              </button>
+              <div className="grid gap-2 rounded-md border border-dashed border-input p-3">
+                <label htmlFor="dev-email" className="text-xs font-medium text-muted-foreground">
+                  Tài khoản thử nghiệm
+                </label>
+                <input
+                  id="dev-email"
+                  type="email"
+                  list="dev-accounts"
+                  value={devEmail}
+                  onChange={(e) => setDevEmail(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !pending) signInDev();
+                  }}
+                  placeholder="email@vi-du.com"
+                  className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+                <datalist id="dev-accounts">
+                  {DEV_ACCOUNTS.map((a) => (
+                    <option key={a.email} value={a.email}>
+                      {a.name}
+                    </option>
+                  ))}
+                </datalist>
+                <button
+                  type="button"
+                  onClick={signInDev}
+                  disabled={pending}
+                  className="flex h-9 w-full items-center justify-center rounded-md border border-input px-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-wait disabled:opacity-80"
+                >
+                  Đăng nhập
+                </button>
+                <p className="text-xs text-muted-foreground">
+                  Ba email mẫu có sẵn dữ liệu. Gõ email bất kỳ để vào như người dùng mới — tài khoản
+                  được tạo tự động với một board trống.
+                </p>
+              </div>
             )}
 
             {(failed || authFailed) && (
