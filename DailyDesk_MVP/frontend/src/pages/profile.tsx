@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth0 } from "@/lib/auth";
 import { useAtom } from "jotai";
-import { userPreferencesAtom } from "@/stores/preferences";
+import { boardCardStyleAtom, userPreferencesAtom, type BoardCardStyle } from "@/stores/preferences";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -20,11 +20,53 @@ import {
   Lock,
   Trash2,
   Save,
-  Camera
+  Camera,
+  LayoutGrid
 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useSearchParams } from "react-router";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
+import { cn } from "@/lib/utils";
+
+/** Hai kiểu card ở danh sách board, kèm bản xem trước vẽ bằng div. */
+const BOARD_CARD_STYLES: {
+  value: BoardCardStyle;
+  label: string;
+  hint: string;
+  preview: React.ReactNode;
+}[] = [
+  {
+    value: "band",
+    label: "Dải ảnh + thông tin",
+    hint: "Ảnh hoặc màu ở trên, tên và số task ở dưới nền giấy.",
+    preview: (
+      <div aria-hidden="true" className="overflow-hidden rounded-lg border">
+        <div className="h-8 bg-gradient-to-r from-sky-400 to-indigo-400" />
+        <div className="space-y-1.5 bg-card p-2">
+          <div className="h-2 w-2/3 rounded bg-foreground/70" />
+          <div className="h-1.5 w-full rounded bg-muted-foreground/30" />
+        </div>
+      </div>
+    ),
+  },
+  {
+    value: "cover",
+    label: "Ảnh phủ kín",
+    hint: "Ảnh hoặc màu chiếm cả card, tên chữ trắng đè lên trên.",
+    preview: (
+      <div
+        aria-hidden="true"
+        className="relative flex h-[4.25rem] flex-col justify-end overflow-hidden rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 p-2"
+      >
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        <div className="relative space-y-1.5">
+          <div className="h-2 w-2/3 rounded bg-white/90" />
+          <div className="h-1.5 w-full rounded bg-white/50" />
+        </div>
+      </div>
+    ),
+  },
+];
 
 export default function ProfilePage() {
   const { user, isLoading, logout } = useAuth0();
@@ -32,6 +74,7 @@ export default function ProfilePage() {
   const { confirm, ConfirmDialog } = useConfirmDialog();
   const [searchParams] = useSearchParams();
   const [preferences, setPreferences] = useAtom(userPreferencesAtom);
+  const [boardCardStyle, setBoardCardStyle] = useAtom(boardCardStyleAtom);
   
   // Get active tab from URL params
   const activeTab = searchParams.get("tab") || "profile";
@@ -349,6 +392,47 @@ export default function ProfilePage() {
                   <option value="vi">Tiếng Việt</option>
                   <option value="en">English</option>
                 </select>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Kiểu card ở danh sách board */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <LayoutGrid className="h-5 w-5" />
+                Danh sách board
+              </CardTitle>
+              <CardDescription>
+                Chọn cách hiển thị card board. Lưu trên máy này.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div
+                role="radiogroup"
+                aria-label="Kiểu card board"
+                className="grid gap-3 sm:grid-cols-2"
+              >
+                {BOARD_CARD_STYLES.map((opt) => {
+                  const active = boardCardStyle === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      onClick={() => setBoardCardStyle(opt.value)}
+                      className={cn(
+                        "rounded-xl border p-3 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                        active ? "border-primary bg-accent/50" : "hover:bg-accent/30",
+                      )}
+                    >
+                      {opt.preview}
+                      <p className="mt-3 text-sm font-medium">{opt.label}</p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">{opt.hint}</p>
+                    </button>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

@@ -119,25 +119,25 @@ export function BoardHeaderBar({
   // Handle copy board link
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast.success("Đã sao chép link", { position: "bottom-left" });
+    toast.success("Đã sao chép link");
   };
 
   // Handle delete board
   const handleDeleteBoard = async () => {
     if (!isOwner) {
-      toast.error("Chỉ chủ board mới xoá được board này", { position: "bottom-left" });
+      toast.error("Chỉ chủ board mới xoá được board này");
       return;
     }
 
     setIsDeleting(true);
     try {
       await deleteBoard(boardId);
-      toast.success("Đã xoá board", { position: "bottom-left" });
+      toast.success("Đã xoá board");
       setIsDeleteDialogOpen(false);
       window.location.href = "/";
     } catch (error) {
       console.error("Failed to delete board:", error);
-      toast.error("Không xoá được board. Thử lại nhé.", { position: "bottom-left" });
+      toast.error("Không xoá được board. Thử lại nhé.");
     } finally {
       setIsDeleting(false);
     }

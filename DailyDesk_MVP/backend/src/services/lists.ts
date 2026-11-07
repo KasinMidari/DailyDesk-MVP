@@ -3,7 +3,7 @@ import { uuidv7 } from "uuidv7";
 import type { Db } from "../db/client.js";
 import { lists } from "../db/schema.js";
 import { HttpError, nowIso } from "../http.js";
-import { requireBoard, requireList } from "./access.js";
+import { listDisplayName, requireBoard, requireList, statusFromList } from "./access.js";
 import { listJson } from "./serialize.js";
 
 export async function listLists(db: Db, userId: string, boardId: string) {
@@ -46,7 +46,13 @@ export async function updateList(
   listId: string,
   input: { name?: string; order?: number },
 ) {
-  await requireList(db, userId, boardId, listId);
+  const current = await requireList(db, userId, boardId, listId);
+  // Đổi tên sang nghĩa khác chỉ cấm khi đây là danh sách cuối cùng còn mang
+  // trạng thái đó: "Done" thành "Xong" vẫn là xong nên không sao, nhưng
+  // "Done" thành "Ghi chú" thì mọi task đã xong lặng lẽ quay về Cần làm.
+  if (input.name !== undefined && statusFromList(input.name) !== statusFromList(current.name)) {
+    await requireAnotherListWithSameStatus(db, boardId, current, "đổi tên");
+  }
   const [row] = await db
     .update(lists)
     .set({ ...input, updatedAt: nowIso() })
@@ -56,7 +62,34 @@ export async function updateList(
 }
 
 export async function deleteList(db: Db, userId: string, boardId: string, listId: string) {
-  await requireList(db, userId, boardId, listId);
+  const current = await requireList(db, userId, boardId, listId);
+  await requireAnotherListWithSameStatus(db, boardId, current, "xoá");
   await db.delete(lists).where(eq(lists.id, listId));
   return { message: "Đã xoá danh sách" };
 }
+
+/**
+ * Mỗi board phải luôn còn ít nhất một danh sách cho mỗi trạng thái.
+ *
+ * Khoá theo TRẠNG THÁI chứ không theo tên: nếu chỉ cấm đúng ba chữ
+ * Todo/Doing/Done thì đổi "Done" thành "Xong" (vẫn hợp lệ, cùng trạng thái)
+ * rồi xoá là lọt, và board mất hẳn chỗ để đánh dấu task xong.
+ */
+async function requireAnotherListWithSameStatus(
+  db: Db,
+  boardId: string,
+  current: { id: string; name: string },
+  action: string,
+) {
+  const status = statusFromList(current.name);
+  const siblings = await db.select().from(lists).where(eq(lists.boardId, boardId));
+  const others = siblings.filter((l) => l.id !== current.id && statusFromList(l.name) === status);
+  if (others.length > 0) return;
+  throw new HttpError(
+    400,
+    `Không ${action} được "${listDisplayName(current.name)}": đây là danh sách duy nhất còn mang trạng thái ` +
+      `"${STATUS_LABEL[status]}". Mỗi board phải giữ đủ ba trạng thái.`,
+  );
+}
+
+const STATUS_LABEL = { todo: "Cần làm", doing: "Đang làm", done: "Xong" } as const;

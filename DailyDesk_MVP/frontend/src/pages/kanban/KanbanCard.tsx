@@ -1,3 +1,4 @@
+import { listDisplayName } from "@/features/tasks/api";
 import { formatShort } from "@/lib/date";
 import {
   KanbanBoardCard,
@@ -436,7 +437,7 @@ export function KanbanCard({
                 {otherLists.length > 0 && <DropdownMenuSeparator />}
                 {otherLists.map((l) => (
                   <DropdownMenuItem key={l.id} onSelect={() => onMoveTo(l.id)}>
-                    Chuyển sang {l.name}
+                    Chuyển sang {listDisplayName(l.name)}
                   </DropdownMenuItem>
                 ))}
                 <DropdownMenuSeparator />
@@ -452,7 +453,7 @@ export function KanbanCard({
           <ContextMenuItem onClick={openCardDialog}>Mở chi tiết</ContextMenuItem>
           {otherLists.map((l) => (
             <ContextMenuItem key={l.id} onClick={() => onMoveTo(l.id)}>
-              Chuyển sang {l.name}
+              Chuyển sang {listDisplayName(l.name)}
             </ContextMenuItem>
           ))}
           <ContextMenuItem disabled={!canMoveUp} onClick={() => onMoveBy(-1)}>Lên trên</ContextMenuItem>

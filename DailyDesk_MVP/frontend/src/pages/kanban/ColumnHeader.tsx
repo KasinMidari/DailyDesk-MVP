@@ -22,6 +22,8 @@ interface ColumnHeaderProps {
   onSave: (columnId: string, newName: string) => void;
   onDelete: (columnId: string) => void;
   cardCount: number;
+  /** Danh sách cuối cùng của một trạng thái thì không xoá được. */
+  canDelete: boolean;
   canMoveLeft: boolean;
   canMoveRight: boolean;
   onMoveBy: (delta: -1 | 1) => void;
@@ -33,6 +35,7 @@ export function ColumnHeader({
   onSave,
   onDelete,
   cardCount,
+  canDelete,
   canMoveLeft,
   canMoveRight,
   onMoveBy,
@@ -130,11 +133,15 @@ export function ColumnHeader({
             <ArrowRight className="size-4" />
             Chuyển sang phải
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" onSelect={handleDelete}>
-            <Trash2 className="size-4" />
-            Xoá danh sách
-          </DropdownMenuItem>
+          {canDelete && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onSelect={handleDelete}>
+                <Trash2 className="size-4" />
+                Xoá danh sách
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
       <ConfirmDialog />

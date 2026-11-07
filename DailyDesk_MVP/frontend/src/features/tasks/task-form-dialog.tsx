@@ -94,6 +94,24 @@ function Field({
 const inputClass =
   "h-10 w-full rounded-md border border-input bg-card px-3 text-[15px] shadow-[inset_0_1px_0_rgb(0_0_0/0.02)] outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/25 aria-invalid:border-destructive aria-invalid:ring-destructive/20";
 
+/** Chấm màu của từng lựa chọn: trạng thái và độ ưu tiên dùng chung một bảng. */
+const TONE: Record<string, string> = {
+  todo: "bg-gray-400",
+  doing: "bg-amber-500",
+  done: "bg-emerald-500",
+  high: "bg-red-500",
+  medium: "bg-amber-500",
+  low: "bg-gray-400",
+};
+
+/**
+ * Thanh chọn một-trong-nhiều.
+ *
+ * Rãnh chìm, ô đang chọn nổi lên bằng nền sáng + bóng nhẹ — cùng cách làm với
+ * segmented control của shadcn. Bản cũ vẽ một ô tick lồng trong nút nên trạng
+ * thái "đang chọn" phải tranh chỗ với ký hiệu của chính lựa chọn đó; giờ mỗi
+ * lựa chọn chỉ còn một chấm màu, đang chọn thì ô nổi lên.
+ */
 export function Segmented<T extends string>({
   name,
   value,
@@ -104,22 +122,17 @@ export function Segmented<T extends string>({
   value: T;
   options: { value: T; label: string }[];
   onChange: (v: T) => void;
-  /** Giữ để tương thích; ký hiệu được vẽ theo giá trị (ô trạng thái hoặc bút dạ quang). */
+  /** Giữ để tương thích; màu lấy theo giá trị. */
   tone?: (v: T) => string;
 }) {
   return (
-    // Rộng bằng các lựa chọn của nó; chỉ kéo full-width dưới 480px.
     <div
       role="radiogroup"
       aria-label={name}
-      className="inline-grid auto-cols-max grid-flow-col justify-self-start gap-1 rounded-md border border-input bg-muted p-1 max-[480px]:grid max-[480px]:auto-cols-fr max-[480px]:justify-self-stretch"
+      className="inline-grid auto-cols-max grid-flow-col justify-self-start gap-0.5 rounded-lg bg-muted p-1 max-[480px]:grid max-[480px]:auto-cols-fr max-[480px]:justify-self-stretch"
     >
       {options.map((o) => {
         const active = o.value === value;
-        const v = o.value as string;
-        const isStatus = v === "todo" || v === "doing" || v === "done";
-        // Chỉ "Cao" được tô dạ quang, giống hệt lúc hiện trên danh sách.
-        const hl = v === "high" ? "font-semibold text-red-600 dark:text-red-400" : "";
         return (
           <button
             key={o.value}
@@ -128,30 +141,21 @@ export function Segmented<T extends string>({
             aria-checked={active}
             onClick={() => onChange(o.value)}
             className={cn(
-              "flex h-8 items-center justify-center gap-2 rounded px-4 text-sm font-medium text-muted-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              active ? "bg-card text-foreground ring-1 ring-ring/40" : "hover:text-foreground",
+              "flex h-8 items-center justify-center gap-2 rounded-md px-3.5 text-sm font-medium outline-none transition-all focus-visible:ring-2 focus-visible:ring-ring",
+              active
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
-            {isStatus && (
-              <span
-                aria-hidden="true"
-                className={cn(
-                  "grid size-4 shrink-0 place-items-center rounded-full border-2 text-white",
-                  v === "done"
-                    ? "border-green-500 bg-green-500"
-                    : v === "doing"
-                      ? "border-yellow-500 bg-yellow-500/20"
-                      : "border-primary/50 bg-transparent",
-                )}
-              >
-                {v === "done" && (
-                  <svg viewBox="0 0 16 16" className="size-3" fill="none">
-                    <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                )}
-              </span>
-            )}
-            <span className={cn(active && hl)}>{o.label}</span>
+            <span
+              aria-hidden="true"
+              className={cn(
+                "size-2 shrink-0 rounded-full transition-opacity",
+                TONE[o.value as string] ?? "bg-muted-foreground",
+                active ? "opacity-100" : "opacity-50",
+              )}
+            />
+            {o.label}
           </button>
         );
       })}

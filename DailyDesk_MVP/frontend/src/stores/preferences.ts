@@ -49,3 +49,16 @@ export const languageAtom = atom(
     set(userPreferencesAtom, { ...prefs, language });
   }
 );
+
+/**
+ * Kiểu card ở danh sách board.
+ *
+ * "band": một dải ảnh/màu trên cùng, dưới là tên và số task theo trạng thái.
+ * "cover": ảnh/màu phủ kín card, tên đè lên trên — kiểu Trello.
+ *
+ * Lưu theo từng máy, không gửi lên backend: đây là sở thích nhìn, không phải
+ * dữ liệu của tài khoản.
+ */
+export type BoardCardStyle = "band" | "cover";
+
+export const boardCardStyleAtom = atomWithStorage<BoardCardStyle>("board-card-style", "band");

@@ -34,7 +34,7 @@ import { useSearchParams, useParams } from "react-router";
 import { BoardEventsProvider } from "@/components/board-events-provider";
 import { useQueryClient } from "@tanstack/react-query";
 import { uuidv7 } from "uuidv7";
-import { request, statusFromList, STATUS_TEXT, type Status } from "@/features/tasks/api";
+import { listDisplayName, request, statusFromList, STATUS_TEXT, type Status } from "@/features/tasks/api";
 
 interface KanbanProps {
   boardId?: string;
@@ -221,7 +221,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
       backgroundUrl,
     });
 
-    toast.success("Đã cập nhật board", { position: "bottom-left" });
+    toast.success("Đã cập nhật board");
   };
 
   useEffect(() => {
@@ -304,7 +304,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
       await updateList(draggedColumnId, { order: newOrder });
     } catch (e) {
       console.error("Failed to reorder column:", e);
-      toast.error("Không sắp xếp lại được danh sách", { position: "bottom-left" });
+      toast.error("Không sắp xếp lại được danh sách");
     }
   };
 
@@ -364,20 +364,20 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
   const handleSaveColumnEdit = async (columnId: string, newName: string) => {
     try {
       await updateList(columnId, { name: newName });
-      toast.success("Đã cập nhật danh sách", { position: "bottom-left" });
+      toast.success("Đã cập nhật danh sách");
     } catch (error) {
       console.error("Failed to update list:", error);
-      toast.error("Không cập nhật được danh sách", { position: "bottom-left" });
+      toast.error("Không cập nhật được danh sách");
     }
   };
 
   const handleDeleteColumn = async (columnId: string) => {
     try {
       await deleteList(columnId);
-      toast.success("Đã xoá danh sách", { position: "bottom-left" });
+      toast.success("Đã xoá danh sách");
     } catch (error) {
       console.error("Failed to delete list:", error);
-      toast.error("Không xoá được danh sách", { position: "bottom-left" });
+      toast.error("Không xoá được danh sách");
     }
   };
 
@@ -391,7 +391,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
 
     const targetListId = event.listId || lists[0]?.id;
     if (!targetListId) {
-      toast.error("Hãy tạo danh sách trước", { position: "bottom-left" });
+      toast.error("Hãy tạo danh sách trước");
       return;
     }
 
@@ -412,10 +412,10 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
       },
       {
         onSuccess: () => {
-          toast.success("Đã tạo sự kiện", { position: "bottom-left" });
+          toast.success("Đã tạo sự kiện");
         },
         onError: () => {
-          toast.error("Không tạo được sự kiện", { position: "bottom-left" });
+          toast.error("Không tạo được sự kiện");
         },
       },
     );
@@ -430,13 +430,12 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
     const nextDueAt = event.dueAt ? new Date(event.dueAt) : null;
     if (nextDueAt && nextDueAt.getTime() < Date.now()) {
       toast.error("Không lưu được: hạn chót không được trước hôm nay", {
-        position: "bottom-left",
         className: "text-base",
       });
       return false;
     }
     if (nextStartDate && nextDueAt && nextStartDate.getTime() > nextDueAt.getTime()) {
-      toast.error("Ngày bắt đầu không được sau hạn chót", { position: "bottom-left" });
+      toast.error("Ngày bắt đầu không được sau hạn chót");
       return false;
     }
 
@@ -470,11 +469,11 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
 
   const handleOpenCalendarCreate = (date?: Date) => {
     if (!lists.length) {
-      toast.error("Hãy tạo danh sách trước", { position: "bottom-left" });
+      toast.error("Hãy tạo danh sách trước");
       return;
     }
     if (date && date.getTime() < Date.now()) {
-      toast.error("Hạn chót không được ở quá khứ", { position: "bottom-left" });
+      toast.error("Hạn chót không được ở quá khứ");
       return;
     }
     setCalendarCreateDate(date ?? null);
@@ -508,8 +507,8 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
     updateCard(
       { boardId, cardId, listId: toListId, order: maxOrder + 1 },
       {
-        onSuccess: () => toast.success(`Đã chuyển sang ${target.name}`, { position: "bottom-left" }),
-        onError: () => toast.error("Không chuyển được task", { position: "bottom-left" }),
+        onSuccess: () => toast.success(`Đã chuyển sang ${listDisplayName(target.name)}`),
+        onError: () => toast.error("Không chuyển được task"),
       },
     );
   };
@@ -536,7 +535,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
       .find((l) => statusFromList(l.name) === status);
     if (!target) {
-      toast.error(`Board này chưa có danh sách ${STATUS_TEXT[status]}`, { position: "bottom-left" });
+      toast.error(`Board này chưa có danh sách ${STATUS_TEXT[status]}`);
       return;
     }
     handleMoveCardTo(cardId, target.id);
@@ -555,7 +554,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
       await updateList(sorted[i].id, { order: bo });
       await updateList(sorted[j].id, { order: ao });
     } catch {
-      toast.error("Không sắp xếp lại được danh sách", { position: "bottom-left" });
+      toast.error("Không sắp xếp lại được danh sách");
     }
   };
 
@@ -572,7 +571,6 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
             | (Record<string, unknown> & { name: string; listId: string })
             | undefined;
           toast("Đã xoá task", {
-            position: "bottom-left",
             description: snapshot?.name,
             action: snapshot
               ? {
@@ -588,7 +586,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
                       queryClient.invalidateQueries({ queryKey: ["board", boardId] });
                       queryClient.invalidateQueries({ queryKey: ["tasks"] });
                     } catch {
-                      toast.error("Không khôi phục được task", { position: "bottom-left" });
+                      toast.error("Không khôi phục được task");
                     }
                   },
                 }
@@ -596,7 +594,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
           });
         },
         onError: () => {
-          toast.error("Không xoá được task", { position: "bottom-left" });
+          toast.error("Không xoá được task");
         },
       }
     );
@@ -627,7 +625,7 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
   /** Nút chính của màn: thêm task vào danh sách đầu tiên. */
   const handleOpenAddTask = () => {
     if (!lists.length) {
-      toast.error("Hãy tạo danh sách trước", { position: "bottom-left" });
+      toast.error("Hãy tạo danh sách trước");
       return;
     }
     setCalendarCreateDate(null);

@@ -56,3 +56,16 @@ export function statusFromList(name: string): "todo" | "doing" | "done" {
   if (["done", "xong", "đã xong", "hoàn thành"].includes(n)) return "done";
   return "todo";
 }
+
+/**
+ * Ba danh sách mọi board đều phải có.
+ *
+ * Trạng thái của một task chính là danh sách đang chứa nó, nên nếu board thiếu
+ * một trong ba thì có trạng thái không chuyển sang được. Vì vậy board mới luôn
+ * được tạo kèm cả ba và không xoá được chúng.
+ */
+export const DEFAULT_LISTS = ["Todo", "Doing", "Done"] as const;
+
+export function isDefaultList(name: string): boolean {
+  return DEFAULT_LISTS.some((d) => d.toLowerCase() === name.trim().toLowerCase());
+}

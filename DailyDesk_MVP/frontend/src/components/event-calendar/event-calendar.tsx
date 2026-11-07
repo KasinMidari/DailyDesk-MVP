@@ -189,7 +189,6 @@ export function EventCalendar({
       // Show toast notification when an event is updated
       toast(`Đã cập nhật "${event.title}"`, {
         description: format(new Date(event.start), "d/M/yyyy"),
-        position: "bottom-left",
       });
     } else {
       onEventAdd?.({
@@ -199,7 +198,6 @@ export function EventCalendar({
       // Show toast notification when an event is added
       toast(`Đã thêm "${event.title}"`, {
         description: format(new Date(event.start), "d/M/yyyy"),
-        position: "bottom-left",
       });
     }
     setIsEventDialogOpen(false);
@@ -216,7 +214,6 @@ export function EventCalendar({
     if (deletedEvent) {
       toast(`Đã xoá "${deletedEvent.title}"`, {
         description: format(new Date(deletedEvent.start), "d/M/yyyy"),
-        position: "bottom-left",
       });
     }
   };
@@ -234,7 +231,7 @@ export function EventCalendar({
         new Date(updatedEvent.start),
         "d/M/yyyy",
       )}`,
-      { position: "bottom-left", className: "text-base" },
+      { className: "text-base" },
     );
   };
 

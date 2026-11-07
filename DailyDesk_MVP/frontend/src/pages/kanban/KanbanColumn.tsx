@@ -77,6 +77,13 @@ export function KanbanColumn({
     prevCardCount.current = column.cards.length;
   }, [column.cards.length]);
 
+  // Mỗi board phải luôn còn ít nhất một danh sách cho mỗi trạng thái, nên
+  // danh sách duy nhất còn mang trạng thái của cột này thì không xoá được.
+  // Backend cũng chặn; ẩn ở đây để người dùng không bấm rồi mới thấy lỗi.
+  const canDelete = allLists.some(
+    (l) => l.id !== column.id && statusFromList(l.name) === statusFromList(column.name),
+  );
+
   // Cột cao hết canvas: "+ Thêm task" rơi xuống đáy thành footer của cột.
   return (
     <KanbanBoardColumn
@@ -94,6 +101,7 @@ export function KanbanColumn({
           onSave={onSaveColumnEdit}
           onDelete={onDeleteColumn}
           cardCount={column.cards.length}
+          canDelete={canDelete}
           canMoveLeft={position > 0}
           canMoveRight={position >= 0 && position < allLists.length - 1}
           onMoveBy={onMoveColumnBy}

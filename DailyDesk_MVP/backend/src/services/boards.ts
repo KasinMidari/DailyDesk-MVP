@@ -3,7 +3,7 @@ import { uuidv7 } from "uuidv7";
 import type { Db } from "../db/client.js";
 import { boards, cardLabels, cards, labels, lists } from "../db/schema.js";
 import { HttpError, nowIso } from "../http.js";
-import { requireBoard } from "./access.js";
+import { DEFAULT_LISTS, requireBoard } from "./access.js";
 import { boardJson, cardJson, listJson, type LabelJson } from "./serialize.js";
 
 /** Nhãn của nhiều card một lượt: cardId → nhãn. */
@@ -77,6 +77,20 @@ export async function createBoard(
       updatedAt: now,
     })
     .returning();
+
+  // Board mới luôn có sẵn Todo/Doing/Done: trạng thái của task là danh sách
+  // chứa nó, nên board trống không có chỗ nào để chuyển task sang.
+  await db.insert(lists).values(
+    DEFAULT_LISTS.map((name, order) => ({
+      id: uuidv7(),
+      boardId: id,
+      name,
+      order,
+      createdAt: now,
+      updatedAt: now,
+    })),
+  );
+
   return boardJson(row!);
 }
 

@@ -191,9 +191,51 @@ export function useCreateTask() {
   });
 }
 
+/**
+ * Cập nhật lạc quan: sửa ngay trong cache rồi mới gọi mạng, hỏng thì trả lại
+ * như cũ.
+ *
+ * Một lần tick "xong" phải đi bốn lượt mạng nối tiếp (lấy danh sách của board,
+ * PUT thẻ, rồi nạp lại tasks và boards). Chờ đủ bốn lượt mới đổi màn thì thao
+ * tác nào cũng có một quãng đứng hình; sửa cache trước thì người dùng thấy
+ * ngay, mạng chạy phía sau.
+ */
+function useOptimisticTasks() {
+  const qc = useQueryClient();
+  return {
+    /** Trả về hàm hoàn tác để dùng trong onError. */
+    apply: async (change: (rows: Task[]) => Task[]) => {
+      await qc.cancelQueries({ queryKey: TASKS_KEY });
+      const previous = qc.getQueryData<Task[]>(TASKS_KEY);
+      if (previous) qc.setQueryData<Task[]>(TASKS_KEY, change(previous));
+      return previous;
+    },
+    rollback: (previous: Task[] | undefined) => {
+      if (previous) qc.setQueryData<Task[]>(TASKS_KEY, previous);
+    },
+  };
+}
+
 export function useUpdateTask() {
   const invalidate = useInvalidate();
+  const optimistic = useOptimisticTasks();
   return useMutation({
+    onMutate: ({ task, input }: { task: Task; input: Partial<TaskInput> }) =>
+      optimistic.apply((rows) =>
+        rows.map((t) =>
+          t.id === task.id
+            ? {
+                ...t,
+                name: input.name ?? t.name,
+                description: input.description === undefined ? t.description : input.description || null,
+                priority: input.priority ?? t.priority,
+                dueAt: input.dueAt === undefined ? t.dueAt : input.dueAt,
+                status: input.status ?? t.status,
+              }
+            : t,
+        ),
+      ),
+    onError: (_err, _vars, previous) => optimistic.rollback(previous),
     mutationFn: async ({ task, input }: { task: Task; input: Partial<TaskInput> }) => {
       const body: Record<string, unknown> = {};
       if (input.name !== undefined) body.name = input.name;
@@ -216,7 +258,10 @@ export function useUpdateTask() {
 
 export function useDeleteTask() {
   const invalidate = useInvalidate();
+  const optimistic = useOptimisticTasks();
   return useMutation({
+    onMutate: (task: Task) => optimistic.apply((rows) => rows.filter((t) => t.id !== task.id)),
+    onError: (_err, _task, previous) => optimistic.rollback(previous),
     mutationFn: (task: Task) => request("DELETE", `/boards/${task.boardId}/cards/${task.id}`),
     onSuccess: (_d, task) => invalidate(task.boardId),
   });

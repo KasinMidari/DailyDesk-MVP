@@ -212,12 +212,26 @@ const STATUS_BOX: Record<Status, string> = {
   done: "border-green-500 bg-green-500",
 };
 
-const STATUS_INK: Record<Status, string> = {
-  todo: "text-muted-foreground",
-  doing: "text-yellow-600 dark:text-yellow-400",
-  // Done là trạng thái yên nhất: than chì nhạt, không phải màu mực.
-  done: "text-green-600 dark:text-green-400",
+/* Trạng thái và độ ưu tiên dùng chung một hình dạng: viên thuốc viền mảnh,
+   một chấm màu, chữ 12px. Trước đây trạng thái là chữ màu còn ưu tiên là chữ
+   thường, nhìn như hai thứ không liên quan dù cùng là thuộc tính của task. */
+const PILL_BASE =
+  "inline-flex h-6.5 items-center gap-1.5 rounded-full border px-2.5 text-xs font-medium whitespace-nowrap";
+
+const STATUS_TONE: Record<Status, string> = {
+  todo: "bg-gray-400",
+  doing: "bg-amber-500",
+  done: "bg-emerald-500",
 };
+const PRIORITY_TONE: Record<Priority, string> = {
+  high: "bg-red-500",
+  medium: "bg-amber-500",
+  low: "bg-gray-400",
+};
+
+function Dot({ className }: { className: string }) {
+  return <span aria-hidden="true" className={cn("size-1.5 shrink-0 rounded-full", className)} />;
+}
 
 function StatusMenu({ task, onChange }: { task: Task; onChange: (s: Status) => void }) {
   return (
@@ -228,21 +242,20 @@ function StatusMenu({ task, onChange }: { task: Task; onChange: (s: Status) => v
           aria-label={`Trạng thái: ${STATUS_TEXT[task.status]}. Bấm để đổi`}
           onClick={(e) => e.stopPropagation()}
           className={cn(
-            "-mx-1.5 inline-flex h-8 items-center gap-0.5 rounded-md px-1.5 text-[13px] font-semibold outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:bg-accent",
-            STATUS_INK[task.status],
+            PILL_BASE,
+            "cursor-pointer pr-1.5 outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:bg-accent",
           )}
         >
+          <Dot className={STATUS_TONE[task.status]} />
           {STATUS_TEXT[task.status]}
-          <ChevronDown className="size-3.5 opacity-60" aria-hidden="true" />
+          <ChevronDown className="size-3 opacity-50" aria-hidden="true" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" onClick={(e) => e.stopPropagation()}>
         <DropdownMenuLabel className="text-xs text-muted-foreground">Chuyển sang</DropdownMenuLabel>
         {STATUS_ORDER.map((s) => (
           <DropdownMenuItem key={s} disabled={s === task.status} onSelect={() => onChange(s)}>
-            <span className={cn(STATUS_BOX_BASE, "scale-75", STATUS_BOX[s])} aria-hidden="true">
-              {s === "done" && <Tick />}
-            </span>
+            <Dot className={STATUS_TONE[s]} />
             {STATUS_TEXT[s]}
           </DropdownMenuItem>
         ))}
@@ -251,15 +264,14 @@ function StatusMenu({ task, onChange }: { task: Task; onChange: (s: Status) => v
   );
 }
 
-/* Chỉ "Cao" được tô dạ quang. "Vừa" là chữ thường, "Thấp" là chữ mờ: nếu mọi
-   mức đều có màu thì không mức nào còn nổi lên. */
 function PriorityTag({ priority }: { priority: Priority | null }) {
   if (!priority) return <span className="text-sm text-muted-foreground">—</span>;
-  if (priority === "low") return <span className="text-sm text-muted-foreground">{PRIORITY_LABEL.low}</span>;
-  if (priority === "medium") return <span className="text-sm">{PRIORITY_LABEL.medium}</span>;
   return (
-    <span className="text-sm">
-      <span className="font-medium text-red-600 dark:text-red-400">{PRIORITY_LABEL.high}</span>
+    <span className={cn(PILL_BASE, "border-transparent bg-muted text-muted-foreground")}>
+      <Dot className={PRIORITY_TONE[priority]} />
+      <span className={priority === "high" ? "text-foreground" : undefined}>
+        {PRIORITY_LABEL[priority]}
+      </span>
     </span>
   );
 }
