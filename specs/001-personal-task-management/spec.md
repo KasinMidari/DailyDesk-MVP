@@ -158,7 +158,7 @@ Người dùng có thể gom task vào các board, ví dụ "Đồ án SE100" ha
 - **FR-014**: Người dùng MUST lọc được theo trạng thái (kèm số lượng ở mỗi trạng thái), theo độ ưu tiên và theo board.
 - **FR-015**: Người dùng MUST tìm được task theo từ khoá trong tiêu đề hoặc mô tả, không phân biệt hoa thường và dấu tiếng Việt.
 - **FR-016**: Người dùng MUST sắp xếp được theo hạn chót gần nhất, hạn chót xa nhất, độ ưu tiên cao trước, và mới tạo. Task không có hạn luôn nằm cuối khi sắp theo hạn. Task đã xong nằm sau task chưa xong trong mọi kiểu sắp xếp.
-- **FR-017**: Khi sắp xếp theo hạn chót gần nhất, hệ thống MUST nhóm task thành: Quá hạn, Hôm nay, 7 ngày tới, Sau đó, Không có hạn, Đã xong.
+- **FR-017**: Danh sách task MUST là một danh sách phẳng theo đúng thứ tự sắp xếp đang chọn, không chia thành nhóm con. (Sửa 08/11/2026: bản đầu yêu cầu nhóm Quá hạn / Hôm nay / 7 ngày tới / Sau đó / Không có hạn / Đã xong; bỏ theo yêu cầu người dùng vì các tiêu đề nhóm cắt vụn danh sách. Việc quá hạn vẫn nhận ra được nhờ ngày in đỏ và bộ đếm "N việc quá hạn" ở đầu trang.)
 - **FR-018**: Hệ thống MUST giữ bộ lọc và kiểu sắp xếp sau khi tải lại trang.
 
 **Phản hồi và xử lý lỗi**

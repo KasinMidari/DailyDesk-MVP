@@ -53,38 +53,6 @@ export function isOverdue(task: Task, now = new Date()) {
   return task.status !== "done" && !!task.dueAt && new Date(task.dueAt) < now;
 }
 
-export type GroupKey = "overdue" | "today" | "week" | "later" | "none" | "done";
-export const GROUP_LABEL: Record<GroupKey, string> = {
-  overdue: "Quá hạn",
-  today: "Hôm nay",
-  week: "7 ngày tới",
-  later: "Sau đó",
-  none: "Không có hạn",
-  done: "Đã xong",
-};
-
-export function groupOf(task: Task, now = new Date()): GroupKey {
-  if (task.status === "done") return "done";
-  if (!task.dueAt) return "none";
-  const due = new Date(task.dueAt);
-  if (due < now) return "overdue";
-  const endToday = new Date(now);
-  endToday.setHours(23, 59, 59, 999);
-  if (due <= endToday) return "today";
-  if (due.getTime() - endToday.getTime() <= 7 * 864e5) return "week";
-  return "later";
-}
-
-export function groupTasks(tasks: Task[], now = new Date()) {
-  const order: GroupKey[] = ["overdue", "today", "week", "later", "none", "done"];
-  const map = new Map<GroupKey, Task[]>();
-  tasks.forEach((t) => {
-    const g = groupOf(t, now);
-    map.set(g, [...(map.get(g) ?? []), t]);
-  });
-  return order.filter((g) => map.has(g)).map((g) => ({ key: g, tasks: map.get(g)! }));
-}
-
 export type FieldErrors = Partial<Record<"name" | "description" | "dueAt" | "boardId", string>>;
 
 export function validateTask(input: TaskInput, opts: { isNew: boolean; now?: Date }): FieldErrors {

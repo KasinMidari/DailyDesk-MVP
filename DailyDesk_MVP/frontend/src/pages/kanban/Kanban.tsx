@@ -34,7 +34,7 @@ import { useSearchParams, useParams } from "react-router";
 import { BoardEventsProvider } from "@/components/board-events-provider";
 import { useQueryClient } from "@tanstack/react-query";
 import { uuidv7 } from "uuidv7";
-import { listDisplayName, request, statusFromList, STATUS_TEXT, type Status } from "@/features/tasks/api";
+import { listDisplayName, listFor, request, statusFromList, STATUS_TEXT, type Status } from "@/features/tasks/api";
 
 interface KanbanProps {
   boardId?: string;
@@ -499,15 +499,17 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
     [...(lists.find((l) => l.id === listId)?.cards ?? [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
   /** Chuyển thẻ sang danh sách khác bằng menu (không cần kéo-thả). */
-  const handleMoveCardTo = (cardId: string, toListId: string) => {
+  const handleMoveCardTo = (cardId: string, toListId: string, fallbackName?: string) => {
     if (!boardId) return;
     const target = lists.find((l) => l.id === toListId);
-    if (!target) return;
-    const maxOrder = target.cards.reduce((m, c) => Math.max(m, c.order ?? 0), -1);
+    // Danh sách vừa được tạo xong chưa kịp có trong `lists`: dùng tên truyền vào.
+    const name = target?.name ?? fallbackName;
+    if (!name) return;
+    const maxOrder = (target?.cards ?? []).reduce((m, c) => Math.max(m, c.order ?? 0), -1);
     updateCard(
       { boardId, cardId, listId: toListId, order: maxOrder + 1 },
       {
-        onSuccess: () => toast.success(`Đã chuyển sang ${listDisplayName(target.name)}`),
+        onSuccess: () => toast.success(`Đã chuyển sang ${listDisplayName(name)}`),
         onError: () => toast.error("Không chuyển được task"),
       },
     );
@@ -530,15 +532,24 @@ export function Kanban({ boardId: propBoardId }: KanbanProps) {
   };
 
   /** Ô "đánh dấu xong" = chuyển sang danh sách Done (bỏ đánh dấu = về Todo). */
-  const handleSetCardStatus = (cardId: string, status: Status) => {
+  const handleSetCardStatus = async (cardId: string, status: Status) => {
+    if (!boardId) return;
     const target = [...lists]
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
       .find((l) => statusFromList(l.name) === status);
-    if (!target) {
-      toast.error(`Board này chưa có danh sách ${STATUS_TEXT[status]}`);
+    if (target) {
+      handleMoveCardTo(cardId, target.id);
       return;
     }
-    handleMoveCardTo(cardId, target.id);
+    // Board cũ có thể còn thiếu một trong ba danh sách. Tự tạo rồi chuyển,
+    // thay vì bắt người dùng đi tạo tay mới tick xong được một task.
+    try {
+      const listId = await listFor(boardId, status);
+      await queryClient.invalidateQueries({ queryKey: ["board", boardId] });
+      handleMoveCardTo(cardId, listId, STATUS_TEXT[status]);
+    } catch {
+      toast.error(`Không tạo được danh sách ${STATUS_TEXT[status]}`);
+    }
   };
 
   /** Đổi chỗ danh sách với danh sách bên trái/phải. */

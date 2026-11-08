@@ -3,6 +3,7 @@ import { serve } from "@hono/node-server";
 import { createApp } from "./app.js";
 import { createDb, prepareDb } from "./db/client.js";
 import { loadEnv } from "./env.js";
+import { backfillDefaultLists } from "./services/lists.js";
 
 try {
   process.loadEnvFile?.(".env");
@@ -25,6 +26,9 @@ if (env.AUTH_DEV_LOGIN && process.env.NODE_ENV === "production") {
 
 const db = createDb(env.DATABASE_URL, env.DATABASE_AUTH_TOKEN);
 await prepareDb(db);
+
+const addedLists = await backfillDefaultLists(db);
+if (addedLists > 0) console.log(`Đã bổ sung ${addedLists} danh sách còn thiếu cho các board cũ.`);
 
 serve({ fetch: createApp({ db, env }).fetch, port: env.PORT }, (info) => {
   console.log(`DailyDesk API chạy ở http://localhost:${info.port}`);

@@ -42,7 +42,7 @@ Kỳ vọng: tất cả pass, gồm ít nhất các nhóm sau:
 | status: chuyển list sang Done → `completed=true`; rời Done → `false` | FR-010, data-model |
 | cards/all: trả `listName`, `boardName`, chỉ của người gọi | FR-012 |
 | first login: tạo board mặc định có Todo/Doing/Done | Assumptions |
-| logic (FE): không có hạn nằm cuối; Done nằm cuối; tìm không dấu; nhóm Quá hạn/Hôm nay/7 ngày tới | FR-015 – FR-017 |
+| logic (FE): không có hạn nằm cuối; Done nằm cuối; tìm không dấu; danh sách phẳng theo thứ tự sắp xếp | FR-015 – FR-017 |
 
 ## Kịch bản kiểm chứng thủ công (luồng chính, dùng cho video demo ≤ 2 phút)
 

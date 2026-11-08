@@ -1,9 +1,9 @@
 import { asc, eq, max } from "drizzle-orm";
 import { uuidv7 } from "uuidv7";
 import type { Db } from "../db/client.js";
-import { lists } from "../db/schema.js";
+import { boards, lists } from "../db/schema.js";
 import { HttpError, nowIso } from "../http.js";
-import { listDisplayName, requireBoard, requireList, statusFromList } from "./access.js";
+import { DEFAULT_LISTS, listDisplayName, requireBoard, requireList, statusFromList } from "./access.js";
 import { listJson } from "./serialize.js";
 
 export async function listLists(db: Db, userId: string, boardId: string) {
@@ -93,3 +93,33 @@ async function requireAnotherListWithSameStatus(
 }
 
 const STATUS_LABEL = { todo: "To-do", doing: "Doing", done: "Done" } as const;
+
+/**
+ * Vá những board tạo từ trước khi có quy tắc "board nào cũng đủ ba trạng thái".
+ *
+ * Board thiếu danh sách Done thì không có chỗ nào để đánh dấu task xong, và
+ * người dùng chỉ nhận được một thông báo lỗi. Chạy một lần lúc khởi động để
+ * dữ liệu cũ cũng về đúng trạng thái như board mới.
+ */
+export async function backfillDefaultLists(db: Db) {
+  const allBoards = await db.select({ id: boards.id }).from(boards);
+  const allLists = await db.select().from(lists);
+  const byBoard = new Map<string, typeof allLists>();
+  for (const l of allLists) byBoard.set(l.boardId, [...(byBoard.get(l.boardId) ?? []), l]);
+
+  const now = nowIso();
+  let added = 0;
+  for (const b of allBoards) {
+    const mine = byBoard.get(b.id) ?? [];
+    const covered = new Set(mine.map((l) => statusFromList(l.name)));
+    let order = mine.reduce((m, l) => Math.max(m, l.order ?? 0), -1);
+    for (const name of DEFAULT_LISTS) {
+      if (covered.has(statusFromList(name))) continue;
+      order += 1;
+      await db.insert(lists).values({ id: uuidv7(), boardId: b.id, name, order, createdAt: now, updatedAt: now });
+      covered.add(statusFromList(name));
+      added += 1;
+    }
+  }
+  return added;
+}

@@ -48,7 +48,7 @@ import {
   type Task,
   type TaskInput,
 } from "./api";
-import { GROUP_LABEL, compare, groupTasks, isOverdue, matches, type Filters, type SortKey } from "./logic";
+import { compare, isOverdue, matches, type Filters, type SortKey } from "./logic";
 import TaskFormDialog from "./task-form-dialog";
 
 const SORT_LABEL: Record<SortKey, string> = {
@@ -496,7 +496,6 @@ export default function TasksPage() {
   }, [tasks, filters]);
 
   const visible = useMemo(() => tasks.filter((t) => matches(t, filters)).sort(compare(sort)), [tasks, filters, sort]);
-  const groups = sort === "deadline" ? groupTasks(visible) : [{ key: null, tasks: visible }];
   const overdueCount = tasks.filter((t) => isOverdue(t)).length;
   const openCount = tasks.filter((t) => t.status !== "done").length;
   const showBoard = boards.length > 1;
@@ -733,39 +732,22 @@ export default function TasksPage() {
               )}
             </EmptyNote>
           ) : (
-            <div>
-              {groups.map((g) => (
-                <div key={g.key ?? "all"}>
-                  {g.key && (
-                    <h2
-                      className={cn(
-                        "sticky top-0 z-[3] flex items-baseline gap-2 border-b bg-card px-5 pt-4 pb-1.5 text-[15px] font-semibold",
-                        g.key === "overdue" ? "text-red-600 dark:text-red-400" : "text-foreground",
-                      )}
-                    >
-                      {GROUP_LABEL[g.key]}
-                      <span className="text-xs font-normal text-muted-foreground tabular">{g.tasks.length}</span>
-                    </h2>
-                  )}
-                  <ul className="divide-y border-b last:border-b-0">
-                    {g.tasks.map((task) => (
-                      <TaskRow
-                        key={task.id}
-                        task={task}
-                        flash={flashId === task.id}
-                        onOpen={() => {
-                          setEditing(task);
-                          setFormOpen(true);
-                        }}
-                        onStatus={(s) => changeStatus(task, s)}
-                        onDelete={() => setToDelete(task)}
-                        showBoard={showBoard}
-                      />
-                    ))}
-                  </ul>
-                </div>
+            <ul className="divide-y">
+              {visible.map((task) => (
+                <TaskRow
+                  key={task.id}
+                  task={task}
+                  flash={flashId === task.id}
+                  onOpen={() => {
+                    setEditing(task);
+                    setFormOpen(true);
+                  }}
+                  onStatus={(s) => changeStatus(task, s)}
+                  onDelete={() => setToDelete(task)}
+                  showBoard={showBoard}
+                />
               ))}
-            </div>
+            </ul>
           )}
         </div>
         {tasksQuery.isSuccess && visible.length > 0 && (

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Task, TaskInput } from "./api";
-import { compare, groupOf, matches, validateTask, type Filters } from "./logic";
+import { compare, matches, validateTask, type Filters } from "./logic";
 
 const NOW = new Date("2026-11-04T10:00:00");
 
@@ -69,19 +69,6 @@ describe("matches (FR-014, FR-015)", () => {
     expect(matches(t, { ...base, status: "todo" })).toBe(false);
     expect(matches(t, { ...base, priority: "low" })).toBe(false);
     expect(matches(t, { ...base, boardId: "other" })).toBe(false);
-  });
-});
-
-describe("groupOf (FR-017)", () => {
-  it.each([
-    [task({ dueAt: at("2026-11-03T10:00:00") }), "overdue"],
-    [task({ dueAt: at("2026-11-04T20:00:00") }), "today"],
-    [task({ dueAt: at("2026-11-08T10:00:00") }), "week"],
-    [task({ dueAt: at("2026-12-01T10:00:00") }), "later"],
-    [task({ dueAt: null }), "none"],
-    [task({ status: "done", dueAt: at("2026-11-01T10:00:00") }), "done"],
-  ])("nhóm %#", (t, expected) => {
-    expect(groupOf(t, NOW)).toBe(expected);
   });
 });
 

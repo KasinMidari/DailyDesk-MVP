@@ -136,7 +136,7 @@ export function useBoardsSummary() {
 }
 
 /** Tìm (hoặc tạo) danh sách ứng với trạng thái trong một board. */
-async function listFor(boardId: string, status: Status) {
+export async function listFor(boardId: string, status: Status) {
   const lists = await request<{ id: string; name: string; order: number }[]>(
     "GET",
     `/boards/${boardId}/lists`,
