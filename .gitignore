@@ -5,3 +5,7 @@ skills-lock.json
 
 # Ảnh đo + dữ liệu chạy của taste skill — 3.6MB, không cần theo repo
 .taste-skill/
+
+# Báo cáo tổng kết xuất ra để nộp, không phải nguồn của dự án
+DailyDesk_MVP/docs/DailyDesk-Bao-cao-tong-ket.docx
+DailyDesk_MVP/docs/DailyDesk-Bao-cao-tong-ket.pdf
